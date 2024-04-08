@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Todo {
+  id           String     @id @default(cuid())
+  description  String
+  categoryId   String
+  category     Category   @relation(fields: [categoryId], references: [id])
+  priorityId   String
+  priority     Priority   @relation(fields: [priorityId], references: [id])
+  importanceId String
+  importance   Importance @relation(fields: [importanceId], references: [id])
+  statusId     String
+  status       Status     @relation(fields: [statusId], references: [id])
+  createdAt    DateTime   @default(now())
+  deadline     DateTime?
+
+  @@map("todos")
+}
+
+model Category {
+  id    String @id @default(cuid())
+  key   String @unique
+  name  String
+  todos Todo[]
+
+  @@map("categories")
+}
+
+model Priority {
+  id    String @id @default(cuid())
+  key   String @unique
+  name  String
+  todos Todo[]
+
+  @@map("priorities")
+}
+
+model Importance {
+  id    String @id @default(cuid())
+  key   String @unique
+  name  String
+  todos Todo[]
+
+  @@map("importants")
+}
+
+model Status {
+  id    String @id @default(cuid())
+  key   String @unique
+  name  String
+  todos Todo[]
+
+  @@map("statuses")
+}
