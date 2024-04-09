@@ -7,8 +7,17 @@ const prisma = new PrismaClient();
 export async function POST(req: NextRequest) {
   const { description, categoryId, priorityId, importanceId, deadline }: Todo =
     await req.json();
-  // TODO: 今後タブで選択して切り替えることができるようにしていく。
-  const statusId = "cluqkhxsz000c7kqz5h3sdlh1";
+
+  const incompleteStatus = await prisma.status.findUnique({
+    where: { key: "incomplete" },
+  });
+
+  if (!incompleteStatus) {
+    return NextResponse.json(
+      { message: "Incomplete status not found" },
+      { status: 500 }
+    );
+  }
 
   try {
     const todo = await prisma.todo.create({
@@ -18,14 +27,12 @@ export async function POST(req: NextRequest) {
         categoryId,
         priorityId,
         importanceId,
-        statusId,
+        statusId: incompleteStatus.id,
       },
     });
 
-    console.log("ToDo作成に成功しました");
-    return NextResponse.json({ todo }, { status: 200 });
+    return NextResponse.json(todo, { status: 200 });
   } catch (error) {
-    console.error("ToDoの作成に失敗しました:", error);
     return NextResponse.json(
       {
         message: `ToDoの作成に失敗しました, ${error}`,
@@ -37,13 +44,31 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url, `https://${req.headers.get("host")}`);
-  const statusId = url.searchParams.get("statusId");
+  const statusKey = url.searchParams.get("status");
+  let statusCondition = {};
+  if (statusKey && statusKey !== "all") {
+    const status = await prisma.status.findUnique({
+      where: { key: statusKey },
+    });
+
+    if (status) {
+      statusCondition = { statusId: status.id };
+    }
+  }
+
   try {
     const todos = await prisma.todo.findMany({
       where: {
-        ...(statusId && { statusId }),
+        ...statusCondition,
+      },
+      include: {
+        status: true,
+        category: true, // 今後カテゴリ情報も使う予定
+        priority: true, // 今後優先度情報も使う予定
+        importance: true, // 今後重要度情報も使う予定
       },
     });
+
     const categories = await prisma.category.findMany();
 
     const priorities = await prisma.priority.findMany();
@@ -55,10 +80,61 @@ export async function GET(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("ToDoの取得に失敗しました:", error);
     return NextResponse.json(
       {
         message: `ToDoの取得に失敗しました, ${error}`,
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  const url = new URL(req.url, `https://${req.headers.get("host")}`);
+  const id = url.searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json(
+      {
+        message: `IDが指定されていません, `,
+      },
+      { status: 400 }
+    );
+  }
+
+  const body = await req.json();
+  const { status } = body;
+
+  try {
+    const statusRecord = await prisma.status.findUnique({
+      where: { key: status },
+    });
+
+    if (!statusRecord) {
+      return NextResponse.json(
+        {
+          message: `ステータスが見つかりません。`,
+        },
+        { status: 404 }
+      );
+    }
+
+    const updatedTodo = await prisma.todo.update({
+      where: { id: String(id) },
+      data: { statusId: statusRecord.id },
+      include: {
+        status: true,
+        category: true,
+        priority: true,
+        importance: true,
+      },
+    });
+
+    return NextResponse.json({ updatedTodo }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: `ToDoの更新に失敗しました。, ${error}`,
       },
       { status: 500 }
     );

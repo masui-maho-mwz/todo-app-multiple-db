@@ -3,6 +3,7 @@ import { AddTodo } from "@/app/components/add";
 // import { DeleteTodoDialog } from "@/app/components/delete";
 import { DeleteTodoDialog } from "@/app/components/delete";
 import { EditTodoModal } from "@/app/components/edit";
+import { StatusTabs } from "@/app/components/status-tabs";
 import { TodoList } from "@/app/components/todo-list";
 import { FC, useEffect, useState } from "react";
 import styles from "./styles.module.css";
@@ -12,6 +13,7 @@ import {
   type Category,
   type Importance,
   type Priority,
+  type StatusKeys,
 } from "./types";
 
 const Home: FC = () => {
@@ -29,14 +31,18 @@ const Home: FC = () => {
     const fetchData = async (statusFilter: StatusFilter) => {
       try {
         const queryParam =
-          statusFilter === "all" ? "" : `?status=${statusFilter}`;
-        const response = await fetch(`/api/todos/?status=${queryParam}`);
+          statusFilter === "all" ? "" : `status=${statusFilter}`;
+        const response = await fetch(
+          `/api/todos/${queryParam ? "?" + queryParam : ""}`
+        );
         if (!response.ok) {
           throw new Error("データの取得に失敗しました。");
         }
         const { todos, categories, priorities, importances } =
           await response.json();
+
         setTodos(todos);
+
         setCategories(categories);
         setPriorities(priorities);
         setImportances(importances);
@@ -55,22 +61,42 @@ const Home: FC = () => {
     });
 
     if (response.ok) {
-      //TODO: リファクタ予定
+      const newTodo: Todo = await response.json();
+
+      setTodos((prevTodos) => [...prevTodos, newTodo]);
       console.log("ToDoの追加に成功しました");
     } else {
       console.error("ToDoの追加に失敗しました");
     }
   };
 
-  // 編集機能も後ほど
-  // const handleUpdateTodo = async (id: string, updates: Partial<Todo>) => {
-  //   await fetch(`/api/todos/${id}`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(updates),
-  //   });
-  //   fetchTodos(statusFilter);
-  // };
+  const handleUpdateTodo = async (id: string, newStatusKey: StatusKeys) => {
+    try {
+      const response = await fetch(`/api/todos?id=${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatusKey }),
+      });
+      if (!response.ok) throw new Error("ToDoの更新に失敗しました");
+
+      fetchTodos();
+    } catch (error) {
+      console.error("ToDoの更新中にエラーが発生しました:", error);
+    }
+  };
+
+  const fetchTodos = async () => {
+    const queryParam = statusFilter === "all" ? "" : `status=${statusFilter}`;
+    const response = await fetch(
+      `/api/todos/${queryParam ? "?" + queryParam : ""}`
+    );
+    if (!response.ok) {
+      console.error("ToDoの更新中にエラーが発生しました:");
+      return;
+    }
+    const data = await response.json();
+    setTodos(data.todos);
+  };
 
   // TODO: 削除機能は後ほど
   // const handleDeleteTodo = async (id: string) => {
@@ -89,9 +115,10 @@ const Home: FC = () => {
         priorities={priorities}
         importances={importances}
       />
+      <StatusTabs setStatusFilter={setStatusFilter} />
       <TodoList
         todos={todos}
-        // handleUpdateTodo={openEditModal}
+        handleUpdateTodo={handleUpdateTodo}
         // handleDeleteTodo={openDeleteDialog}
       />
       {/* TODO: 編集モーダルは後ほど作成する */}
