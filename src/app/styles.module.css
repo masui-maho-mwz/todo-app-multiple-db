@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   margin: 0 auto;
-  padding: 80px;
+  padding: 40px;
 }
 
 .title {
@@ -11,8 +11,37 @@
   margin-bottom: 20px;
 }
 
-.addTodo,
-.todoList {
-  margin-bottom: 20px;
-  padding: 10px;
+.formAndList {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.addTodoContainer {
+  width: 35%;
+  border: 1px;
+  margin-right: 16px;
+}
+
+.todoListContainer {
+  width: 65%;
+  background-color: rgb(250, 250, 250);
+  border: 1px solid rgb(230, 230, 230);
+  border-radius: 8px;
+}
+
+.todoListWrapper {
+  background-color: #fff;
+  margin: auto;
+  border: 1px solid rgb(220, 220, 220);
+  border-radius: 8px;
+  width: 90%;
+  margin-bottom: 32px;
+}
+
+.todoListContainer h4 {
+  text-align: center;
+  margin: 0;
+  padding: 18px 0;
 }

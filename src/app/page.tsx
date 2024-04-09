@@ -21,11 +21,21 @@ const Home: FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [importances, setImportances] = useState<Importance[]>([]);
-  // const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
   // const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  // const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   // const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("incomplete");
+
+  const openEditModal = (todo: Todo) => {
+    setEditingTodo(todo);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setEditingTodo(null);
+    setShowEditModal(false);
+  };
 
   useEffect(() => {
     const fetchData = async (statusFilter: StatusFilter) => {
@@ -109,23 +119,31 @@ const Home: FC = () => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Todoアプリ</h1>
-      <AddTodo
-        handleAddTodo={handleAddTodo}
-        categories={categories}
-        priorities={priorities}
-        importances={importances}
-      />
-      <StatusTabs setStatusFilter={setStatusFilter} />
-      <TodoList
-        todos={todos}
-        handleUpdateTodo={handleUpdateTodo}
-        // handleDeleteTodo={openDeleteDialog}
-      />
-      {/* TODO: 編集モーダルは後ほど作成する */}
-      <EditTodoModal />
-      {/* {showEditModal && editingTodo && (
+      <div className={styles.formAndList}>
+        <div className={styles.addTodoContainer}>
+          <AddTodo
+            handleAddTodo={handleAddTodo}
+            categories={categories}
+            priorities={priorities}
+            importances={importances}
+          />
+        </div>
+        <div className={styles.todoListContainer}>
+          <h4>Todo一覧</h4>
+          <div className={styles.todoListWrapper}>
+            <StatusTabs setStatusFilter={setStatusFilter} />
+            <TodoList
+              todos={todos}
+              handleUpdateTodo={handleUpdateTodo}
+              openEditModal={openEditModal}
+              // handleDeleteTodo={openDeleteDialog}
+            />
+          </div>
+        </div>
+      </div>
+      {showEditModal && editingTodo && (
         <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
-      )} */}
+      )}
       {/* // TODO: 削除確認ダイアログは後ほど作成する */}
       <DeleteTodoDialog />
       {/* {showDeleteDialog && deletingTodoId && (

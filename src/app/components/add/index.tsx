@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Category, Importance, Priority } from "../../types";
+import styles from "./styles.module.css";
 
 type Props = {
   handleAddTodo: (todo: any) => void;
@@ -39,7 +40,8 @@ export const AddTodo: React.FC<Props> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className={styles.formContainer}>
+      <h4>Todoの追加</h4>
       <input
         type="text"
         value={description}
@@ -89,7 +91,9 @@ export const AddTodo: React.FC<Props> = ({
         onChange={(e) => setDeadline(e.target.value)}
         required
       />
-      <button type="submit">追加</button>
+      <button className={styles.addButton} type="submit">
+        追加
+      </button>
     </form>
   );
 };
