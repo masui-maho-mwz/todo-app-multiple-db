@@ -1,5 +1,6 @@
 import type { StatusFilter } from "@/app/types";
-import React from "react";
+import React, { useState } from "react";
+import styles from "./styles.module.css";
 
 type Props = {
   setStatusFilter: (filter: StatusFilter) => void;
@@ -12,10 +13,23 @@ export const StatusTabs: React.FC<Props> = ({ setStatusFilter }) => {
     { key: "incomplete", label: "未完了" },
   ];
 
+  const [activeTab, setActiveTab] = useState<StatusFilter>("all");
+
+  const handleTabClick = (key: StatusFilter) => {
+    setActiveTab(key);
+    setStatusFilter(key);
+  };
+
   return (
-    <div>
+    <div className={styles.tabContainer}>
       {tabs.map((tab) => (
-        <button key={tab.key} onClick={() => setStatusFilter(tab.key)}>
+        <button
+          key={tab.key}
+          className={`${styles.tab} ${
+            tab.key === activeTab ? styles.activeTab : ""
+          }`}
+          onClick={() => handleTabClick(tab.key)}
+        >
           {tab.label}
         </button>
       ))}
