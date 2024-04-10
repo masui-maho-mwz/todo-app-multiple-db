@@ -54,7 +54,7 @@ export const AddTodo: React.FC<Props> = ({
         onChange={(e) => setSelectedCategory(e.target.value)}
         required
       >
-        <option value="">カテゴリーを選択</option>
+        <option value="">カテゴリー</option>
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name}
@@ -66,7 +66,7 @@ export const AddTodo: React.FC<Props> = ({
         onChange={(e) => setSelectedPriority(e.target.value)}
         required
       >
-        <option value="">優先度を選択</option>
+        <option value="">優先度</option>
         {priorities.map((priority) => (
           <option key={priority.id} value={priority.id}>
             {priority.name}
@@ -78,7 +78,7 @@ export const AddTodo: React.FC<Props> = ({
         onChange={(e) => setSelectedImportance(e.target.value)}
         required
       >
-        <option value="">重要度を選択</option>
+        <option value="">重要度</option>
         {importances.map((importance) => (
           <option key={importance.id} value={importance.id}>
             {importance.name}

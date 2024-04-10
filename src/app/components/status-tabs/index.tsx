@@ -13,7 +13,7 @@ export const StatusTabs: React.FC<Props> = ({ setStatusFilter }) => {
     { key: "incomplete", label: "未完了" },
   ];
 
-  const [activeTab, setActiveTab] = useState<StatusFilter>("all");
+  const [activeTab, setActiveTab] = useState<StatusFilter>("incomplete");
 
   const handleTabClick = (key: StatusFilter) => {
     setActiveTab(key);
