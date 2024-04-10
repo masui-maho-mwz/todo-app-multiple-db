@@ -13,13 +13,11 @@
 .table td {
   border: 0.2px solid #ddd;
   padding: 4px;
-  /* text-align: left; */
 }
 
 .table th {
   background-color: #7b7b7b;
   color: white;
-  /* text-align: center; */
 }
 
 .editButton {

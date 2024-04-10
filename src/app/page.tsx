@@ -141,7 +141,13 @@ const Home: FC = () => {
         </div>
       </div>
       {showEditModal && editingTodo && (
-        <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
+        <EditTodoModal
+          todo={editingTodo}
+          onClose={closeEditModal}
+          categories={categories}
+          priorities={priorities}
+          importances={importances}
+        />
       )}
       {/* // TODO: 削除確認ダイアログは後ほど作成する */}
       <DeleteTodoDialog />
