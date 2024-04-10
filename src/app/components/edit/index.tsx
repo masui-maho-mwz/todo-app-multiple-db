@@ -65,7 +65,7 @@ export const EditTodoModal: FC<Props> = ({
             onChange={(e) => setSelectedCategory(e.target.value)}
             required
           >
-            <option value="">カテゴリー</option>
+            <option value="">{todo.category?.name}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -77,7 +77,7 @@ export const EditTodoModal: FC<Props> = ({
             onChange={(e) => setSelectedPriority(e.target.value)}
             required
           >
-            <option value="">優先度</option>
+            <option value="">{todo.priority?.name}</option>
             {priorities.map((priority) => (
               <option key={priority.id} value={priority.id}>
                 {priority.name}
@@ -89,7 +89,7 @@ export const EditTodoModal: FC<Props> = ({
             onChange={(e) => setSelectedImportance(e.target.value)}
             required
           >
-            <option value="">重要度</option>
+            <option value="">{todo.importance?.name}</option>
             {importances.map((importance) => (
               <option key={importance.id} value={importance.id}>
                 {importance.name}
@@ -98,6 +98,7 @@ export const EditTodoModal: FC<Props> = ({
           </select>
           <input
             type="date"
+            // TODO: 日付の表示の仕方調査する。
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             required
