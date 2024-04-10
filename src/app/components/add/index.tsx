@@ -41,7 +41,6 @@ export const AddTodo: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      <h4>Todoの追加</h4>
       <input
         type="text"
         value={description}

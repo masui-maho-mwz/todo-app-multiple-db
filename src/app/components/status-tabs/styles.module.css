@@ -1,12 +1,13 @@
 .tabContainer {
   display: flex;
   justify-content: left;
+  background-color: rgb(250, 250, 250);
 }
 
 .tab {
-  background-color: rgb(252, 252, 252);
-  border: 1px solid #616161;
-  border-radius: 4px;
+  background-color: #fcfcfc;
+  border: 1px solid #7b7b7b;
+  border-radius: 2px;
   font-size: 0.8rem;
   padding: 0.4rem 1rem;
   transition: background-color 0.3s ease;

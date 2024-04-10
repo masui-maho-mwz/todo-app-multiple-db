@@ -129,7 +129,6 @@ const Home: FC = () => {
           />
         </div>
         <div className={styles.todoListContainer}>
-          <h4>Todo一覧</h4>
           <div className={styles.todoListWrapper}>
             <StatusTabs setStatusFilter={setStatusFilter} />
             <TodoList

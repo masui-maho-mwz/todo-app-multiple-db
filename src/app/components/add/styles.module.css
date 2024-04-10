@@ -21,6 +21,10 @@
   box-sizing: border-box;
 }
 
+.formContainer input[type="text"] {
+  margin-top: 32px;
+}
+
 .formContainer button[type="submit"] {
   background-color: #2196f3;
   color: #fff;
