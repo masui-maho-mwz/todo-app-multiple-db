@@ -28,31 +28,55 @@ export const TodoList: React.FC<Props> = ({
 
   return (
     <div className={styles.container}>
-      {todos.map((todo) => (
-        <div key={todo.id} className={styles.todoItem}>
-          <div className={styles.todoItemInner}>
-            <input
-              type="checkbox"
-              checked={todo.status?.key === "complete"}
-              onChange={handleChange(todo)}
-              className={styles.checkbox}
-            />
-            <p className={styles.description}>{todo.description}</p>
-            <button
-              className={styles.editButton}
-              onClick={() => openEditModal(todo)}
-            >
-              編集
-            </button>
-            <button
-              className={styles.deleteButton}
-              onClick={() => openEditModal(todo)}
-            >
-              削除
-            </button>
-          </div>
-        </div>
-      ))}
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th></th>
+            <th>説明</th>
+            <th>カテゴリー</th>
+            <th>優先度</th>
+            <th>重要度</th>
+            <th>期限</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {todos.map((todo) => (
+            <tr key={todo.id}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={todo.status?.key === "complete"}
+                  onChange={handleChange(todo)}
+                />
+              </td>
+              <td>{todo.description}</td>
+              <td>{todo.category?.name}</td>
+              <td>{todo.priority?.name}</td>
+              <td>{todo.importance?.name}</td>
+              <td>
+                {todo.deadline
+                  ? new Date(todo.deadline).toLocaleDateString()
+                  : "未設定"}
+              </td>
+              <td>
+                <button
+                  className={styles.editButton}
+                  onClick={() => openEditModal(todo)}
+                >
+                  編集
+                </button>
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => openEditModal(todo)}
+                >
+                  削除
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

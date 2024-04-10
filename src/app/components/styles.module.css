@@ -1,25 +1,25 @@
 .container {
   width: 100%;
-  padding-top: 0.2rem;
 }
 
-.todoItem {
-  margin: 0.5rem 1rem;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: small;
+  text-align: center;
 }
 
-.todoItemInner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.table th,
+.table td {
+  border: 0.2px solid #ddd;
+  padding: 4px;
+  /* text-align: left; */
 }
 
-.checkbox {
-  margin-right: 0.5rem;
-}
-
-.description {
-  flex-grow: 1;
-  margin: 0 1rem;
+.table th {
+  background-color: #7b7b7b;
+  color: white;
+  /* text-align: center; */
 }
 
 .editButton {
