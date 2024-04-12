@@ -1,8 +1,7 @@
 "use client";
-import { AddTodo } from "@/app/components/add";
-// import { DeleteTodoDialog } from "@/app/components/delete";
 import { DeleteTodoDialog } from "@/app/components/delete";
 import { EditTodoModal } from "@/app/components/edit";
+import { Sidebar } from "@/app/components/sidebar";
 import { StatusTabs } from "@/app/components/status-tabs";
 import { TodoList } from "@/app/components/todo-list";
 import { FC, useEffect, useState } from "react";
@@ -22,9 +21,9 @@ const Home: FC = () => {
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [importances, setImportances] = useState<Importance[]>([]);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  // const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
-  // const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
+  const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("incomplete");
 
   const openEditModal = (todo: Todo) => {
@@ -35,6 +34,30 @@ const Home: FC = () => {
   const closeEditModal = () => {
     setEditingTodo(null);
     setShowEditModal(false);
+  };
+
+  const openDeleteDialog = (id: string) => {
+    setDeletingTodoId(id);
+    setShowDeleteDialog(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setShowDeleteDialog(false);
+  };
+
+  const confirmDeleteTodo = async () => {
+    if (deletingTodoId) {
+      try {
+        const response = await fetch(`/api/todos?id=${deletingTodoId}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) throw new Error("ToDoの削除に失敗しました");
+        fetchTodos();
+        closeDeleteDialog();
+      } catch (error) {
+        console.error("ToDoの削除処理中にエラーが発生しました:", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -63,7 +86,7 @@ const Home: FC = () => {
     fetchData(statusFilter);
   }, [statusFilter]);
 
-  const handleAddTodo = async (todo: Omit<Todo, "id">) => {
+  const handleAddTodo = async (todo: Omit<Todo, "id" | "createdAt">) => {
     const response = await fetch("/api/todos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -108,26 +131,15 @@ const Home: FC = () => {
     setTodos(data.todos);
   };
 
-  // TODO: 削除機能は後ほど
-  // const handleDeleteTodo = async (id: string) => {
-  //   await fetch(`/api/todos/${id}`, {
-  //     method: "DELETE",
-  //   });
-  //   fetchTodos(statusFilter);
-  // };
-
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Todoアプリ</h1>
       <div className={styles.formAndList}>
-        <div className={styles.addTodoContainer}>
-          <AddTodo
-            handleAddTodo={handleAddTodo}
-            categories={categories}
-            priorities={priorities}
-            importances={importances}
-          />
-        </div>
+        <Sidebar
+          handleAddTodo={handleAddTodo}
+          categories={categories}
+          priorities={priorities}
+          importances={importances}
+        />
         <div className={styles.todoListContainer}>
           <div className={styles.todoListWrapper}>
             <StatusTabs setStatusFilter={setStatusFilter} />
@@ -135,7 +147,7 @@ const Home: FC = () => {
               todos={todos}
               handleUpdateTodo={handleUpdateTodo}
               openEditModal={openEditModal}
-              // handleDeleteTodo={openDeleteDialog}
+              handleDeleteTodo={openDeleteDialog}
             />
           </div>
         </div>
@@ -149,11 +161,13 @@ const Home: FC = () => {
           importances={importances}
         />
       )}
-      {/* // TODO: 削除確認ダイアログは後ほど作成する */}
-      <DeleteTodoDialog />
-      {/* {showDeleteDialog && deletingTodoId && (
-        <DeleteTodoDialog todoId={deletingTodoId} onClose={closeDeleteDialog} />
-      )} */}
+      {showDeleteDialog && deletingTodoId && (
+        <DeleteTodoDialog
+          todoId={deletingTodoId}
+          onClose={closeDeleteDialog}
+          onConfirm={confirmDeleteTodo}
+        />
+      )}
     </div>
   );
 };

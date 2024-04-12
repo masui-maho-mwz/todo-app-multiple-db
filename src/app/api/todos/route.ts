@@ -140,3 +140,31 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  const url = new URL(req.url, `https://${req.headers.get("host")}`);
+  const id = url.searchParams.get("id");
+
+  if (!id) {
+    return NextResponse.json(
+      { message: "IDが指定されていません。" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    await prisma.todo.delete({
+      where: { id: String(id) },
+    });
+
+    return NextResponse.json(
+      { message: "ToDoが正常に削除されました。" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: `ToDoの削除に失敗しました。, ${error}` },
+      { status: 500 }
+    );
+  }
+}

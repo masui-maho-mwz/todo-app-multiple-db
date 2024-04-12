@@ -2,11 +2,11 @@ export type Todo = {
   id: string;
   description: string;
   categoryId: string;
-  category?: Category; // TODO:必要に応じてCategory型も関連付ける
+  category?: Category;
   priorityId: string;
-  priority?: Priority; // TODO: 必要に応じてPriority型も関連付ける
+  priority?: Priority;
   importanceId: string;
-  importance?: Importance; // TODO: 必要に応じてImportance型も関連付ける
+  importance?: Importance;
   status: Status;
   createdAt: Date;
   deadline: Date | null;
