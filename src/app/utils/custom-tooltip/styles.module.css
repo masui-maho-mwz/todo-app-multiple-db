@@ -1,0 +1,17 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.customTooltip {
+  position: absolute;
+  bottom: 90%;
+  left: 40%;
+  transform: translateX(-50%);
+  background-color: rgb(230, 230, 240);
+  color: #333;
+  padding: 4px 8px;
+  border-radius: 8px;
+  z-index: 1000;
+  white-space: nowrap;
+}

@@ -70,7 +70,7 @@ const EditTodoModal: React.FC<Props> = ({
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="ToDoを入力してください"
+            placeholder="Todoを入力してください"
             required
           />
           <select
