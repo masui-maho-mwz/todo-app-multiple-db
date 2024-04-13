@@ -11,6 +11,12 @@
   gap: 10px;
   padding: 10px;
   cursor: pointer;
+  transition: background-color 0.3s, font-weight 0.3s;
+}
+
+.sidebarItem:hover {
+  background-color: #e0e0e0;
+  font-weight: bold;
 }
 
 .icon {
