@@ -50,6 +50,13 @@ const Home = () => {
         if (statusFilter === "all") {
           return true;
         }
+        if (!todo.status) {
+          todo.status = {
+            id: "cluruuvds000cxhqzcyrbabnm",
+            key: "incomplete",
+            name: "未完了",
+          };
+        }
         return todo.status.key === statusFilter;
       })
     );

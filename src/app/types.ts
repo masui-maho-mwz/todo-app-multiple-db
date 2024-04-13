@@ -14,19 +14,19 @@ export type Todo = {
 
 export type Category = {
   id: string;
-  key: "leisure" | "hobby" | "housework" | "work" | "study" | "other"; //TODO: 複数箇所で使いそうだったらStatusKeysのように型にする
+  key: CategoryKey;
   name: string;
 };
 
 export type Priority = {
   id: string;
-  key: "high" | "medium" | "low"; //TODO: 複数箇所で使いそうだったらSStatusKeysのように型にする
+  key: LevelKey;
   name: string;
 };
 
 export type Importance = {
   id: string;
-  key: "high" | "medium" | "low"; //TODO: 複数箇所で使いそうだったらStatusKeysのように型にする
+  key: LevelKey;
   name: string;
 };
 
@@ -39,3 +39,13 @@ export type Status = {
 export type StatusKeys = "complete" | "incomplete";
 
 export type StatusFilter = "all" | "complete" | "incomplete";
+
+type LevelKey = "high" | "medium" | "low";
+
+type CategoryKey =
+  | "leisure"
+  | "hobby"
+  | "housework"
+  | "work"
+  | "study"
+  | "other";
