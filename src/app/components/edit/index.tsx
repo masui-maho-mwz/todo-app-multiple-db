@@ -61,60 +61,74 @@ const EditTodoModal: React.FC<Props> = ({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeIcon} onClick={onClose}>
-          &times;
-        </button>
         <form onSubmit={handleSubmit} className={styles.formContainer}>
-          <h4>編集</h4>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Todoを入力してください"
-            required
-          />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            required
-          >
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedPriority}
-            onChange={(e) => setSelectedPriority(e.target.value)}
-            required
-          >
-            {priorities.map((priority) => (
-              <option key={priority.id} value={priority.id}>
-                {priority.name}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedImportance}
-            onChange={(e) => setSelectedImportance(e.target.value)}
-            required
-          >
-            {importances.map((importance) => (
-              <option key={importance.id} value={importance.id}>
-                {importance.name}
-              </option>
-            ))}
-          </select>
-          <input
-            type="date"
-            value={deadline}
-            onChange={(e) => setDeadline(e.target.value)}
-            required
-          />
-          <button type="submit" className={styles.editButton}>
-            保存
-          </button>
+          <div className={styles.inputRow}>
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Todoを入力してください"
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.inputRow}>
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              required
+              className={styles.input}
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedPriority}
+              onChange={(e) => setSelectedPriority(e.target.value)}
+              required
+              className={styles.input}
+            >
+              {priorities.map((priority) => (
+                <option key={priority.id} value={priority.id}>
+                  {priority.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedImportance}
+              onChange={(e) => setSelectedImportance(e.target.value)}
+              required
+              className={styles.input}
+            >
+              {importances.map((importance) => (
+                <option key={importance.id} value={importance.id}>
+                  {importance.name}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div className={styles.buttonContainer}>
+            <button
+              type="button"
+              onClick={onClose}
+              className={styles.cancelButton}
+            >
+              キャンセル
+            </button>
+            <button type="submit" className={styles.editButton}>
+              保存
+            </button>
+          </div>
         </form>
       </div>
     </div>
