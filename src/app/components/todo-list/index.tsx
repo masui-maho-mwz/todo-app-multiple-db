@@ -1,3 +1,4 @@
+import { NoTodos } from "@/app/no-todo";
 import { updateTodo } from "@/app/operations";
 import { Todo, type StatusKeys } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -20,7 +21,7 @@ export const TodoList: FC<Props> = ({
   onUpdateTodo,
 }) => {
   if (!todos.length) {
-    return <div>Todoがありません。</div>;
+    return <NoTodos />;
   }
   const handleStatusChange = async (todo: Todo) => {
     const currentStatusKey = todo.status?.key || "incomplete";
