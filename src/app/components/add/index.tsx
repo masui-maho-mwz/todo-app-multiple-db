@@ -1,5 +1,6 @@
 "use client";
 import { Category, Importance, Priority, Todo } from "@/app/types";
+import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
 
@@ -31,7 +32,8 @@ export const AddTodoModal: React.FC<Props> = ({
       categoryId: selectedCategory,
       priorityId: selectedPriority,
       importanceId: selectedImportance,
-      deadline: deadline ? new Date(deadline) : null,
+      deadline: deadline ? formatISO(parseISO(deadline)) : null,
+
       status: {
         key: "incomplete",
         name: "未完了",

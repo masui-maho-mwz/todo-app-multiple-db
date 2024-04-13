@@ -1,6 +1,7 @@
 import { updateTodo } from "@/app/operations";
 import { Category, Importance, Priority, Todo } from "@/app/types";
-import React, { FC, useState } from "react";
+import { formatISO, parseISO } from "date-fns";
+import React, { useState } from "react";
 import styles from "./styles.module.css";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   importances: Importance[];
 }
 
-const EditTodoModal: FC<Props> = ({
+const EditTodoModal: React.FC<Props> = ({
   todo,
   onClose,
   onUpdateTodo,
@@ -33,21 +34,22 @@ const EditTodoModal: FC<Props> = ({
     todo.importanceId || ""
   );
   const [deadline, setDeadline] = useState<string>(
-    todo.deadline ? new Date(todo.deadline).toISOString().slice(0, 10) : ""
+    todo.deadline
+      ? formatISO(parseISO(todo.deadline), { representation: "date" })
+      : ""
   );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const updatedTodo: Todo = {
+      ...todo,
+      description,
+      categoryId: selectedCategory,
+      priorityId: selectedPriority,
+      importanceId: selectedImportance,
+      deadline: deadline ? formatISO(parseISO(deadline)) : null,
+    };
     try {
-      const deadlineDate = deadline ? new Date(deadline).toISOString() : null;
-      const updatedTodo: Todo = {
-        ...todo,
-        description,
-        categoryId: selectedCategory,
-        priorityId: selectedPriority,
-        importanceId: selectedImportance,
-        deadline: deadlineDate,
-      };
       const response = await updateTodo(updatedTodo);
       onUpdateTodo(response);
       onClose();

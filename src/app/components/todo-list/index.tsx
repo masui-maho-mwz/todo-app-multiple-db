@@ -2,6 +2,7 @@ import { updateTodo } from "@/app/operations";
 import { Todo, type StatusKeys } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { format, parseISO } from "date-fns";
 import { FC } from "react";
 import styles from "./styles.module.css";
 
@@ -22,8 +23,10 @@ export const TodoList: FC<Props> = ({
     return <div>Todoがありません。</div>;
   }
   const handleStatusChange = async (todo: Todo) => {
+    const currentStatusKey = todo.status?.key || "incomplete";
     const newStatusKey: StatusKeys =
-      todo.status.key === "complete" ? "incomplete" : "complete";
+      currentStatusKey === "complete" ? "incomplete" : "complete";
+
     const updatedTodo = {
       ...todo,
       status: { ...todo.status, key: newStatusKey },
@@ -61,7 +64,7 @@ export const TodoList: FC<Props> = ({
             <span className={styles.chip}>
               期限:{" "}
               {todo.deadline
-                ? new Date(todo.deadline).toLocaleDateString()
+                ? format(parseISO(todo.deadline), "yyyy/MM/dd")
                 : "未設定"}
             </span>
             <button
