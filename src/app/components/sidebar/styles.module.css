@@ -1,8 +1,8 @@
 .container {
-  background-color: rgb(250, 250, 250);
-  border: 1px solid rgb(230, 230, 230);
-  border-radius: 8px;
-  padding: 20px 40px 8px 16px;
+  background-color: rgb(240, 240, 240);
+  max-width: 240px;
+  min-width: 160px;
+  height: 100vh;
 }
 
 .sidebarItem {
