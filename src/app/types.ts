@@ -9,7 +9,7 @@ export type Todo = {
   importance?: Importance;
   status: Status;
   createdAt: Date;
-  deadline: Date | null;
+  deadline: string | null;
 };
 
 export type Category = {

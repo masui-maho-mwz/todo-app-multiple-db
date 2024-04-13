@@ -1,37 +1,43 @@
-import type { StatusKeys, Todo } from "@/app/types";
+import { updateTodo } from "@/app/operations";
+import { Todo, type StatusKeys } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import React, { useEffect, useState } from "react";
+import { FC } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
   todos: Todo[];
-  handleUpdateTodo: (id: string, newStatusKey: StatusKeys) => void;
-  handleDeleteTodo: (id: string) => void;
   openEditModal: (todo: Todo) => void;
+  handleDeleteTodo: (id: string) => void;
+  onUpdateTodo: (updatedTodo: Todo) => void;
 };
 
-export const TodoList: React.FC<Props> = ({
+export const TodoList: FC<Props> = ({
   todos,
-  handleUpdateTodo,
   handleDeleteTodo,
   openEditModal,
+  onUpdateTodo,
 }) => {
-  const [pendingUpdate, setPendingUpdate] = useState<{
-    id: string;
-    newStatusKey: StatusKeys;
-  } | null>(null);
-
-  useEffect(() => {
-    if (pendingUpdate) {
-      handleUpdateTodo(pendingUpdate.id, pendingUpdate.newStatusKey);
-      setPendingUpdate(null);
-    }
-  }, [pendingUpdate, handleUpdateTodo]);
-
-  if (!Array.isArray(todos) || todos.length === 0) {
+  if (!todos.length) {
     return <div>Todoがありません。</div>;
   }
+  const handleStatusChange = async (todo: Todo) => {
+    const newStatusKey: StatusKeys =
+      todo.status.key === "complete" ? "incomplete" : "complete";
+    const updatedTodo = {
+      ...todo,
+      status: { ...todo.status, key: newStatusKey },
+    };
+
+    try {
+      const updatedResponse = await updateTodo(updatedTodo);
+      onUpdateTodo(updatedResponse);
+    } catch (error) {
+      alert(
+        `ステータスの更新に失敗しました。もう一度試してください。: ${error}`
+      );
+    }
+  };
 
   return (
     <div>
@@ -41,13 +47,7 @@ export const TodoList: React.FC<Props> = ({
             <input
               type="checkbox"
               checked={todo.status?.key === "complete"}
-              onChange={() => {
-                if (todo.status) {
-                  const newStatusKey =
-                    todo.status.key === "complete" ? "incomplete" : "complete";
-                  setPendingUpdate({ id: todo.id, newStatusKey });
-                }
-              }}
+              onChange={() => handleStatusChange(todo)}
               className={styles.checkbox}
             />
             <div>{todo.description}</div>

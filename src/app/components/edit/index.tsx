@@ -1,62 +1,73 @@
-"use client";
-import {
-  Todo,
-  type Category,
-  type Importance,
-  type Priority,
-} from "@/app/types";
-import { FC, useState } from "react";
+import { updateTodo } from "@/app/operations";
+import { Category, Importance, Priority, Todo } from "@/app/types";
+import React, { FC, useState } from "react";
 import styles from "./styles.module.css";
 
-type Props = {
+interface Props {
   todo: Todo;
   onClose: () => void;
+  onUpdateTodo: (updatedTodo: Todo) => void;
   categories: Category[];
   priorities: Priority[];
   importances: Importance[];
-};
+}
 
-export const EditTodoModal: FC<Props> = ({
+const EditTodoModal: FC<Props> = ({
   todo,
   onClose,
+  onUpdateTodo,
   categories,
   priorities,
   importances,
 }) => {
-  const [description, setDescription] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedPriority, setSelectedPriority] = useState("");
-  const [selectedImportance, setSelectedImportance] = useState("");
-  const [deadline, setDeadline] = useState("");
+  const [description, setDescription] = useState<string>(
+    todo.description || ""
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    todo.categoryId || ""
+  );
+  const [selectedPriority, setSelectedPriority] = useState<string>(
+    todo.priorityId || ""
+  );
+  const [selectedImportance, setSelectedImportance] = useState<string>(
+    todo.importanceId || ""
+  );
+  const [deadline, setDeadline] = useState<string>(
+    todo.deadline ? new Date(todo.deadline).toISOString().slice(0, 10) : ""
+  );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const todo = {
-      description,
-      categoryId: selectedCategory,
-      priorityId: selectedPriority,
-      importanceId: selectedImportance,
-      deadline,
-    };
-    // TODO: update関数にする
-    // handleAddTodo(todo);
-    setDescription("");
-    setSelectedCategory("");
-    setSelectedPriority("");
-    setSelectedImportance("");
-    setDeadline("");
+    try {
+      const deadlineDate = deadline ? new Date(deadline).toISOString() : null;
+      const updatedTodo: Todo = {
+        ...todo,
+        description,
+        categoryId: selectedCategory,
+        priorityId: selectedPriority,
+        importanceId: selectedImportance,
+        deadline: deadlineDate,
+      };
+      const response = await updateTodo(updatedTodo);
+      onUpdateTodo(response);
+      onClose();
+    } catch (error) {
+      alert(`保存処理中にエラーが発生しました: ${error}`);
+    }
   };
+
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <button className={styles.closeIcon} onClick={onClose}>
           &times;
         </button>
-        <form className={styles.formContainer}>
+        <form onSubmit={handleSubmit} className={styles.formContainer}>
           <h4>編集</h4>
           <input
             type="text"
-            value={todo.description}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             placeholder="ToDoを入力してください"
             required
           />
@@ -65,7 +76,6 @@ export const EditTodoModal: FC<Props> = ({
             onChange={(e) => setSelectedCategory(e.target.value)}
             required
           >
-            <option value="">{todo.category?.name}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -77,7 +87,6 @@ export const EditTodoModal: FC<Props> = ({
             onChange={(e) => setSelectedPriority(e.target.value)}
             required
           >
-            <option value="">{todo.priority?.name}</option>
             {priorities.map((priority) => (
               <option key={priority.id} value={priority.id}>
                 {priority.name}
@@ -89,7 +98,6 @@ export const EditTodoModal: FC<Props> = ({
             onChange={(e) => setSelectedImportance(e.target.value)}
             required
           >
-            <option value="">{todo.importance?.name}</option>
             {importances.map((importance) => (
               <option key={importance.id} value={importance.id}>
                 {importance.name}
@@ -98,12 +106,11 @@ export const EditTodoModal: FC<Props> = ({
           </select>
           <input
             type="date"
-            // TODO: 日付の表示の仕方調査する。
             value={deadline}
             onChange={(e) => setDeadline(e.target.value)}
             required
           />
-          <button className={styles.editButton} onClick={onClose}>
+          <button type="submit" className={styles.editButton}>
             保存
           </button>
         </form>
@@ -111,3 +118,5 @@ export const EditTodoModal: FC<Props> = ({
     </div>
   );
 };
+
+export default EditTodoModal;

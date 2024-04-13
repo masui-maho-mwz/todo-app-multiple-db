@@ -63,9 +63,9 @@ export async function GET(req: NextRequest) {
       },
       include: {
         status: true,
-        category: true, // 今後カテゴリ情報も使う予定
-        priority: true, // 今後優先度情報も使う予定
-        importance: true, // 今後重要度情報も使う予定
+        category: true,
+        priority: true,
+        importance: true,
       },
     });
 
@@ -90,38 +90,32 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const url = new URL(req.url, `https://${req.headers.get("host")}`);
-  const id = url.searchParams.get("id");
-
-  if (!id) {
-    return NextResponse.json(
-      {
-        message: `IDが指定されていません, `,
-      },
-      { status: 400 }
-    );
-  }
-
   const body = await req.json();
-  const { status } = body;
-
+  const { id, description, categoryId, priorityId, importanceId, deadline } =
+    body;
+  const statusKey = body.status.key;
   try {
-    const statusRecord = await prisma.status.findUnique({
-      where: { key: status },
+    const status = await prisma.status.findUnique({
+      where: { key: statusKey },
     });
 
-    if (!statusRecord) {
+    if (!status) {
       return NextResponse.json(
-        {
-          message: `ステータスが見つかりません。`,
-        },
+        { message: `Status with key ${statusKey} not found.` },
         { status: 404 }
       );
     }
 
     const updatedTodo = await prisma.todo.update({
-      where: { id: String(id) },
-      data: { statusId: statusRecord.id },
+      where: { id },
+      data: {
+        description,
+        categoryId,
+        priorityId,
+        importanceId,
+        deadline: deadline ? new Date(deadline) : null,
+        statusId: status.id,
+      },
       include: {
         status: true,
         category: true,
@@ -130,7 +124,7 @@ export async function PUT(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ updatedTodo }, { status: 200 });
+    return NextResponse.json(updatedTodo, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       {
