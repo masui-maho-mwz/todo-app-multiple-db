@@ -14,11 +14,13 @@
 .checkboxContainer {
   display: flex;
   align-items: center;
-  margin-right: 15px;
+  justify-content: center;
+  flex-grow: 0;
+  padding: 10px;
 }
 
 .checkbox {
-  margin: 0 10px 0 0;
+  margin-right: 10px;
 }
 
 .todoCard {
@@ -28,33 +30,52 @@
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 960px;
+  min-width: 720px;
+  max-width: 960px;
 }
 
-.wrapper {
+.todoDetails {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding-left: 10px;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.description {
+  font-size: 16px;
+  font-weight: bold;
+  align-self: flex-start;
+}
+
+.todoInfo {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 10px;
-  width: 100%;
+  flex-wrap: wrap;
 }
 
+.actionIcons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.editButton,
 .deleteButton {
-  background-color: #fff;
-  color: #e57373;
+  background-color: transparent;
   border: none;
-  padding: 4px;
-  font-size: 8px;
-  margin-right: 4px;
+  margin: 2px 0;
+  display: flex;
+  align-items: center;
 }
 
 .editButton {
-  background-color: #fff;
-  color: rgb(180, 180, 180);
-  border: none;
-  padding: 0px;
-  font-size: 8px;
-  transition: background-color 0.3s ease;
+  color: #4caf50;
+}
+
+.deleteButton {
+  color: #e57373;
 }

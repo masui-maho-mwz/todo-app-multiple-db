@@ -53,31 +53,35 @@ export const TodoList: FC<Props> = ({
               onChange={() => handleStatusChange(todo)}
               className={styles.checkbox}
             />
-            <div>{todo.description}</div>
           </div>
-          <div className={styles.wrapper}>
-            <span className={styles.chip}>
-              カテゴリー: {todo.category?.name}
-            </span>
-            <span className={styles.chip}>優先: {todo.priority?.name}</span>
-            <span className={styles.chip}>重要: {todo.importance?.name}</span>
-            <span className={styles.chip}>
-              期限:{" "}
-              {todo.deadline
-                ? format(parseISO(todo.deadline), "yyyy/MM/dd")
-                : "未設定"}
-            </span>
-            <button
-              className={styles.deleteButton}
-              onClick={() => handleDeleteTodo(todo.id)}
-            >
-              <DeleteIcon />
-            </button>
+          <div className={styles.todoDetails}>
+            <div className={styles.description}>{todo.description}</div>
+            <div className={styles.todoInfo}>
+              <span className={styles.chip}>
+                カテゴリー: {todo.category?.name}
+              </span>
+              <span className={styles.chip}>優先: {todo.priority?.name}</span>
+              <span className={styles.chip}>重要: {todo.importance?.name}</span>
+              <span className={styles.chip}>
+                期限:{" "}
+                {todo.deadline
+                  ? format(parseISO(todo.deadline), "yyyy/MM/dd")
+                  : "未設定"}
+              </span>
+            </div>
+          </div>
+          <div className={styles.actionIcons}>
             <button
               className={styles.editButton}
               onClick={() => openEditModal(todo)}
             >
-              <EditIcon />
+              <EditIcon fontSize="small" />
+            </button>
+            <button
+              className={styles.deleteButton}
+              onClick={() => handleDeleteTodo(todo.id)}
+            >
+              <DeleteIcon fontSize="small" />
             </button>
           </div>
         </div>
