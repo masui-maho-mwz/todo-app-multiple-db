@@ -3,14 +3,14 @@ import { TodoList } from "@/app/components/todo-list";
 import type { StatusFilter, Todo } from "@/app/types";
 import styles from "./styles.module.css";
 
-interface MainProps {
+type MainProps = {
   statusFilter: StatusFilter;
   filteredTodos: Todo[];
   handleFilterChange: (newFilter: StatusFilter) => Promise<void>;
   openEditModal: (todo: Todo) => void;
   handleDeleteTodo: (todoId: string) => void;
   onUpdateTodo: (updatedTodo: Todo) => void;
-}
+};
 
 export const Main = ({
   statusFilter,

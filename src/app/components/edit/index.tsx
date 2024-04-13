@@ -4,14 +4,14 @@ import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
 
-interface Props {
+type Props = {
   todo: Todo;
   onClose: () => void;
   onUpdateTodo: (updatedTodo: Todo) => void;
   categories: Category[];
   priorities: Priority[];
   importances: Importance[];
-}
+};
 
 const EditTodoModal: React.FC<Props> = ({
   todo,
