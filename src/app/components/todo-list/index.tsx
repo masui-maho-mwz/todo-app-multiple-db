@@ -1,4 +1,4 @@
-import { NoTodos } from "@/app/no-todo";
+import { NoTodos } from "@/app/components/no-todo";
 import { updateTodo } from "@/app/operations";
 import { Todo, type StatusKeys } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
