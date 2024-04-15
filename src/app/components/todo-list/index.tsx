@@ -55,7 +55,9 @@ export const TodoList = ({
             />
           </div>
           <div className={styles.todoDetails}>
-            <div className={styles.description}>{todo.description}</div>
+            <div className={styles.descriptionWrapper}>
+              <div className={styles.description}>{todo.description}</div>
+            </div>
             <div className={styles.todoInfo}>
               <span className={styles.chip}>
                 カテゴリー: {todo.category?.name}
