@@ -1,8 +1,6 @@
+import { prisma } from "@/app/lib/prisma";
 import type { Todo } from "@/app/types";
-import { PrismaClient } from "@prisma/client";
 import { NextResponse, type NextRequest } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   const { description, categoryId, priorityId, importanceId, deadline }: Todo =
