@@ -1,15 +1,15 @@
+import { Modal } from "@/app/components/modal";
 import styles from "./styles.module.css";
 
 type Props = {
-  todoId: string;
   onClose: () => void;
   onConfirm: () => void;
 };
 
-export const DeleteTodoDialog = ({ todoId, onClose, onConfirm }: Props) => {
+export const DeleteTodoDialog = ({ onClose, onConfirm }: Props) => {
   return (
-    <div className={styles.backdrop}>
-      <div className={styles.dialog}>
+    <Modal>
+      <div>
         <p>本当に削除してよろしいですか？</p>
         <div className={styles.dialogButton}>
           <button onClick={onClose} className={styles.cancelButton}>
@@ -20,6 +20,6 @@ export const DeleteTodoDialog = ({ todoId, onClose, onConfirm }: Props) => {
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };

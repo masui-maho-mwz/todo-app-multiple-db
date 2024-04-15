@@ -1,3 +1,5 @@
+import { Modal } from "@/app/components/modal";
+import { Select } from "@/app/components/select";
 import { updateTodo } from "@/app/operations";
 import { Category, Importance, Priority, Todo } from "@/app/types";
 import { CustomTooltip } from "@/app/utils/custom-tooltip";
@@ -60,80 +62,60 @@ export const EditTodoModal = ({
   };
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal}>
-        <form onSubmit={handleSubmit} className={styles.formContainer}>
-          <div className={styles.inputRow}>
+    <Modal>
+      <form onSubmit={handleSubmit} className={styles.formContainer}>
+        <div className={styles.inputRow}>
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Todoを入力してください"
+            required
+            className={styles.input}
+          />
+        </div>
+        <div className={styles.inputRow}>
+          <Select
+            options={categories}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            placeholder="カテゴリー"
+          />
+          <Select
+            options={priorities}
+            value={selectedPriority}
+            onChange={setSelectedPriority}
+            placeholder="優先度"
+          />
+          <Select
+            options={importances}
+            value={selectedImportance}
+            onChange={setSelectedImportance}
+            placeholder="重要度"
+          />
+          <CustomTooltip text="期限を選択してください">
             <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Todoを入力してください"
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
               required
               className={styles.input}
             />
-          </div>
-          <div className={styles.inputRow}>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              required
-              className={styles.input}
-            >
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedPriority}
-              onChange={(e) => setSelectedPriority(e.target.value)}
-              required
-              className={styles.input}
-            >
-              {priorities.map((priority) => (
-                <option key={priority.id} value={priority.id}>
-                  {priority.name}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedImportance}
-              onChange={(e) => setSelectedImportance(e.target.value)}
-              required
-              className={styles.input}
-            >
-              {importances.map((importance) => (
-                <option key={importance.id} value={importance.id}>
-                  {importance.name}
-                </option>
-              ))}
-            </select>
-            <CustomTooltip text="期限を選択してください">
-              <input
-                type="date"
-                value={deadline}
-                onChange={(e) => setDeadline(e.target.value)}
-                required
-                className={styles.input}
-              />
-            </CustomTooltip>
-          </div>
-          <div className={styles.buttonContainer}>
-            <button
-              type="button"
-              onClick={onClose}
-              className={styles.cancelButton}
-            >
-              キャンセル
-            </button>
-            <button type="submit" className={styles.editButton}>
-              保存
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          </CustomTooltip>
+        </div>
+        <div className={styles.buttonContainer}>
+          <button
+            type="button"
+            onClick={onClose}
+            className={styles.cancelButton}
+          >
+            キャンセル
+          </button>
+          <button type="submit" className={styles.editButton}>
+            保存
+          </button>
+        </div>
+      </form>
+    </Modal>
   );
 };

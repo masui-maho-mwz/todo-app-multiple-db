@@ -86,7 +86,6 @@ const Home = () => {
       )}
       {showDeleteDialog && deletingTodoId && (
         <DeleteTodoDialog
-          todoId={deletingTodoId}
           onClose={closeDeleteDialog}
           onConfirm={confirmDeleteTodo}
         />
