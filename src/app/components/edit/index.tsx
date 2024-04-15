@@ -1,5 +1,6 @@
 import { updateTodo } from "@/app/operations";
 import { Category, Importance, Priority, Todo } from "@/app/types";
+import { CustomTooltip } from "@/app/utils/custom-tooltip";
 import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
@@ -109,13 +110,15 @@ export const EditTodoModal = ({
                 </option>
               ))}
             </select>
-            <input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              required
-              className={styles.input}
-            />
+            <CustomTooltip text="期限を選択してください">
+              <input
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                required
+                className={styles.input}
+              />
+            </CustomTooltip>
           </div>
           <div className={styles.buttonContainer}>
             <button
