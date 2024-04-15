@@ -49,3 +49,10 @@ type CategoryKey =
   | "work"
   | "study"
   | "other";
+
+export type FetchTodosResponse = {
+  todos: Todo[];
+  categories: Category[];
+  priorities: Priority[];
+  importances: Importance[];
+};

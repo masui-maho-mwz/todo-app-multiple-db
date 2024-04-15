@@ -13,7 +13,7 @@ type Props = {
   importances: Importance[];
 };
 
-const EditTodoModal: React.FC<Props> = ({
+export const EditTodoModal: React.FC<Props> = ({
   todo,
   onClose,
   onUpdateTodo,
@@ -134,5 +134,3 @@ const EditTodoModal: React.FC<Props> = ({
     </div>
   );
 };
-
-export default EditTodoModal;

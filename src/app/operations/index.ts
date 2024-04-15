@@ -1,17 +1,4 @@
-import {
-  StatusFilter,
-  Todo,
-  type Category,
-  type Importance,
-  type Priority,
-} from "@/app/types";
-
-export type FetchTodosResponse = {
-  todos: Todo[];
-  categories: Category[];
-  priorities: Priority[];
-  importances: Importance[];
-};
+import { StatusFilter, Todo, type FetchTodosResponse } from "@/app/types";
 
 export const fetchTodos = async (
   statusFilter: StatusFilter
