@@ -29,6 +29,9 @@ export async function POST(req: NextRequest) {
         importanceId,
         statusId: incompleteStatus.id,
       },
+      include: {
+        status: true,
+      },
     });
 
     return NextResponse.json(todo, { status: 200 });

@@ -43,6 +43,9 @@ export const useTodoState = () => {
     try {
       const newTodo = await addTodo(todo);
       setTodos((prevTodos) => [...prevTodos, newTodo]);
+      if (newTodo.status.key === statusFilter || statusFilter === "all") {
+        setFilteredTodos((prevFiltered) => [...prevFiltered, newTodo]);
+      }
     } catch (error) {
       alert(`ToDoの追加中にエラーが発生しました: ${error}`);
     }
