@@ -1,4 +1,4 @@
-import { Modal } from "@/app/components/modal";
+import { Modal } from "@/app/components/surfaces/modal";
 import styles from "./styles.module.css";
 
 type Props = {

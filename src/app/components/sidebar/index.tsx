@@ -6,7 +6,7 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
 import { useState } from "react";
-import { AddTodoModal } from "../add";
+import { AddTodoModal } from "../forms/add";
 import styles from "./styles.module.css";
 
 type Props = {

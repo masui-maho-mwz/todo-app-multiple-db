@@ -1,6 +1,6 @@
 "use client";
-import { DeleteTodoDialog } from "@/app/components/delete";
-import { EditTodoModal } from "@/app/components/edit";
+import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
+import { EditTodoModal } from "@/app/components/forms/edit";
 import { Main } from "@/app/components/main";
 import { Sidebar } from "@/app/components/sidebar";
 import { useTodoState } from "@/app/hooks/use-todo-state";

@@ -1,5 +1,5 @@
-import { StatusTabs } from "@/app/components/status-tabs";
-import { TodoList } from "@/app/components/todo-list";
+import { StatusTabs } from "@/app/components/main/status-tabs";
+import { TodoList } from "@/app/components/main/todo-list";
 import type { StatusFilter, Todo } from "@/app/types";
 import styles from "./styles.module.css";
 
