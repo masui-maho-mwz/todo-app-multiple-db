@@ -5,7 +5,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
-import React, { useState } from "react";
+import { useState } from "react";
 import { AddTodoModal } from "../add";
 import styles from "./styles.module.css";
 
@@ -16,12 +16,12 @@ type Props = {
   importances: Importance[];
 };
 
-export const Sidebar: React.FC<Props> = ({
+export const Sidebar = ({
   handleAddTodo,
   categories,
   priorities,
   importances,
-}) => {
+}: Props) => {
   const [showAddTodoModal, setShowAddTodoModal] = useState(false);
 
   const openAddModal = () => setShowAddTodoModal(true);

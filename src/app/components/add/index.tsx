@@ -13,13 +13,13 @@ type Props = {
   importances: Importance[];
 };
 
-export const AddTodoModal: React.FC<Props> = ({
+export const AddTodoModal = ({
   onClose,
   onAddTodo,
   categories,
   priorities,
   importances,
-}) => {
+}: Props) => {
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
@@ -41,12 +41,16 @@ export const AddTodoModal: React.FC<Props> = ({
       },
     };
     onAddTodo(todo);
+    resetForm();
+    onClose();
+  };
+
+  const resetForm = () => {
     setDescription("");
     setSelectedCategory("");
     setSelectedPriority("");
     setSelectedImportance("");
     setDeadline("");
-    onClose();
   };
 
   return (

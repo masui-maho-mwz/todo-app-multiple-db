@@ -13,14 +13,14 @@ type Props = {
   importances: Importance[];
 };
 
-export const EditTodoModal: React.FC<Props> = ({
+export const EditTodoModal = ({
   todo,
   onClose,
   onUpdateTodo,
   categories,
   priorities,
   importances,
-}) => {
+}: Props) => {
   const [description, setDescription] = useState<string>(
     todo.description || ""
   );

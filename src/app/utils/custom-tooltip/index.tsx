@@ -1,15 +1,12 @@
 import React from "react";
 import styles from "./styles.module.css";
 
-type CustomTooltipProps = {
+type Props = {
   children: React.ReactNode;
   text: string;
 };
 
-export const CustomTooltip: React.FC<CustomTooltipProps> = ({
-  children,
-  text,
-}) => {
+export const CustomTooltip = ({ children, text }: Props) => {
   const [show, setShow] = React.useState(false);
 
   return (

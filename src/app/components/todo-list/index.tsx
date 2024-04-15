@@ -4,7 +4,6 @@ import { Todo, type StatusKeys } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { format, parseISO } from "date-fns";
-import { FC } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -14,12 +13,12 @@ type Props = {
   onUpdateTodo: (updatedTodo: Todo) => void;
 };
 
-export const TodoList: FC<Props> = ({
+export const TodoList = ({
   todos,
   handleDeleteTodo,
   openEditModal,
   onUpdateTodo,
-}) => {
+}: Props) => {
   if (!todos.length) {
     return <NoTodos />;
   }

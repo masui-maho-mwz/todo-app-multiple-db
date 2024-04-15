@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -7,11 +6,7 @@ type Props = {
   onConfirm: () => void;
 };
 
-export const DeleteTodoDialog: React.FC<Props> = ({
-  todoId,
-  onClose,
-  onConfirm,
-}) => {
+export const DeleteTodoDialog = ({ todoId, onClose, onConfirm }: Props) => {
   return (
     <div className={styles.backdrop}>
       <div className={styles.dialog}>

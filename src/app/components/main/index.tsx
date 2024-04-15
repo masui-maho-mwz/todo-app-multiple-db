@@ -3,7 +3,7 @@ import { TodoList } from "@/app/components/todo-list";
 import type { StatusFilter, Todo } from "@/app/types";
 import styles from "./styles.module.css";
 
-type MainProps = {
+type Props = {
   statusFilter: StatusFilter;
   filteredTodos: Todo[];
   handleFilterChange: (newFilter: StatusFilter) => Promise<void>;
@@ -19,7 +19,7 @@ export const Main = ({
   openEditModal,
   handleDeleteTodo,
   onUpdateTodo,
-}: MainProps) => {
+}: Props) => {
   return (
     <div className={styles.todoListContainer}>
       <div>

@@ -1,5 +1,4 @@
 import type { StatusFilter } from "@/app/types";
-import React from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -7,10 +6,7 @@ type Props = {
   activeFilter: StatusFilter;
 };
 
-export const StatusTabs: React.FC<Props> = ({
-  setStatusFilter,
-  activeFilter,
-}) => {
+export const StatusTabs = ({ setStatusFilter, activeFilter }: Props) => {
   const tabs: { key: StatusFilter; label: string }[] = [
     { key: "all", label: "全て" },
     { key: "complete", label: "完了" },
