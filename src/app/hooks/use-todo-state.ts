@@ -43,7 +43,7 @@ export const useTodoState = () => {
     try {
       const newTodo = await addTodo(todo);
       setTodos((prevTodos) => [...prevTodos, newTodo]);
-      if (newTodo.status.key === statusFilter || statusFilter === "all") {
+      if (newTodo.statusKey === statusFilter || statusFilter === "all") {
         setFilteredTodos((prevFiltered) => [...prevFiltered, newTodo]);
       }
     } catch (error) {

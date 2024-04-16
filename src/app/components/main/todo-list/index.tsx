@@ -23,13 +23,17 @@ export const TodoList = ({
     return <NoTodos />;
   }
   const handleStatusChange = async (todo: Todo) => {
-    const currentStatusKey = todo.status?.key || "incomplete";
+    const currentStatusKey = todo.statusKey || "incomplete";
     const newStatusKey: StatusKeys =
       currentStatusKey === "complete" ? "incomplete" : "complete";
 
     const updatedTodo = {
       ...todo,
-      status: { ...todo.status, key: newStatusKey },
+      statusKey: newStatusKey,
+      status: {
+        key: newStatusKey,
+        name: newStatusKey === "complete" ? "完了" : "未完了",
+      },
     };
 
     try {
@@ -49,7 +53,7 @@ export const TodoList = ({
           <div className={styles.checkboxContainer}>
             <input
               type="checkbox"
-              checked={todo.status?.key === "complete"}
+              checked={todo.statusKey === "complete"}
               onChange={() => handleStatusChange(todo)}
               className={styles.checkbox}
             />

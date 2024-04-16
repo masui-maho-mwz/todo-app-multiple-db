@@ -2,7 +2,16 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import { Category, Importance, Priority, Todo } from "@/app/types";
+import {
+  Category,
+  CategoryKeyEnum,
+  Importance,
+  ImportanceKeyEnum,
+  Priority,
+  PriorityKeyEnum,
+  StatusKeyEnum,
+  Todo,
+} from "@/app/types";
 import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
@@ -32,15 +41,11 @@ export const AddTodoModal = ({
     e.preventDefault();
     const todo: Omit<Todo, "id" | "createdAt"> = {
       description,
-      categoryId: selectedCategory,
-      priorityId: selectedPriority,
-      importanceId: selectedImportance,
+      categoryKey: selectedCategory as typeof CategoryKeyEnum._type,
+      priorityKey: selectedPriority as typeof PriorityKeyEnum._type,
+      importanceKey: selectedImportance as typeof ImportanceKeyEnum._type,
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
-      status: {
-        key: "incomplete",
-        name: "未完了",
-        id: "cluruuvds000cxhqzcyrbabnm",
-      },
+      statusKey: "incomplete" as typeof StatusKeyEnum._type,
     };
     onAddTodo(todo);
     resetForm();

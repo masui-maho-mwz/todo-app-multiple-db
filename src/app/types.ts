@@ -1,54 +1,64 @@
-export type Todo = {
-  id: string;
-  description: string;
-  categoryId: string;
-  category?: Category;
-  priorityId: string;
-  priority?: Priority;
-  importanceId: string;
-  importance?: Importance;
-  status: Status;
-  createdAt: Date;
-  deadline: string | null;
-};
+import { z } from "zod";
 
-export type Category = {
-  id: string;
-  key: CategoryKey;
-  name: string;
-};
+export const CategoryKeyEnum = z.enum([
+  "leisure",
+  "hobby",
+  "housework",
+  "work",
+  "study",
+  "other",
+]);
+export const PriorityKeyEnum = z.enum(["high", "medium", "low"]);
+export const ImportanceKeyEnum = z.enum(["high", "medium", "low"]);
+export const StatusKeyEnum = z.enum(["complete", "incomplete"]);
 
-export type Priority = {
-  id: string;
-  key: LevelKey;
-  name: string;
-};
+export const categorySchema = z.object({
+  key: CategoryKeyEnum,
+  name: z.string(),
+});
 
-export type Importance = {
-  id: string;
-  key: LevelKey;
-  name: string;
-};
+export const prioritySchema = z.object({
+  key: PriorityKeyEnum,
+  name: z.string(),
+});
 
-export type Status = {
-  id: string;
-  key: StatusKeys;
-  name: string;
-};
+export const importanceSchema = z.object({
+  key: ImportanceKeyEnum,
+  name: z.string(),
+});
 
-export type StatusKeys = "complete" | "incomplete";
+export const statusSchema = z.object({
+  key: StatusKeyEnum,
+  name: z.string(),
+});
 
-export type StatusFilter = "all" | "complete" | "incomplete";
+export const todoSchema = z.object({
+  id: z.string(),
+  description: z
+    .string()
+    .min(1, "Todoは入力必須です。")
+    .max(140, "説明は140字以内である必要があります"),
+  categoryKey: CategoryKeyEnum,
+  category: categorySchema.optional(),
+  priorityKey: PriorityKeyEnum,
+  priority: prioritySchema.optional(),
+  importanceKey: ImportanceKeyEnum,
+  importance: importanceSchema.optional(),
+  statusKey: StatusKeyEnum,
+  status: statusSchema.optional(),
+  createdAt: z.date().optional(),
+  deadline: z.string().nullable().optional(),
+});
 
-type LevelKey = "high" | "medium" | "low";
+export type Todo = z.infer<typeof todoSchema>;
+export type Category = z.infer<typeof categorySchema>;
+export type Priority = z.infer<typeof prioritySchema>;
+export type Importance = z.infer<typeof importanceSchema>;
+export type Status = z.infer<typeof statusSchema>;
+export type StatusKeys = z.infer<typeof statusSchema.shape.key>;
 
-type CategoryKey =
-  | "leisure"
-  | "hobby"
-  | "housework"
-  | "work"
-  | "study"
-  | "other";
+export const statusFilterSchema = z.enum(["all", "complete", "incomplete"]);
+export type StatusFilter = z.infer<typeof statusFilterSchema>;
 
 export type FetchTodosResponse = {
   todos: Todo[];

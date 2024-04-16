@@ -1,7 +1,6 @@
 import styles from "./styles.module.css";
 
 type Option = {
-  id: string;
   name: string;
 };
 
@@ -27,7 +26,7 @@ export const Select = <T extends Option>({
     >
       <option value="">{placeholder}</option>
       {options.map((option) => (
-        <option key={option.id} value={option.id}>
+        <option key={option.name} value={option.name}>
           {option.name}
         </option>
       ))}

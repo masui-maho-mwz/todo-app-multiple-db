@@ -2,44 +2,77 @@ import { prisma } from "@/app/lib/prisma";
 import type { Todo } from "@/app/types";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
-  const { description, categoryId, priorityId, importanceId, deadline }: Todo =
-    await req.json();
-
-  const incompleteStatus = await prisma.status.findUnique({
-    where: { key: "incomplete" },
-  });
-
-  if (!incompleteStatus) {
-    return NextResponse.json(
-      { message: "Incomplete status not found" },
-      { status: 500 }
-    );
+const parseDeadline = (deadline: string | null | undefined): Date | null => {
+  if (!deadline) return null;
+  const parsedDate = Date.parse(deadline);
+  if (isNaN(parsedDate)) {
+    throw new Error("Invalid deadline format. Please use a valid date.");
   }
+  return new Date(parsedDate);
+};
 
+export async function POST(req: NextRequest) {
   try {
+    const {
+      description,
+      categoryKey,
+      priorityKey,
+      importanceKey,
+      deadline,
+    }: Todo = await req.json();
+
+    const validStatusKey = await prisma.status.findUnique({
+      where: { key: "incomplete" },
+    });
+
+    if (!validStatusKey) {
+      return NextResponse.json(
+        { message: "Incomplete status not found" },
+        { status: 404 }
+      );
+    }
+
+    // Deadline をパース
+    const validDeadline = parseDeadline(deadline);
+
     const todo = await prisma.todo.create({
       data: {
         description,
-        deadline: deadline ? new Date(deadline) : null,
-        categoryId,
-        priorityId,
-        importanceId,
-        statusId: incompleteStatus.id,
+        categoryKey,
+        priorityKey,
+        importanceKey,
+        statusKey: validStatusKey.key,
+        deadline: validDeadline,
       },
       include: {
         status: true,
+        category: true,
+        priority: true,
+        importance: true,
       },
     });
 
+    console.log("POST内のtodo");
+    console.log(todo);
     return NextResponse.json(todo, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      {
-        message: `ToDoの作成に失敗しました, ${error}`,
-      },
-      { status: 500 }
-    );
+    // ヘルパー関数から投げられたエラーもここでキャッチ
+    if (error instanceof Error) {
+      const status = error.message.startsWith("Invalid deadline") ? 400 : 500;
+      return NextResponse.json(
+        {
+          message: `ToDoの作成に失敗しました: ${error.message}`,
+        },
+        { status }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          message: `ToDoの作成に失敗しました: unknown error`,
+        },
+        { status: 500 }
+      );
+    }
   }
 }
 
@@ -53,7 +86,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (status) {
-      statusCondition = { statusId: status.id };
+      statusCondition = { statusKey: status.key };
     }
   }
 
@@ -63,10 +96,10 @@ export async function GET(req: NextRequest) {
         ...statusCondition,
       },
       include: {
-        status: true,
         category: true,
         priority: true,
         importance: true,
+        status: true,
       },
     });
 
@@ -92,7 +125,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const body = await req.json();
-  const { id, description, categoryId, priorityId, importanceId, deadline } =
+  const { id, description, categoryKey, priorityKey, importanceKey, deadline } =
     body;
   const statusKey = body.status.key;
   try {
@@ -111,11 +144,11 @@ export async function PUT(req: NextRequest) {
       where: { id },
       data: {
         description,
-        categoryId,
-        priorityId,
-        importanceId,
+        categoryKey,
+        priorityKey,
+        importanceKey,
         deadline: deadline ? new Date(deadline) : null,
-        statusId: status.id,
+        statusKey: status.key,
       },
       include: {
         status: true,

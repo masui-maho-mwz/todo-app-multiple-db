@@ -2,7 +2,15 @@ import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
 import { updateTodo } from "@/app/operations";
-import { Category, Importance, Priority, Todo } from "@/app/types";
+import {
+  Category,
+  Importance,
+  Priority,
+  Todo,
+  type CategoryKeyEnum,
+  type ImportanceKeyEnum,
+  type PriorityKeyEnum,
+} from "@/app/types";
 import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
@@ -28,13 +36,13 @@ export const EditTodoModal = ({
     todo.description || ""
   );
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    todo.categoryId || ""
+    todo.categoryKey || ""
   );
   const [selectedPriority, setSelectedPriority] = useState<string>(
-    todo.priorityId || ""
+    todo.priorityKey || ""
   );
   const [selectedImportance, setSelectedImportance] = useState<string>(
-    todo.importanceId || ""
+    todo.importanceKey || ""
   );
   const [deadline, setDeadline] = useState<string>(
     todo.deadline
@@ -47,9 +55,9 @@ export const EditTodoModal = ({
     const updatedTodo: Todo = {
       ...todo,
       description,
-      categoryId: selectedCategory,
-      priorityId: selectedPriority,
-      importanceId: selectedImportance,
+      categoryKey: selectedCategory as typeof CategoryKeyEnum._type,
+      priorityKey: selectedPriority as typeof PriorityKeyEnum._type,
+      importanceKey: selectedImportance as typeof ImportanceKeyEnum._type,
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
     };
     try {

@@ -1,10 +1,9 @@
-import cuid from "cuid";
-import { prisma } from "./index";
+import { prisma } from "@/app/lib/prisma";
 
 export const createStatuses = async () => {
   const data = [
-    { id: cuid(), key: "incomplete", name: "未完了" },
-    { id: cuid(), key: "complete", name: "完了" },
+    { key: "incomplete", name: "未完了" },
+    { key: "complete", name: "完了" },
   ];
   await prisma.status.createMany({ data });
 };
