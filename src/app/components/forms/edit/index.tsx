@@ -52,7 +52,7 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
 
   return (
     <Modal>
-      <form onSubmit={handleSubmit} className={styles.formContainer}>
+      <form onSubmit={handleSubmit} className={styles.formContainer} noValidate>
         <div className={styles.inputRow}>
           <input
             type="text"

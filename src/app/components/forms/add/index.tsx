@@ -43,7 +43,7 @@ export const AddTodoModal = ({ onClose }: Props) => {
 
   return (
     <Modal>
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleSubmit} className={styles.form} noValidate>
         <input
           type="text"
           value={description}
