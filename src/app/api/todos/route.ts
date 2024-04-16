@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Deadline をパース
     const validDeadline = parseDeadline(deadline);
 
     const todo = await prisma.todo.create({

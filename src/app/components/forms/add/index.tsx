@@ -2,12 +2,10 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
+import { useTodos } from "@/app/hooks/use-todos";
 import {
-  Category,
   CategoryKeyEnum,
-  Importance,
   ImportanceKeyEnum,
-  Priority,
   PriorityKeyEnum,
   StatusKeyEnum,
   Todo,
@@ -18,19 +16,12 @@ import styles from "./styles.module.css";
 
 type Props = {
   onClose: () => void;
-  onAddTodo: (todo: Omit<Todo, "id" | "createdAt">) => void;
-  categories: Category[];
-  priorities: Priority[];
-  importances: Importance[];
 };
 
-export const AddTodoModal = ({
-  onClose,
-  onAddTodo,
-  categories,
-  priorities,
-  importances,
-}: Props) => {
+export const AddTodoModal = ({ onClose }: Props) => {
+  const { categories, priorities, importances, createAddTodoHandler } =
+    useTodos();
+  const handleAdd = createAddTodoHandler(onClose);
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
@@ -39,7 +30,7 @@ export const AddTodoModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const todo: Omit<Todo, "id" | "createdAt"> = {
+    const todoData: Omit<Todo, "id" | "createdAt"> = {
       description,
       categoryKey: selectedCategory as typeof CategoryKeyEnum._type,
       priorityKey: selectedPriority as typeof PriorityKeyEnum._type,
@@ -47,17 +38,7 @@ export const AddTodoModal = ({
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
       statusKey: "incomplete" as typeof StatusKeyEnum._type,
     };
-    onAddTodo(todo);
-    resetForm();
-    onClose();
-  };
-
-  const resetForm = () => {
-    setDescription("");
-    setSelectedCategory("");
-    setSelectedPriority("");
-    setSelectedImportance("");
-    setDeadline("");
+    handleAdd(todoData);
   };
 
   return (
@@ -68,7 +49,6 @@ export const AddTodoModal = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Todoを入力してください"
-          required
           className={styles.inputText}
         />
         <div className={styles.inputContainer}>

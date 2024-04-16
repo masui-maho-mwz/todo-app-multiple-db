@@ -5,10 +5,14 @@ import {
   Priority,
   StatusFilter,
   Todo,
+  type CategoryKeyEnum,
+  type ImportanceKeyEnum,
+  type PriorityKeyEnum,
 } from "@/app/types";
+import { formatISO, parseISO } from "date-fns";
 import { useEffect, useState } from "react";
 
-export const useTodoState = () => {
+export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("incomplete");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -73,6 +77,12 @@ export const useTodoState = () => {
     }
   };
 
+  // const createUpdateTodoHandler =
+  //   (closeModal: () => void) => async (updatedTodo: Todo) => {
+  //     await handleUpdateTodo(updatedTodo);
+  //     closeModal();
+  //   };
+
   const handleFilterChange = async (newFilter: StatusFilter) => {
     setStatusFilter(newFilter);
     try {
@@ -87,6 +97,41 @@ export const useTodoState = () => {
       alert(`データのフェッチ中にエラーが発生しました: ${error}`);
     }
   };
+  const createUpdateTodoHandler =
+    (todo: Todo, onClose: () => void) =>
+    async (formData: {
+      description: string;
+      selectedCategory: string;
+      selectedPriority: string;
+      selectedImportance: string;
+      deadline: string;
+    }) => {
+      const updatedTodo: Todo = {
+        ...todo,
+        description: formData.description,
+        categoryKey: formData.selectedCategory as typeof CategoryKeyEnum._type,
+        priorityKey: formData.selectedPriority as typeof PriorityKeyEnum._type,
+        importanceKey:
+          formData.selectedImportance as typeof ImportanceKeyEnum._type,
+        deadline: formData.deadline
+          ? formatISO(parseISO(formData.deadline))
+          : null,
+      };
+
+      try {
+        await handleUpdateTodo(updatedTodo);
+        onClose();
+      } catch (error) {
+        alert(`ToDoの更新に失敗しました。エラー: ${error}`);
+      }
+    };
+
+  const createAddTodoHandler =
+    (closeModal: () => void) =>
+    async (todoData: Omit<Todo, "id" | "createdAt">) => {
+      await handleAddTodo(todoData);
+      closeModal();
+    };
 
   return {
     todos,
@@ -100,5 +145,7 @@ export const useTodoState = () => {
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
+    createAddTodoHandler,
+    createUpdateTodoHandler,
   };
 };

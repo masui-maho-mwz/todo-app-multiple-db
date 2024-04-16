@@ -1,11 +1,9 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
+import { useTodos } from "@/app/hooks/use-todos";
 import { updateTodo } from "@/app/operations";
 import {
-  Category,
-  Importance,
-  Priority,
   Todo,
   type CategoryKeyEnum,
   type ImportanceKeyEnum,
@@ -18,31 +16,21 @@ import styles from "./styles.module.css";
 type Props = {
   todo: Todo;
   onClose: () => void;
-  onUpdateTodo: (updatedTodo: Todo) => void;
-  categories: Category[];
-  priorities: Priority[];
-  importances: Importance[];
 };
 
-export const EditTodoModal = ({
-  todo,
-  onClose,
-  onUpdateTodo,
-  categories,
-  priorities,
-  importances,
-}: Props) => {
+export const EditTodoModal = ({ todo, onClose }: Props) => {
+  const { categories, priorities, importances } = useTodos();
   const [description, setDescription] = useState<string>(
     todo.description || ""
   );
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    todo.categoryKey || ""
+    todo.category?.name || ""
   );
   const [selectedPriority, setSelectedPriority] = useState<string>(
-    todo.priorityKey || ""
+    todo.priority?.name || ""
   );
   const [selectedImportance, setSelectedImportance] = useState<string>(
-    todo.importanceKey || ""
+    todo.importance?.name || ""
   );
   const [deadline, setDeadline] = useState<string>(
     todo.deadline
@@ -50,23 +38,16 @@ export const EditTodoModal = ({
       : ""
   );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const updatedTodo: Todo = {
+    updateTodo({
       ...todo,
-      description,
+      description: description,
       categoryKey: selectedCategory as typeof CategoryKeyEnum._type,
       priorityKey: selectedPriority as typeof PriorityKeyEnum._type,
       importanceKey: selectedImportance as typeof ImportanceKeyEnum._type,
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
-    };
-    try {
-      const response = await updateTodo(updatedTodo);
-      onUpdateTodo(response);
-      onClose();
-    } catch (error) {
-      alert(`保存処理中にエラーが発生しました: ${error}`);
-    }
+    });
   };
 
   return (

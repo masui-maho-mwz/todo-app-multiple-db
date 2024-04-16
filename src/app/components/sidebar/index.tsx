@@ -1,5 +1,4 @@
 "use client";
-import { Category, Importance, Priority, Todo } from "@/app/types";
 import AddIcon from "@mui/icons-material/Add";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
@@ -9,19 +8,7 @@ import { useState } from "react";
 import { AddTodoModal } from "../forms/add";
 import styles from "./styles.module.css";
 
-type Props = {
-  handleAddTodo: (todo: Omit<Todo, "id" | "createdAt">) => void;
-  categories: Category[];
-  priorities: Priority[];
-  importances: Importance[];
-};
-
-export const Sidebar = ({
-  handleAddTodo,
-  categories,
-  priorities,
-  importances,
-}: Props) => {
+export const Sidebar = () => {
   const [showAddTodoModal, setShowAddTodoModal] = useState(false);
 
   const openAddModal = () => setShowAddTodoModal(true);
@@ -51,15 +38,7 @@ export const Sidebar = ({
           <span className={styles.label}>フィルター</span>
         </div>
       </div>
-      {showAddTodoModal && (
-        <AddTodoModal
-          onClose={closeAddModal}
-          onAddTodo={handleAddTodo}
-          categories={categories}
-          priorities={priorities}
-          importances={importances}
-        />
-      )}
+      {showAddTodoModal && <AddTodoModal onClose={closeAddModal} />}
     </div>
   );
 };

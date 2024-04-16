@@ -3,7 +3,7 @@ import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
 import { EditTodoModal } from "@/app/components/forms/edit";
 import { Main } from "@/app/components/main";
 import { Sidebar } from "@/app/components/sidebar";
-import { useTodoState } from "@/app/hooks/use-todo-state";
+import { useTodos } from "@/app/hooks/use-todos";
 import type { Todo } from "@/app/types";
 import { useState } from "react";
 import styles from "./styles.module.css";
@@ -12,14 +12,10 @@ const Home = () => {
   const {
     statusFilter,
     filteredTodos,
-    categories,
-    priorities,
-    importances,
-    handleAddTodo,
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
-  } = useTodoState();
+  } = useTodos();
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -59,12 +55,7 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <div className={styles.formAndList}>
-        <Sidebar
-          handleAddTodo={handleAddTodo}
-          categories={categories}
-          priorities={priorities}
-          importances={importances}
-        />
+        <Sidebar />
         <Main
           statusFilter={statusFilter}
           filteredTodos={filteredTodos}
@@ -75,14 +66,7 @@ const Home = () => {
         />
       </div>
       {showEditModal && editingTodo && (
-        <EditTodoModal
-          todo={editingTodo}
-          onClose={closeEditModal}
-          onUpdateTodo={handleUpdateTodo}
-          categories={categories}
-          priorities={priorities}
-          importances={importances}
-        />
+        <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
       )}
       {showDeleteDialog && deletingTodoId && (
         <DeleteTodoDialog
