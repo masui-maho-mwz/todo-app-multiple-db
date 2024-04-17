@@ -23,6 +23,7 @@ export const AddTodoModal = ({ onClose }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // TODO: 当てはまらない時はエラー処理にする+editと全く同じなので共通化する？
     const categoryKey =
       CategoryKeys.find((cat) => cat.name === selectedCategoryName)?.key ||
       "other";
