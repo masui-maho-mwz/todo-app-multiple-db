@@ -77,12 +77,6 @@ export const useTodos = () => {
     }
   };
 
-  // const createUpdateTodoHandler =
-  //   (closeModal: () => void) => async (updatedTodo: Todo) => {
-  //     await handleUpdateTodo(updatedTodo);
-  //     closeModal();
-  //   };
-
   const handleFilterChange = async (newFilter: StatusFilter) => {
     setStatusFilter(newFilter);
     try {

@@ -66,3 +66,46 @@ export type FetchTodosResponse = {
   priorities: Priority[];
   importances: Importance[];
 };
+
+export const CategoryKeys = [
+  { key: "leisure", name: "レジャー" },
+  { key: "hobby", name: "趣味" },
+  { key: "housework", name: "家事" },
+  { key: "work", name: "仕事" },
+  { key: "study", name: "勉強" },
+  { key: "other", name: "他" },
+] as const;
+
+export type CategoryKey = (typeof CategoryKeys)[number]["key"];
+export type CategoryName = (typeof CategoryKeys)[number]["name"];
+
+export type SelectedCategory = {
+  key: CategoryKey;
+  name: CategoryName;
+};
+
+export const PriorityKeys = [
+  { key: "high", name: "高" },
+  { key: "medium", name: "中" },
+  { key: "low", name: "低" },
+] as const;
+
+export type PriorityKey = (typeof PriorityKeys)[number]["key"];
+export type PriorityName = (typeof PriorityKeys)[number]["name"];
+
+export const ImportanceKeys = [
+  { key: "high", name: "高" },
+  { key: "medium", name: "中" },
+  { key: "low", name: "低" },
+] as const;
+
+export type ImportanceKey = (typeof ImportanceKeys)[number]["key"];
+export type ImportanceName = (typeof ImportanceKeys)[number]["name"];
+
+export const StatusKeys = [
+  { key: "incomplete", name: "未完了" },
+  { key: "complete", name: "完了" },
+] as const;
+
+export type StatusKey = (typeof StatusKeys)[number]["key"];
+export type StatusName = (typeof StatusKeys)[number]["name"];

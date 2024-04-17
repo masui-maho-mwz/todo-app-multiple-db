@@ -3,13 +3,7 @@ import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
 import { useTodos } from "@/app/hooks/use-todos";
-import {
-  CategoryKeyEnum,
-  ImportanceKeyEnum,
-  PriorityKeyEnum,
-  StatusKeyEnum,
-  Todo,
-} from "@/app/types";
+import { CategoryKeys, ImportanceKeys, PriorityKeys, Todo } from "@/app/types";
 import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
@@ -19,25 +13,35 @@ type Props = {
 };
 
 export const AddTodoModal = ({ onClose }: Props) => {
-  const { categories, priorities, importances, createAddTodoHandler } =
-    useTodos();
+  const { createAddTodoHandler } = useTodos();
   const handleAdd = createAddTodoHandler(onClose);
   const [description, setDescription] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedPriority, setSelectedPriority] = useState("");
-  const [selectedImportance, setSelectedImportance] = useState("");
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
+  const [selectedPriorityName, setSelectedPriorityName] = useState("");
+  const [selectedImportanceName, setSelectedImportanceName] = useState("");
   const [deadline, setDeadline] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const categoryKey =
+      CategoryKeys.find((cat) => cat.name === selectedCategoryName)?.key ||
+      "other";
+    const priorityKey =
+      PriorityKeys.find((pri) => pri.name === selectedPriorityName)?.key ||
+      "low";
+    const importanceKey =
+      ImportanceKeys.find((imp) => imp.name === selectedImportanceName)?.key ||
+      "low";
+
     const todoData: Omit<Todo, "id" | "createdAt"> = {
       description,
-      categoryKey: selectedCategory as typeof CategoryKeyEnum._type,
-      priorityKey: selectedPriority as typeof PriorityKeyEnum._type,
-      importanceKey: selectedImportance as typeof ImportanceKeyEnum._type,
+      categoryKey,
+      priorityKey,
+      importanceKey,
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
-      statusKey: "incomplete" as typeof StatusKeyEnum._type,
+      statusKey: "incomplete",
     };
+
     handleAdd(todoData);
   };
 
@@ -53,21 +57,21 @@ export const AddTodoModal = ({ onClose }: Props) => {
         />
         <div className={styles.inputContainer}>
           <Select
-            options={categories}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
+            options={CategoryKeys.map((cat) => ({ name: cat.name }))}
+            value={selectedCategoryName}
+            onChange={setSelectedCategoryName}
             placeholder="カテゴリー"
           />
           <Select
-            options={priorities}
-            value={selectedPriority}
-            onChange={setSelectedPriority}
+            options={PriorityKeys.map((pri) => ({ name: pri.name }))}
+            value={selectedPriorityName}
+            onChange={setSelectedPriorityName}
             placeholder="優先度"
           />
           <Select
-            options={importances}
-            value={selectedImportance}
-            onChange={setSelectedImportance}
+            options={ImportanceKeys.map((imp) => ({ name: imp.name }))}
+            value={selectedImportanceName}
+            onChange={setSelectedImportanceName}
             placeholder="重要度"
           />
           <CustomTooltip text="期限を選択してください">
@@ -89,7 +93,7 @@ export const AddTodoModal = ({ onClose }: Props) => {
           >
             キャンセル
           </button>
-          <button className={styles.submitButton} type="submit">
+          <button type="submit" className={styles.submitButton}>
             追加
           </button>
         </div>

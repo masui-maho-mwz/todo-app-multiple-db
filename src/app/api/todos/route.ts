@@ -33,7 +33,6 @@ export async function POST(req: NextRequest) {
     }
 
     const validDeadline = parseDeadline(deadline);
-
     const todo = await prisma.todo.create({
       data: {
         description,
@@ -51,11 +50,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("POST内のtodo");
-    console.log(todo);
     return NextResponse.json(todo, { status: 200 });
   } catch (error) {
-    // ヘルパー関数から投げられたエラーもここでキャッチ
     if (error instanceof Error) {
       const status = error.message.startsWith("Invalid deadline") ? 400 : 500;
       return NextResponse.json(
@@ -74,18 +70,17 @@ export async function POST(req: NextRequest) {
     }
   }
 }
-
 export async function GET(req: NextRequest) {
   const url = new URL(req.url, `https://${req.headers.get("host")}`);
   const statusKey = url.searchParams.get("status");
-  let statusCondition = {};
+
+  const statusCondition: { statusKey?: string } = {};
   if (statusKey && statusKey !== "all") {
     const status = await prisma.status.findUnique({
       where: { key: statusKey },
     });
-
     if (status) {
-      statusCondition = { statusKey: status.key };
+      statusCondition.statusKey = status.key;
     }
   }
 
@@ -103,9 +98,7 @@ export async function GET(req: NextRequest) {
     });
 
     const categories = await prisma.category.findMany();
-
     const priorities = await prisma.priority.findMany();
-
     const importances = await prisma.importance.findMany();
 
     return NextResponse.json(
