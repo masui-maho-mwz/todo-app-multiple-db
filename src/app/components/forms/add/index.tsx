@@ -2,7 +2,7 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import { useAddTodo } from "@/app/hooks/form-submit/use-add-todos";
+import { addTodoHandler } from "@/app/hooks/form-submit/use-add-todos";
 import { useTodos } from "@/app/hooks/use-todos";
 import {
   StatusKeyEnum,
@@ -19,8 +19,6 @@ import styles from "./styles.module.css";
 export const AddTodoModal = () => {
   const [show, setShow] = useState(false);
   const { categories, priorities, importances } = useTodos();
-  const { createAddTodoHandler } = useAddTodo();
-  const handleAdd = createAddTodoHandler();
 
   const openModal = () => setShow(true);
   const closeModal = () => setShow(false);
@@ -52,7 +50,7 @@ export const AddTodoModal = () => {
       deadline: formatISO(parseISO(deadline)),
       statusKey: StatusKeyEnum.Enum.incomplete,
     };
-    handleAdd(todoData).then(closeModal);
+    addTodoHandler(todoData).then(closeModal);
   };
 
   return (
