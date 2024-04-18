@@ -7,6 +7,7 @@
   min-height: 100vh;
 }
 
+/* TODO: 以下は全く同じスタイルをsrc/app/components/forms/add/styles.module.cssでも使っている*/
 .sidebarItem {
   display: flex;
   align-items: center;

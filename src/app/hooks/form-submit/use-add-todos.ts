@@ -2,13 +2,9 @@ import { addTodo } from "@/app/operations";
 import { type FormTodoData } from "@/app/types";
 
 export const useAddTodo = () => {
-  const handleAddTodo = async (
-    todoData: FormTodoData,
-    onSuccess: () => void
-  ) => {
+  const handleAddTodo = async (todoData: FormTodoData) => {
     try {
       const newTodo = await addTodo(todoData);
-      onSuccess();
       return newTodo;
     } catch (error) {
       alert(`ToDoの追加中にエラーが発生しました: ${error}`);
@@ -16,10 +12,9 @@ export const useAddTodo = () => {
     }
   };
 
-  const createAddTodoHandler =
-    (onClose: () => void) => async (todoData: FormTodoData) => {
-      await handleAddTodo(todoData, onClose);
-    };
+  const createAddTodoHandler = () => async (todoData: FormTodoData) => {
+    await handleAddTodo(todoData);
+  };
 
   return { createAddTodoHandler };
 };

@@ -55,7 +55,7 @@ export const TodoList = ({
       );
     }
   };
-
+  // TODO: そもそも値がないことが無いようにした方が良い気がする。仕様的なところは後で考える。
   return (
     <div>
       {todos.map((todo) => (
@@ -79,7 +79,7 @@ export const TodoList = ({
               <span className={styles.chip}>優先: {todo.priority?.name}</span>
               <span className={styles.chip}>重要: {todo.importance?.name}</span>
               <span className={styles.chip}>
-                期限:{" "}
+                期限:
                 {todo.deadline
                   ? format(parseISO(todo.deadline), "yyyy/MM/dd")
                   : "未設定"}
