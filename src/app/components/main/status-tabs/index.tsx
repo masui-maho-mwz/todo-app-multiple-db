@@ -1,4 +1,4 @@
-import type { StatusFilter } from "@/app/types";
+import { StatusKeyEnum, StatusLabels, type StatusFilter } from "@/app/types";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -8,9 +8,9 @@ type Props = {
 
 export const StatusTabs = ({ setStatusFilter, activeFilter }: Props) => {
   const tabs: { key: StatusFilter; label: string }[] = [
-    { key: "all", label: "全て" },
-    { key: "complete", label: "完了" },
-    { key: "incomplete", label: "未完了" },
+    { key: StatusKeyEnum.Enum.all, label: StatusLabels.all },
+    { key: StatusKeyEnum.Enum.complete, label: StatusLabels.complete },
+    { key: StatusKeyEnum.Enum.incomplete, label: StatusLabels.incomplete },
   ];
   const handleTabClick = (key: StatusFilter) => {
     setStatusFilter(key);

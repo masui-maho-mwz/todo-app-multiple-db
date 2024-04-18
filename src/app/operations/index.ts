@@ -9,7 +9,8 @@ import {
 export const fetchTodos = async (
   statusFilter: StatusFilter
 ): Promise<FetchTodosResponse> => {
-  const queryParam = statusFilter === "all" ? "" : `status=${statusFilter}`;
+  const queryParam =
+    statusFilter === StatusKeyEnum.Enum.all ? "" : `status=${statusFilter}`;
   const response = await fetch(
     `/api/todos/${queryParam ? "?" + queryParam : ""}`
   );

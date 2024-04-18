@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
   const statusKey = url.searchParams.get("status");
 
   const statusCondition: { statusKey?: string } = {};
-  if (statusKey && statusKey !== "all") {
+  if (statusKey && statusKey !== StatusKeyEnum.Enum.all) {
     const status = await prisma.status.findUnique({
       where: { key: statusKey },
     });

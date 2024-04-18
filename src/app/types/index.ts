@@ -10,13 +10,17 @@ export const CategoryKeyEnum = z.enum([
 ]);
 export const PriorityKeyEnum = z.enum(["high", "medium", "low"]);
 export const ImportanceKeyEnum = z.enum(["high", "medium", "low"]);
-export const StatusKeyEnum = z.enum(["complete", "incomplete"]);
+export const StatusKeyEnum = z.enum(["all", "complete", "incomplete"]);
 
 export type CategoryKey = z.infer<typeof CategoryKeyEnum>;
 export type PriorityKey = z.infer<typeof PriorityKeyEnum>;
 export type ImportanceKey = z.infer<typeof ImportanceKeyEnum>;
-// TODO: 使えるところありそう
 export type StatusKey = z.infer<typeof StatusKeyEnum>;
+export const StatusLabels: { [key in StatusKey]: string } = {
+  all: "全て",
+  complete: "完了",
+  incomplete: "未完了",
+};
 
 export const categorySchema = z.object({
   key: CategoryKeyEnum,

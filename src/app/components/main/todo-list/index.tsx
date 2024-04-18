@@ -1,6 +1,11 @@
 import { NoTodos } from "@/app/components/main/todo-list/no-todo";
 import { updateTodo } from "@/app/operations";
-import { Todo, type StatusKeys } from "@/app/types";
+import {
+  StatusKeyEnum,
+  StatusLabels,
+  Todo,
+  type StatusKeys,
+} from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { format, parseISO } from "date-fns";
@@ -23,16 +28,21 @@ export const TodoList = ({
     return <NoTodos />;
   }
   const handleStatusChange = async (todo: Todo) => {
-    const currentStatusKey = todo.statusKey || "incomplete";
+    const currentStatusKey = todo.statusKey || StatusKeyEnum.Enum.incomplete;
     const newStatusKey: StatusKeys =
-      currentStatusKey === "complete" ? "incomplete" : "complete";
+      currentStatusKey === StatusKeyEnum.Enum.complete
+        ? StatusKeyEnum.Enum.incomplete
+        : StatusKeyEnum.Enum.complete;
 
     const updatedTodo = {
       ...todo,
       statusKey: newStatusKey,
       status: {
         key: newStatusKey,
-        name: newStatusKey === "complete" ? "完了" : "未完了",
+        name:
+          newStatusKey === StatusKeyEnum.Enum.complete
+            ? StatusLabels.complete
+            : StatusLabels.incomplete,
       },
     };
 
@@ -53,7 +63,7 @@ export const TodoList = ({
           <div className={styles.checkboxContainer}>
             <input
               type="checkbox"
-              checked={todo.statusKey === "complete"}
+              checked={todo.statusKey === StatusKeyEnum.Enum.complete}
               onChange={() => handleStatusChange(todo)}
               className={styles.checkbox}
             />

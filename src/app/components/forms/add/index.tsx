@@ -5,6 +5,7 @@ import { Modal } from "@/app/components/surfaces/modal";
 import { useAddTodo } from "@/app/hooks/form-submit/use-add-todos";
 import { useTodos } from "@/app/hooks/use-todos";
 import {
+  StatusKeyEnum,
   type CategoryKey,
   type FormTodoData,
   type ImportanceKey,
@@ -47,7 +48,7 @@ export const AddTodoModal = ({ onClose }: Props) => {
       priorityKey: selectedPriority,
       importanceKey: selectedImportance,
       deadline: formatISO(parseISO(deadline)),
-      statusKey: "incomplete",
+      statusKey: StatusKeyEnum.Enum.incomplete,
     };
     handleAdd(todoData);
   };

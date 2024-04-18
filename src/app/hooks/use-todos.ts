@@ -4,13 +4,16 @@ import {
   Importance,
   Priority,
   StatusFilter,
+  StatusKeyEnum,
   Todo,
 } from "@/app/types";
 import { useEffect, useState } from "react";
 
 export const useTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("incomplete");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(
+    StatusKeyEnum.Enum.incomplete
+  );
   const [categories, setCategories] = useState<Category[]>([]);
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [importances, setImportances] = useState<Importance[]>([]);
@@ -34,7 +37,9 @@ export const useTodos = () => {
   useEffect(() => {
     setFilteredTodos(
       todos.filter(
-        (todo) => todo.status?.key === statusFilter || statusFilter === "all"
+        (todo) =>
+          todo.status?.key === statusFilter ||
+          statusFilter === StatusKeyEnum.Enum.all
       )
     );
   }, [todos, statusFilter]);
@@ -68,7 +73,9 @@ export const useTodos = () => {
       setTodos(fetchedData.todos);
       setFilteredTodos(
         fetchedData.todos.filter(
-          (todo) => todo.status?.key === newFilter || newFilter === "all"
+          (todo) =>
+            todo.status?.key === newFilter ||
+            newFilter === StatusKeyEnum.Enum.all
         )
       );
     } catch (error) {
