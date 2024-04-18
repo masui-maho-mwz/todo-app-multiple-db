@@ -1,17 +1,18 @@
 import styles from "./styles.module.css";
 
-type Option = {
+type Option<T extends string> = {
+  key: T;
   name: string;
 };
 
-type Props<T extends Option> = {
-  options: T[];
-  value: string;
-  onChange: (value: string) => void;
+type Props<T extends string> = {
+  options: Option<T>[];
+  value: T | "";
+  onChange: (value: T | "") => void;
   placeholder: string;
 };
 
-export const Select = <T extends Option>({
+export const Select = <T extends string>({
   options,
   value,
   onChange,
@@ -20,13 +21,13 @@ export const Select = <T extends Option>({
   return (
     <select
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e) => onChange(e.target.value as T | "")}
       required
       className={styles.select}
     >
       <option value="">{placeholder}</option>
       {options.map((option) => (
-        <option key={option.name} value={option.name}>
+        <option key={option.key} value={option.key}>
           {option.name}
         </option>
       ))}

@@ -1,9 +1,10 @@
 import { prisma } from "@/app/lib/prisma";
-import type { Todo } from "@/app/types";
+import { StatusKeyEnum, type FormTodoData } from "@/app/types";
 import { NextResponse, type NextRequest } from "next/server";
 
 const parseDeadline = (deadline: string | null | undefined): Date | null => {
   if (!deadline) return null;
+
   const parsedDate = Date.parse(deadline);
   if (isNaN(parsedDate)) {
     throw new Error("Invalid deadline format. Please use a valid date.");
@@ -19,10 +20,9 @@ export async function POST(req: NextRequest) {
       priorityKey,
       importanceKey,
       deadline,
-    }: Todo = await req.json();
-
+    }: FormTodoData = await req.json();
     const validStatusKey = await prisma.status.findUnique({
-      where: { key: "incomplete" },
+      where: { key: StatusKeyEnum.Enum.incomplete },
     });
 
     if (!validStatusKey) {
@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
         importance: true,
       },
     });
-
     return NextResponse.json(todo, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
@@ -70,6 +69,7 @@ export async function POST(req: NextRequest) {
     }
   }
 }
+
 export async function GET(req: NextRequest) {
   const url = new URL(req.url, `https://${req.headers.get("host")}`);
   const statusKey = url.searchParams.get("status");

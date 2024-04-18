@@ -1,8 +1,7 @@
-import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
 import { updateTodo } from "@/app/operations";
-import { CategoryKeys, ImportanceKeys, PriorityKeys, Todo } from "@/app/types";
+import { Todo } from "@/app/types";
 import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
@@ -17,41 +16,29 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
     todo.description || ""
   );
 
+  const [selectedCategoryKey, setSelectedCategoryKey] = useState(
+    todo.category?.name || ""
+  );
+  const [selectedPriorityKey, setSelectedPriorityKey] = useState(
+    todo.priority?.name || ""
+  );
+  const [selectedImportanceKey, setSelectedImportanceKey] = useState(
+    todo.importance?.name || ""
+  );
   const [deadline, setDeadline] = useState<string>(
     todo.deadline
       ? formatISO(parseISO(todo.deadline), { representation: "date" })
       : ""
   );
 
-  const [selectedCategoryName, setSelectedCategoryName] = useState(
-    todo.category?.name || ""
-  );
-  const [selectedPriorityName, setSelectedPriorityName] = useState(
-    todo.priority?.name || ""
-  );
-  const [selectedImportanceName, setSelectedImportanceName] = useState(
-    todo.importance?.name || ""
-  );
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: 当てはまらない時はエラー処理にする+addと全く同じなので共通化する？
-    const categoryKey =
-      CategoryKeys.find((cat) => cat.name === selectedCategoryName)?.key ||
-      "other";
-    const priorityKey =
-      PriorityKeys.find((pri) => pri.name === selectedPriorityName)?.key ||
-      "low";
-    const importanceKey =
-      ImportanceKeys.find((imp) => imp.name === selectedImportanceName)?.key ||
-      "low";
-
     updateTodo({
       ...todo,
       description: description,
-      categoryKey,
-      priorityKey,
-      importanceKey,
+      category: selectedCategoryKey,
+      priorityKey: selectedPriorityKey,
+      importanceKey: selectedImportanceKey,
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
     });
   };
@@ -70,24 +57,33 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
           />
         </div>
         <div className={styles.inputRow}>
-          <Select
-            options={CategoryKeys.map((cat) => ({ name: cat.name }))}
-            value={selectedCategoryName}
-            onChange={setSelectedCategoryName}
+          {/* <Select
+            options={CategoryKeys.map((cat) => ({
+              key: cat.key,
+              name: cat.name,
+            }))}
+            value={selectedCategoryKey}
+            onChange={setSelectedCategoryKey}
             placeholder="カテゴリー"
           />
           <Select
-            options={PriorityKeys.map((pri) => ({ name: pri.name }))}
-            value={selectedPriorityName}
-            onChange={setSelectedPriorityName}
+            options={PriorityKeys.map((pri) => ({
+              key: pri.key,
+              name: pri.name,
+            }))}
+            value={selectedPriorityKey}
+            onChange={setSelectedPriorityKey}
             placeholder="優先度"
           />
           <Select
-            options={ImportanceKeys.map((imp) => ({ name: imp.name }))}
-            value={selectedImportanceName}
-            onChange={setSelectedImportanceName}
+            options={ImportanceKeys.map((imp) => ({
+              key: imp.key,
+              name: imp.name,
+            }))}
+            value={selectedImportanceKey}
+            onChange={setSelectedImportanceKey}
             placeholder="重要度"
-          />
+          /> */}
           <CustomTooltip text="期限を選択してください">
             <input
               type="date"

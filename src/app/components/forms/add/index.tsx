@@ -2,8 +2,14 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
+import { useAddTodo } from "@/app/hooks/form-submit/use-add-todos";
 import { useTodos } from "@/app/hooks/use-todos";
-import { CategoryKeys, ImportanceKeys, PriorityKeys, Todo } from "@/app/types";
+import {
+  type CategoryKey,
+  type FormTodoData,
+  type ImportanceKey,
+  type PriorityKey,
+} from "@/app/types";
 import { formatISO, parseISO } from "date-fns";
 import React, { useState } from "react";
 import styles from "./styles.module.css";
@@ -13,42 +19,42 @@ type Props = {
 };
 
 export const AddTodoModal = ({ onClose }: Props) => {
-  const { createAddTodoHandler } = useTodos();
+  const { categories, priorities, importances } = useTodos();
+  const { createAddTodoHandler } = useAddTodo();
   const handleAdd = createAddTodoHandler(onClose);
   const [description, setDescription] = useState("");
-  const [selectedCategoryName, setSelectedCategoryName] = useState("");
-  const [selectedPriorityName, setSelectedPriorityName] = useState("");
-  const [selectedImportanceName, setSelectedImportanceName] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
+    ""
+  );
+  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | "">(
+    ""
+  );
+  const [selectedImportance, setSelectedImportance] = useState<
+    ImportanceKey | ""
+  >("");
   const [deadline, setDeadline] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 当てはまらない時はエラー処理にする+editと全く同じなので共通化する？
-    const categoryKey =
-      CategoryKeys.find((cat) => cat.name === selectedCategoryName)?.key ||
-      "other";
-    const priorityKey =
-      PriorityKeys.find((pri) => pri.name === selectedPriorityName)?.key ||
-      "low";
-    const importanceKey =
-      ImportanceKeys.find((imp) => imp.name === selectedImportanceName)?.key ||
-      "low";
-
-    const todoData: Omit<Todo, "id" | "createdAt"> = {
+    // TODO: 仕様は後で決める。一旦ロジックのみ作る
+    if (!selectedCategory || !selectedPriority || !selectedImportance) {
+      alert("カテゴリ、優先度、重要度を選択してください。");
+      return;
+    }
+    const todoData: FormTodoData = {
       description,
-      categoryKey,
-      priorityKey,
-      importanceKey,
-      deadline: deadline ? formatISO(parseISO(deadline)) : null,
+      categoryKey: selectedCategory,
+      priorityKey: selectedPriority,
+      importanceKey: selectedImportance,
+      deadline: formatISO(parseISO(deadline)),
       statusKey: "incomplete",
     };
-
     handleAdd(todoData);
   };
 
   return (
     <Modal>
-      <form onSubmit={handleSubmit} className={styles.form} noValidate>
+      <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
           value={description}
@@ -58,21 +64,30 @@ export const AddTodoModal = ({ onClose }: Props) => {
         />
         <div className={styles.inputContainer}>
           <Select
-            options={CategoryKeys.map((cat) => ({ name: cat.name }))}
-            value={selectedCategoryName}
-            onChange={setSelectedCategoryName}
+            options={categories.map((category) => ({
+              key: category.key,
+              name: category.name,
+            }))}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
             placeholder="カテゴリー"
           />
           <Select
-            options={PriorityKeys.map((pri) => ({ name: pri.name }))}
-            value={selectedPriorityName}
-            onChange={setSelectedPriorityName}
+            options={priorities.map((priority) => ({
+              key: priority.key,
+              name: priority.name,
+            }))}
+            value={selectedPriority}
+            onChange={setSelectedPriority}
             placeholder="優先度"
           />
           <Select
-            options={ImportanceKeys.map((imp) => ({ name: imp.name }))}
-            value={selectedImportanceName}
-            onChange={setSelectedImportanceName}
+            options={importances.map((importance) => ({
+              key: importance.key,
+              name: importance.name,
+            }))}
+            value={selectedImportance}
+            onChange={setSelectedImportance}
             placeholder="重要度"
           />
           <CustomTooltip text="期限を選択してください">
@@ -94,7 +109,7 @@ export const AddTodoModal = ({ onClose }: Props) => {
           >
             キャンセル
           </button>
-          <button type="submit" className={styles.submitButton}>
+          <button className={styles.submitButton} type="submit">
             追加
           </button>
         </div>

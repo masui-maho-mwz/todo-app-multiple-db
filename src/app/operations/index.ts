@@ -1,4 +1,10 @@
-import { StatusFilter, Todo, type FetchTodosResponse } from "@/app/types";
+import {
+  StatusFilter,
+  StatusKeyEnum,
+  Todo,
+  type FetchTodosResponse,
+  type FormTodoData,
+} from "@/app/types";
 
 export const fetchTodos = async (
   statusFilter: StatusFilter
@@ -14,13 +20,11 @@ export const fetchTodos = async (
   return data;
 };
 
-export const addTodo = async (
-  todo: Omit<Todo, "id" | "createdAt">
-): Promise<Todo> => {
+export const addTodo = async (todo: FormTodoData): Promise<Todo> => {
   const response = await fetch("/api/todos", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(todo),
+    body: JSON.stringify({ ...todo, statusKey: StatusKeyEnum.Enum.incomplete }),
   });
   if (!response.ok) {
     throw new Error("ToDoの追加に失敗しました");

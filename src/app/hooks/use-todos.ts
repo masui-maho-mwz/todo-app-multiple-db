@@ -1,4 +1,4 @@
-import { addTodo, deleteTodo, fetchTodos, updateTodo } from "@/app/operations";
+import { deleteTodo, fetchTodos, updateTodo } from "@/app/operations";
 import {
   Category,
   Importance,
@@ -42,18 +42,6 @@ export const useTodos = () => {
       )
     );
   }, [todos, statusFilter]);
-
-  const handleAddTodo = async (todo: Omit<Todo, "id" | "createdAt">) => {
-    try {
-      const newTodo = await addTodo(todo);
-      setTodos((prevTodos) => [...prevTodos, newTodo]);
-      if (newTodo.statusKey === statusFilter || statusFilter === "all") {
-        setFilteredTodos((prevFiltered) => [...prevFiltered, newTodo]);
-      }
-    } catch (error) {
-      alert(`ToDoの追加中にエラーが発生しました: ${error}`);
-    }
-  };
 
   const handleUpdateTodo = async (updatedTodo: Todo) => {
     try {
@@ -120,13 +108,6 @@ export const useTodos = () => {
       }
     };
 
-  const createAddTodoHandler =
-    (closeModal: () => void) =>
-    async (todoData: Omit<Todo, "id" | "createdAt">) => {
-      await handleAddTodo(todoData);
-      closeModal();
-    };
-
   return {
     todos,
     statusFilter,
@@ -135,11 +116,9 @@ export const useTodos = () => {
     priorities,
     importances,
     filteredTodos,
-    handleAddTodo,
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
-    createAddTodoHandler,
     createUpdateTodoHandler,
   };
 };
