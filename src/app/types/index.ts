@@ -52,7 +52,7 @@ export const todoSchema = z.object({
   importance: importanceSchema.optional(),
   statusKey: StatusKeyEnum,
   status: statusSchema.optional(),
-  createdAt: z.date().optional(),
+  createdAt: z.string().optional(),
   deadline: z.string().nullable().optional(),
 });
 

@@ -96,7 +96,6 @@ export const AddTodoModal = ({ onClose }: Props) => {
               id="deadline"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              required
               className={styles.inputDeadline}
             />
           </CustomTooltip>

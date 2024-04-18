@@ -22,7 +22,6 @@ export const Select = <T extends string>({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value as T | "")}
-      required
       className={styles.select}
     >
       <option value="">{placeholder}</option>
