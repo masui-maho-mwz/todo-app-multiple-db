@@ -59,7 +59,7 @@ export const useTodos = () => {
   const handleDeleteTodo = async (todoId: string) => {
     try {
       await deleteTodo(todoId);
-      loadData();
+      await loadData();
     } catch (error) {
       alert(`ToDoの削除中にエラーが発生しました: ${error}`);
     }
