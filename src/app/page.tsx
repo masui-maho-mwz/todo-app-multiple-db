@@ -9,16 +9,10 @@ import { useState } from "react";
 import styles from "./styles.module.css";
 
 const Home = () => {
-  const {
-    statusFilter,
-    filteredTodos,
-    handleUpdateTodo,
-    handleDeleteTodo,
-    handleFilterChange,
-  } = useTodos();
+  const { statusFilter, filteredTodos, handleUpdateTodo, handleFilterChange } =
+    useTodos();
 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
 
   const openEditModal = (todo: Todo) => {
@@ -29,24 +23,6 @@ const Home = () => {
 
   const openDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);
-    setShowDeleteDialog(true);
-  };
-
-  const closeDeleteDialog = () => {
-    setDeletingTodoId(null);
-    setShowDeleteDialog(false);
-  };
-
-  const confirmDeleteTodo = () => {
-    if (deletingTodoId) {
-      handleDeleteTodo(deletingTodoId)
-        .then(() => {
-          closeDeleteDialog();
-        })
-        .catch((error) => {
-          alert(`ToDoの削除中にエラーが発生しました: ${error}`);
-        });
-    }
   };
 
   return (
@@ -67,12 +43,7 @@ const Home = () => {
       {editingTodo && (
         <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
       )}
-      {showDeleteDialog && deletingTodoId && (
-        <DeleteTodoDialog
-          onClose={closeDeleteDialog}
-          onConfirm={confirmDeleteTodo}
-        />
-      )}
+      {deletingTodoId && <DeleteTodoDialog todoId={deletingTodoId} />}
     </div>
   );
 };
