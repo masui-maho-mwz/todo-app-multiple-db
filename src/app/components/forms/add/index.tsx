@@ -41,10 +41,9 @@ export const AddTodoModal = () => {
     ImportanceKey | ""
   >("");
   const [deadline, setDeadline] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  // TODO: 仕様は後で決める。一旦ロジックのみ作る
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: 仕様は後で決める。一旦ロジックのみ作る
     if (!selectedCategory || !selectedPriority || !selectedImportance) {
       alert("カテゴリ、優先度、重要度を選択してください。");
       return;
@@ -54,16 +53,18 @@ export const AddTodoModal = () => {
       categoryKey: selectedCategory,
       priorityKey: selectedPriority,
       importanceKey: selectedImportance,
-      deadline: formatISO(parseISO(deadline)),
+      deadline: deadline ? formatISO(parseISO(deadline)) : "",
       statusKey: StatusKeyEnum.Enum.incomplete,
     };
-    try {
-      await addTodo(todoData);
-      setShow(false);
-    } catch (error) {
-      alert(`ToDoの追加中にエラーが発生しました: ${error}`);
-      setShow(false);
-    }
+
+    addTodo(todoData)
+      .then(() => {
+        setShow(false);
+      })
+      .catch((error) => {
+        alert(`ToDoの追加中にエラーが発生しました: ${error}`);
+        setShow(false);
+      });
   };
 
   return (
