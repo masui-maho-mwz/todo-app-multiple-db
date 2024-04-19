@@ -18,9 +18,16 @@ import styles from "./styles.module.css";
 
 export const AddTodoModal = () => {
   const [show, setShow] = useState(false);
-  const { categories, priorities, importances } = useTodos();
+  const { categories, priorities, importances, loadData } = useTodos();
 
-  const openModal = () => setShow(true);
+  const openModal = () => {
+    setDescription("");
+    setSelectedCategory("");
+    setSelectedPriority("");
+    setSelectedImportance("");
+    setDeadline("");
+    setShow(true);
+  };
   const closeModal = () => setShow(false);
 
   const [description, setDescription] = useState("");
@@ -52,9 +59,11 @@ export const AddTodoModal = () => {
     };
     try {
       await addTodo(todoData);
-      closeModal();
+      await loadData();
+      setShow(false);
     } catch (error) {
       alert(`ToDoの追加中にエラーが発生しました: ${error}`);
+      setShow(false);
     }
   };
 
