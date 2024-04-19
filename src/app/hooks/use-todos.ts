@@ -19,30 +19,28 @@ export const useTodos = () => {
   const [importances, setImportances] = useState<Importance[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const fetchedData = await fetchTodos(statusFilter);
-        setTodos(fetchedData.todos);
-        setCategories(fetchedData.categories);
-        setPriorities(fetchedData.priorities);
-        setImportances(fetchedData.importances);
-      } catch (error) {
-        alert(`データのフェッチ中にエラーが発生しました: ${error}`);
-      }
-    };
-    loadData();
-  }, [statusFilter]);
+  const loadData = async () => {
+    try {
+      const fetchedData = await fetchTodos(statusFilter);
+      setTodos(fetchedData.todos);
+      setCategories(fetchedData.categories);
+      setPriorities(fetchedData.priorities);
+      setImportances(fetchedData.importances);
+      setFilteredTodos(
+        fetchedData.todos.filter(
+          (todo) =>
+            todo.status?.key === statusFilter ||
+            statusFilter === StatusKeyEnum.Enum.all
+        )
+      );
+    } catch (error) {
+      alert(`データのフェッチ中にエラーが発生しました: ${error}`);
+    }
+  };
 
   useEffect(() => {
-    setFilteredTodos(
-      todos.filter(
-        (todo) =>
-          todo.status?.key === statusFilter ||
-          statusFilter === StatusKeyEnum.Enum.all
-      )
-    );
-  }, [todos, statusFilter]);
+    loadData();
+  }, [statusFilter]);
 
   const handleUpdateTodo = async (updatedTodo: Todo) => {
     try {
@@ -50,6 +48,7 @@ export const useTodos = () => {
       setTodos((prevTodos) =>
         prevTodos.map((todo) => (todo.id === updatedTodo.id ? response : todo))
       );
+      loadData();
     } catch (error) {
       alert(
         `ToDoの更新に失敗しました。もう一度お試しください。エラー: ${error}`
@@ -60,7 +59,7 @@ export const useTodos = () => {
   const handleDeleteTodo = async (todoId: string) => {
     try {
       await deleteTodo(todoId);
-      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== todoId));
+      loadData();
     } catch (error) {
       alert(`ToDoの削除中にエラーが発生しました: ${error}`);
     }
@@ -86,7 +85,6 @@ export const useTodos = () => {
   return {
     todos,
     statusFilter,
-    setStatusFilter,
     categories,
     priorities,
     importances,
@@ -94,5 +92,6 @@ export const useTodos = () => {
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
+    loadData,
   };
 };

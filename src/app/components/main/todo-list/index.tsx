@@ -9,7 +9,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { format, parseISO } from "date-fns";
-import { useState } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -25,11 +24,8 @@ export const TodoList = ({
   handleDeleteTodo,
   onUpdateTodo,
 }: Props) => {
-  const [currentTodo, setCurrentTodo] = useState<Todo | null>(null);
-
   const openEditModalHandler = (todos: Todo) => {
     openEditModal(todos);
-    setCurrentTodo(todos);
   };
 
   if (!todos.length) {
