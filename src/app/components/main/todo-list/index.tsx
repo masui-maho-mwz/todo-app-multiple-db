@@ -9,24 +9,33 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { format, parseISO } from "date-fns";
+import { useState } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
   todos: Todo[];
   openEditModal: (todo: Todo) => void;
-  handleDeleteTodo: (id: string) => void;
+  handleDeleteTodo: (todoId: string) => void;
   onUpdateTodo: (updatedTodo: Todo) => void;
 };
 
 export const TodoList = ({
   todos,
-  handleDeleteTodo,
   openEditModal,
+  handleDeleteTodo,
   onUpdateTodo,
 }: Props) => {
+  const [currentTodo, setCurrentTodo] = useState<Todo | null>(null);
+
+  const openEditModalHandler = (todos: Todo) => {
+    openEditModal(todos);
+    setCurrentTodo(todos);
+  };
+
   if (!todos.length) {
     return <NoTodos />;
   }
+
   const handleStatusChange = async (todo: Todo) => {
     const currentStatusKey = todo.statusKey || StatusKeyEnum.Enum.incomplete;
     const newStatusKey: StatusKeys =
@@ -55,9 +64,8 @@ export const TodoList = ({
       );
     }
   };
-  // TODO: そもそも値がないことが無いようにした方が良い気がする。仕様的なところは後で考える。
   return (
-    <div>
+    <>
       {todos.map((todo) => (
         <div className={styles.todoCard} key={todo.id}>
           <div className={styles.checkboxContainer}>
@@ -89,7 +97,7 @@ export const TodoList = ({
           <div className={styles.actionIcons}>
             <button
               className={styles.editButton}
-              onClick={() => openEditModal(todo)}
+              onClick={() => openEditModalHandler(todo)}
             >
               <EditIcon fontSize="small" />
             </button>
@@ -102,6 +110,6 @@ export const TodoList = ({
           </div>
         </div>
       ))}
-    </div>
+    </>
   );
 };

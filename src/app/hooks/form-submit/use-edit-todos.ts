@@ -3,11 +3,7 @@ import { Todo, type FormTodoData } from "@/app/types";
 import { formatISO, parseISO } from "date-fns";
 
 export const useEditTodo = () => {
-  const handleEditTodo = async (
-    todo: Todo,
-    formData: FormTodoData,
-    onSuccess: () => void
-  ) => {
+  const updateTodoHandler = async (todo: Todo, formData: FormTodoData) => {
     try {
       const updatedTodo: Todo = {
         ...todo,
@@ -19,20 +15,12 @@ export const useEditTodo = () => {
           ? formatISO(parseISO(formData.deadline))
           : null,
       };
-
-      const response = await updateTodo(updatedTodo);
-      onSuccess();
-      return response;
+      await updateTodo(updatedTodo);
     } catch (error) {
       alert(`ToDoの更新に失敗しました。エラー: ${error}`);
       throw error;
     }
   };
 
-  const createEditTodoHandler =
-    (todo: Todo, onClose: () => void) => async (formData: FormTodoData) => {
-      await handleEditTodo(todo, formData, onClose);
-    };
-
-  return { createEditTodoHandler };
+  return { updateTodoHandler };
 };

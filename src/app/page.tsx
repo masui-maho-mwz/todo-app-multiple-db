@@ -17,20 +17,18 @@ const Home = () => {
     handleFilterChange,
   } = useTodos();
 
-  const [showEditModal, setShowEditModal] = useState(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
 
   const openEditModal = (todo: Todo) => {
     setEditingTodo(todo);
-    setShowEditModal(true);
   };
 
   const closeEditModal = () => {
     setEditingTodo(null);
-    setShowEditModal(false);
   };
+
   const openDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);
     setShowDeleteDialog(true);
@@ -65,7 +63,7 @@ const Home = () => {
           onUpdateTodo={handleUpdateTodo}
         />
       </div>
-      {showEditModal && editingTodo && (
+      {editingTodo && (
         <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
       )}
       {showDeleteDialog && deletingTodoId && (
