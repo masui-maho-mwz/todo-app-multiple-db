@@ -51,15 +51,17 @@ export const TodoList = ({
       },
     };
 
-    try {
-      const updatedResponse = await updateTodo(updatedTodo);
-      onUpdateTodo(updatedResponse);
-    } catch (error) {
-      alert(
-        `ステータスの更新に失敗しました。もう一度試してください。: ${error}`
-      );
-    }
+    updateTodo(updatedTodo)
+      .then((updatedResponse) => {
+        onUpdateTodo(updatedResponse);
+      })
+      .catch((error) => {
+        alert(
+          `ステータスの更新に失敗しました。もう一度試してください。: ${error}`
+        );
+      });
   };
+
   return (
     <>
       {todos.map((todo) => (
