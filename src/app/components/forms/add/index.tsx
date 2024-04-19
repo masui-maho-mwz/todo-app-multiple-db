@@ -2,8 +2,8 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import { addTodoHandler } from "@/app/hooks/form-submit/use-add-todos";
 import { useTodos } from "@/app/hooks/use-todos";
+import { addTodo } from "@/app/operations";
 import {
   StatusKeyEnum,
   type CategoryKey,
@@ -35,7 +35,7 @@ export const AddTodoModal = () => {
   >("");
   const [deadline, setDeadline] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: 仕様は後で決める。一旦ロジックのみ作る
     if (!selectedCategory || !selectedPriority || !selectedImportance) {
@@ -50,7 +50,12 @@ export const AddTodoModal = () => {
       deadline: formatISO(parseISO(deadline)),
       statusKey: StatusKeyEnum.Enum.incomplete,
     };
-    addTodoHandler(todoData).then(closeModal);
+    try {
+      await addTodo(todoData);
+      closeModal();
+    } catch (error) {
+      alert(`ToDoの追加中にエラーが発生しました: ${error}`);
+    }
   };
 
   return (
