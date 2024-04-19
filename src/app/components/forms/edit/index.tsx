@@ -1,8 +1,8 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import { useEditTodo } from "@/app/hooks/form-submit/use-edit-todos";
 import { useTodos } from "@/app/hooks/use-todos";
+import { updateTodo } from "@/app/operations";
 import {
   Todo,
   type CategoryKey,
@@ -22,7 +22,6 @@ type Props = {
 export const EditTodoModal = ({ todo, onClose }: Props) => {
   const [show, setShow] = useState(false);
   const { categories, priorities, importances } = useTodos();
-  const { updateTodoHandler } = useEditTodo();
 
   useEffect(() => {
     setShow(!!todo);
@@ -62,7 +61,7 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
       : null
   );
 
-  const handleEditSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (
       !todo ||
@@ -84,10 +83,22 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
       deadline: formatISO(parseISO(deadline)),
       statusKey: todo.statusKey,
     };
-
-    updateTodoHandler(todo, formData).then(() => {
+    try {
+      const updatedTodo: Todo = {
+        ...todo,
+        description: formData.description,
+        categoryKey: formData.categoryKey,
+        priorityKey: formData.priorityKey,
+        importanceKey: formData.importanceKey,
+        deadline: formData.deadline
+          ? formatISO(parseISO(formData.deadline))
+          : null,
+      };
+      await updateTodo(updatedTodo);
       onClose();
-    });
+    } catch (error) {
+      alert(`ToDoの更新に失敗しました。エラー: ${error}`);
+    }
   };
 
   return (
