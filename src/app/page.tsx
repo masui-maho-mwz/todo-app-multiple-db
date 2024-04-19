@@ -37,14 +37,15 @@ const Home = () => {
     setShowDeleteDialog(false);
   };
 
-  const confirmDeleteTodo = async () => {
+  const confirmDeleteTodo = () => {
     if (deletingTodoId) {
-      try {
-        await handleDeleteTodo(deletingTodoId);
-        closeDeleteDialog();
-      } catch (error) {
-        alert(`ToDoの削除中にエラーが発生しました: ${error}`);
-      }
+      handleDeleteTodo(deletingTodoId)
+        .then(() => {
+          closeDeleteDialog();
+        })
+        .catch((error) => {
+          alert(`ToDoの削除中にエラーが発生しました: ${error}`);
+        });
     }
   };
 
