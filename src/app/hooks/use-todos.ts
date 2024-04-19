@@ -19,42 +19,60 @@ export const useTodos = () => {
   const [importances, setImportances] = useState<Importance[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
 
-  const loadData = async () => {
-    try {
-      const fetchedData = await fetchTodos(statusFilter);
-      setTodos(fetchedData.todos);
-      setCategories(fetchedData.categories);
-      setPriorities(fetchedData.priorities);
-      setImportances(fetchedData.importances);
-      setFilteredTodos(
-        fetchedData.todos.filter(
-          (todo) =>
-            todo.status?.key === statusFilter ||
-            statusFilter === StatusKeyEnum.Enum.all
-        )
-      );
-    } catch (error) {
-      alert(`データのフェッチ中にエラーが発生しました: ${error}`);
-    }
+  const loadData = () => {
+    fetchTodos(statusFilter)
+      .then((fetchedData) => {
+        setTodos(fetchedData.todos);
+        setCategories(fetchedData.categories);
+        setPriorities(fetchedData.priorities);
+        setImportances(fetchedData.importances);
+        setFilteredTodos(
+          fetchedData.todos.filter(
+            (todo) =>
+              todo.status?.key === statusFilter ||
+              statusFilter === StatusKeyEnum.Enum.all
+          )
+        );
+      })
+      .catch((error) => {
+        alert(`データのフェッチ中にエラーが発生しました: ${error}`);
+      });
   };
 
   useEffect(() => {
     loadData();
   }, [statusFilter, todos]);
 
-  const handleUpdateTodo = async (updatedTodo: Todo) => {
-    try {
-      const response = await updateTodo(updatedTodo);
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) => (todo.id === updatedTodo.id ? response : todo))
-      );
-    } catch (error) {
-      alert(
-        `ToDoの更新に失敗しました。もう一度お試しください。エラー: ${error}`
-      );
-    }
+  const handleUpdateTodo = (updatedTodo: Todo) => {
+    updateTodo(updatedTodo)
+      .then((response) => {
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo.id === updatedTodo.id ? response : todo
+          )
+        );
+      })
+      .catch((error) => {
+        alert(
+          `ToDoの更新に失敗しました。もう一度お試しください。エラー: ${error}`
+        );
+      });
   };
 
+  // TODO: レビュー時にコメント予定
+  // async/await から .then/.catch のに変更できませんでした。
+  // 理由: エラー解消できなかったため。
+  //  Unhandled Runtime Error
+  //    TypeError: Cannot read properties of undefined (reading 'then')
+  // const handleDeleteTodo = (todoId: string) => {
+  //   deleteTodo(todoId)
+  //     .then(() => {
+  //       alert("ToDoが正常に削除されました。");
+  //     })
+  //     .catch((error) => {
+  //       alert(`ToDoの削除中にエラーが発生しました: ${error}`);
+  //     });
+  // };
   const handleDeleteTodo = async (todoId: string) => {
     try {
       await deleteTodo(todoId);
@@ -63,21 +81,22 @@ export const useTodos = () => {
     }
   };
 
-  const handleFilterChange = async (newFilter: StatusFilter) => {
+  const handleFilterChange = (newFilter: StatusFilter) => {
     setStatusFilter(newFilter);
-    try {
-      const fetchedData = await fetchTodos(newFilter);
-      setTodos(fetchedData.todos);
-      setFilteredTodos(
-        fetchedData.todos.filter(
-          (todo) =>
-            todo.status?.key === newFilter ||
-            newFilter === StatusKeyEnum.Enum.all
-        )
-      );
-    } catch (error) {
-      alert(`データのフェッチ中にエラーが発生しました: ${error}`);
-    }
+    fetchTodos(newFilter)
+      .then((fetchedData) => {
+        setTodos(fetchedData.todos);
+        setFilteredTodos(
+          fetchedData.todos.filter(
+            (todo) =>
+              todo.status?.key === newFilter ||
+              newFilter === StatusKeyEnum.Enum.all
+          )
+        );
+      })
+      .catch((error) => {
+        alert(`データのフェッチ中にエラーが発生しました: ${error}`);
+      });
   };
 
   return {
