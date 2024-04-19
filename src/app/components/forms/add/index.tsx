@@ -18,7 +18,7 @@ import styles from "./styles.module.css";
 
 export const AddTodoModal = () => {
   const [show, setShow] = useState(false);
-  const { categories, priorities, importances, loadData } = useTodos();
+  const { categories, priorities, importances } = useTodos();
 
   const openModal = () => {
     setDescription("");
@@ -59,7 +59,6 @@ export const AddTodoModal = () => {
     };
     try {
       await addTodo(todoData);
-      await loadData();
       setShow(false);
     } catch (error) {
       alert(`ToDoの追加中にエラーが発生しました: ${error}`);

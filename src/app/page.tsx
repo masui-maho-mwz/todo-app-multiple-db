@@ -15,7 +15,6 @@ const Home = () => {
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
-    loadData,
   } = useTodos();
 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -26,10 +25,7 @@ const Home = () => {
     setEditingTodo(todo);
   };
 
-  const closeEditModal = async () => {
-    setEditingTodo(null);
-    await loadData();
-  };
+  const closeEditModal = () => setEditingTodo(null);
 
   const openDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);

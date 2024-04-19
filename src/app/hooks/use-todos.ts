@@ -40,7 +40,7 @@ export const useTodos = () => {
 
   useEffect(() => {
     loadData();
-  }, [statusFilter]);
+  }, [statusFilter, todos]);
 
   const handleUpdateTodo = async (updatedTodo: Todo) => {
     try {
@@ -90,6 +90,5 @@ export const useTodos = () => {
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
-    loadData,
   };
 };
