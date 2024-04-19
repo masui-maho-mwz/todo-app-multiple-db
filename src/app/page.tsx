@@ -56,7 +56,9 @@ const Home = () => {
         <Main
           statusFilter={statusFilter}
           filteredTodos={filteredTodos}
-          handleFilterChange={handleFilterChange}
+          handleFilterChange={async (newFilter) =>
+            handleFilterChange(newFilter)
+          }
           openEditModal={openEditModal}
           handleDeleteTodo={openDeleteDialog}
           onUpdateTodo={handleUpdateTodo}
