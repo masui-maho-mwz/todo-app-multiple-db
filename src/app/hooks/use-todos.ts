@@ -48,7 +48,6 @@ export const useTodos = () => {
       setTodos((prevTodos) =>
         prevTodos.map((todo) => (todo.id === updatedTodo.id ? response : todo))
       );
-      loadData();
     } catch (error) {
       alert(
         `ToDoの更新に失敗しました。もう一度お試しください。エラー: ${error}`
@@ -59,7 +58,6 @@ export const useTodos = () => {
   const handleDeleteTodo = async (todoId: string) => {
     try {
       await deleteTodo(todoId);
-      await loadData();
     } catch (error) {
       alert(`ToDoの削除中にエラーが発生しました: ${error}`);
     }
