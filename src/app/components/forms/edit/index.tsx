@@ -2,50 +2,25 @@ import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
 import { useTodos } from "@/app/hooks/use-todos";
-import { updateTodo } from "@/app/operations";
 import {
   Todo,
   type CategoryKey,
-  type FormTodoData,
   type ImportanceKey,
   type PriorityKey,
 } from "@/app/types";
-import { formatISO, parseISO } from "date-fns";
+import { format, formatISO, parseISO } from "date-fns";
 import React, { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
   todo: Todo | null;
-  onClose: () => void;
 };
 
-export const EditTodoModal = ({ todo, onClose }: Props) => {
+export const EditTodoModal = ({ todo }: Props) => {
   const [show, setShow] = useState(false);
-  const { categories, priorities, importances } = useTodos();
+  const { categories, priorities, importances, handleUpdateTodo } = useTodos();
 
-  useEffect(() => {
-    setShow(!!todo);
-    if (todo) {
-      setDescription(todo.description);
-      setSelectedCategoryKey(todo.categoryKey);
-      setSelectedPriorityKey(todo.priorityKey);
-      setSelectedImportanceKey(todo.importanceKey);
-      setDeadline(
-        todo.deadline
-          ? formatISO(parseISO(todo.deadline), { representation: "date" })
-          : null
-      );
-    }
-  }, [todo]);
-
-  const handleClose = () => {
-    setShow(false);
-    onClose();
-  };
-
-  const [description, setDescription] = useState<string>(
-    todo ? todo.description : ""
-  );
+  const [description, setDescription] = useState("");
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<
     CategoryKey | ""
   >(todo ? todo.categoryKey : "");
@@ -56,10 +31,27 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
     ImportanceKey | ""
   >(todo ? todo.importanceKey : "");
   const [deadline, setDeadline] = useState<string | null>(
-    todo && todo.deadline
-      ? formatISO(parseISO(todo.deadline), { representation: "date" })
-      : null
+    todo && todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : null
   );
+
+  useEffect(() => {
+    if (todo) {
+      setShow(true);
+      setDescription(todo.description);
+      setSelectedCategoryKey(todo.categoryKey);
+      setSelectedPriorityKey(todo.priorityKey);
+      setSelectedImportanceKey(todo.importanceKey);
+      setDeadline(
+        todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : ""
+      );
+    } else {
+      setShow(false);
+    }
+  }, [todo]);
+
+  const handleClose = () => {
+    setShow(false);
+  };
 
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,34 +66,19 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
       return;
     }
 
-    const formData: FormTodoData = {
+    const updatedTodo = {
       ...todo,
       description,
       categoryKey: selectedCategoryKey,
       priorityKey: selectedPriorityKey,
       importanceKey: selectedImportanceKey,
-      deadline: formatISO(parseISO(deadline)),
-      statusKey: todo.statusKey,
+      deadline: deadline ? formatISO(parseISO(deadline)) : null,
     };
-    const updatedTodo: Todo = {
-      ...todo,
-      description: formData.description,
-      categoryKey: formData.categoryKey,
-      priorityKey: formData.priorityKey,
-      importanceKey: formData.importanceKey,
-      deadline: formData.deadline
-        ? formatISO(parseISO(formData.deadline))
-        : null,
-    };
-
-    updateTodo(updatedTodo)
-      .then(() => {
-        onClose();
-      })
-      .catch((error) => {
-        alert(`ToDoの更新に失敗しました。エラー: ${error}`);
-      });
+    await handleUpdateTodo(updatedTodo);
+    setShow(false);
   };
+
+  if (!show) return null;
 
   return (
     <>

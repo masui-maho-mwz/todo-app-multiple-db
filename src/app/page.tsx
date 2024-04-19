@@ -19,8 +19,6 @@ const Home = () => {
     setEditingTodo(todo);
   };
 
-  const closeEditModal = () => setEditingTodo(null);
-
   const openDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);
   };
@@ -40,9 +38,7 @@ const Home = () => {
           onUpdateTodo={handleUpdateTodo}
         />
       </div>
-      {editingTodo && (
-        <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
-      )}
+      {editingTodo && <EditTodoModal todo={editingTodo} />}
       {deletingTodoId && <DeleteTodoDialog todoId={deletingTodoId} />}
     </div>
   );
