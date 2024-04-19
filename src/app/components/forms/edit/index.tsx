@@ -83,22 +83,24 @@ export const EditTodoModal = ({ todo, onClose }: Props) => {
       deadline: formatISO(parseISO(deadline)),
       statusKey: todo.statusKey,
     };
-    try {
-      const updatedTodo: Todo = {
-        ...todo,
-        description: formData.description,
-        categoryKey: formData.categoryKey,
-        priorityKey: formData.priorityKey,
-        importanceKey: formData.importanceKey,
-        deadline: formData.deadline
-          ? formatISO(parseISO(formData.deadline))
-          : null,
-      };
-      await updateTodo(updatedTodo);
-      onClose();
-    } catch (error) {
-      alert(`ToDoの更新に失敗しました。エラー: ${error}`);
-    }
+    const updatedTodo: Todo = {
+      ...todo,
+      description: formData.description,
+      categoryKey: formData.categoryKey,
+      priorityKey: formData.priorityKey,
+      importanceKey: formData.importanceKey,
+      deadline: formData.deadline
+        ? formatISO(parseISO(formData.deadline))
+        : null,
+    };
+
+    updateTodo(updatedTodo)
+      .then(() => {
+        onClose();
+      })
+      .catch((error) => {
+        alert(`ToDoの更新に失敗しました。エラー: ${error}`);
+      });
   };
 
   return (
