@@ -41,7 +41,7 @@ export const AddTodoModal = () => {
     ImportanceKey | ""
   >("");
   const [deadline, setDeadline] = useState("");
-  // TODO: 仕様は後で決める。一旦ロジックのみ作る
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCategory || !selectedPriority || !selectedImportance) {

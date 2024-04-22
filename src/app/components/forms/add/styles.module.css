@@ -51,7 +51,6 @@
   cursor: pointer;
 }
 
-/* TODO: 以下は全く同じスタイルをsrc/app/components/sidebar/styles.module.cssでも使っている*/
 .sidebarItem {
   display: flex;
   align-items: center;

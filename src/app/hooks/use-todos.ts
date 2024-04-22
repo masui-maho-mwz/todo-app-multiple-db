@@ -59,20 +59,6 @@ export const useTodos = () => {
       });
   };
 
-  // TODO: レビュー時にコメント予定
-  // async/await から .then/.catch のに変更できませんでした。
-  // 理由: エラー解消できなかったため。
-  //  Unhandled Runtime Error
-  //    TypeError: Cannot read properties of undefined (reading 'then')
-  // const handleDeleteTodo = (todoId: string) => {
-  //   deleteTodo(todoId)
-  //     .then(() => {
-  //       alert("ToDoが正常に削除されました。");
-  //     })
-  //     .catch((error) => {
-  //       alert(`ToDoの削除中にエラーが発生しました: ${error}`);
-  //     });
-  // };
   const handleDeleteTodo = async (todoId: string) => {
     try {
       await deleteTodo(todoId);

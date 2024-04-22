@@ -11,7 +11,6 @@ const parseDeadline = (deadline: string | null | undefined): Date | null => {
   }
   return new Date(parsedDate);
 };
-// TODO: async/await から .then/.catch にしたかったが断念
 export async function POST(req: NextRequest) {
   try {
     const {
