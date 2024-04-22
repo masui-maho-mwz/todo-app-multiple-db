@@ -67,24 +67,6 @@ export const useTodos = () => {
     }
   };
 
-  // const handleFilterChange = (newFilter: StatusFilter) => {
-  //   setStatusFilter(newFilter);
-  //   fetchTodos(newFilter)
-  //     .then((fetchedData) => {
-  //       setTodos(fetchedData.todos);
-  //       setFilteredTodos(
-  //         fetchedData.todos.filter(
-  //           (todo) =>
-  //             todo.status?.key === newFilter ||
-  //             newFilter === StatusKeyEnum.Enum.all
-  //         )
-  //       );
-  //     })
-  //     .catch((error) => {
-  //       alert(`データのフェッチ中にエラーが発生しました: ${error}`);
-  //     });
-  // };
-
   const handleFilterChange = (newFilter: StatusFilter): Promise<void> => {
     setStatusFilter(newFilter);
     return fetchTodos(newFilter)
