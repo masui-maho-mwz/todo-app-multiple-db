@@ -1,7 +1,8 @@
 "use client";
 import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
 import { EditTodoModal } from "@/app/components/forms/edit";
-import { Main } from "@/app/components/main";
+import { StatusTabs } from "@/app/components/main/status-tabs";
+import { TodoList } from "@/app/components/main/todo-list";
 import { Sidebar } from "@/app/components/sidebar";
 import { useTodos } from "@/app/hooks/use-todos";
 import type { Todo } from "@/app/types";
@@ -27,14 +28,20 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.formAndList}>
         <Sidebar />
-        <Main
-          statusFilter={statusFilter}
-          filteredTodos={filteredTodos}
-          handleFilterChange={handleFilterChange}
-          openEditModal={openEditModal}
-          handleDeleteTodo={openDeleteDialog}
-          onUpdateTodo={handleUpdateTodo}
-        />
+        <div className={styles.todoListContainer}>
+          <div>
+            <StatusTabs
+              setStatusFilter={handleFilterChange}
+              activeFilter={statusFilter}
+            />
+            <TodoList
+              todos={filteredTodos}
+              openEditModal={openEditModal}
+              handleDeleteTodo={openDeleteDialog}
+              onUpdateTodo={handleUpdateTodo}
+            />
+          </div>
+        </div>
       </div>
       {editingTodo && <EditTodoModal todo={editingTodo} />}
       {deletingTodoId && <DeleteTodoDialog todoId={deletingTodoId} />}
