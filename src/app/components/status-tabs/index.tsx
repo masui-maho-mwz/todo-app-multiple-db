@@ -2,18 +2,18 @@ import { StatusKeyEnum, StatusLabels, type StatusFilter } from "@/app/types";
 import styles from "./styles.module.css";
 
 type Props = {
-  setStatusFilter: (filter: StatusFilter) => Promise<void>;
+  handleFilterChange: (filter: StatusFilter) => Promise<void>;
   activeFilter: StatusFilter;
 };
 
-export const StatusTabs = ({ setStatusFilter, activeFilter }: Props) => {
+export const StatusTabs = ({ handleFilterChange, activeFilter }: Props) => {
   const tabs: { key: StatusFilter; label: string }[] = [
     { key: StatusKeyEnum.Enum.all, label: StatusLabels.all },
     { key: StatusKeyEnum.Enum.complete, label: StatusLabels.complete },
     { key: StatusKeyEnum.Enum.incomplete, label: StatusLabels.incomplete },
   ];
   const handleTabClick = (key: StatusFilter) => {
-    setStatusFilter(key);
+    handleFilterChange(key);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { NoTodos } from "@/app/components/main/todo-list/no-todo";
+import { NoTodos } from "@/app/components/todo-list/no-todo";
 import { updateTodo } from "@/app/operations";
 import {
   StatusKeyEnum,
@@ -12,23 +12,23 @@ import { format, parseISO } from "date-fns";
 import styles from "./styles.module.css";
 
 type Props = {
-  todos: Todo[];
-  openEditModal: (todo: Todo) => void;
-  handleDeleteTodo: (todoId: string) => void;
-  onUpdateTodo: (updatedTodo: Todo) => void;
+  filteredTodos: Todo[];
+  handleUpdateTodo: (updatedTodo: Todo) => void;
+  handleOpenEditModal: (todo: Todo) => void;
+  handleOpenDeleteDialog: (todoId: string) => void;
 };
 
 export const TodoList = ({
-  todos,
-  openEditModal,
-  handleDeleteTodo,
-  onUpdateTodo,
+  filteredTodos,
+  handleUpdateTodo,
+  handleOpenEditModal,
+  handleOpenDeleteDialog,
 }: Props) => {
-  const openEditModalHandler = (todos: Todo) => {
-    openEditModal(todos);
+  const handleEditModal = (filteredTodos: Todo) => {
+    handleOpenEditModal(filteredTodos);
   };
 
-  if (!todos.length) {
+  if (!filteredTodos.length) {
     return <NoTodos />;
   }
 
@@ -53,7 +53,7 @@ export const TodoList = ({
 
     updateTodo(updatedTodo)
       .then((updatedResponse) => {
-        onUpdateTodo(updatedResponse);
+        handleUpdateTodo(updatedResponse);
       })
       .catch((error) => {
         alert(
@@ -64,7 +64,7 @@ export const TodoList = ({
 
   return (
     <>
-      {todos.map((todo) => (
+      {filteredTodos.map((todo) => (
         <div className={styles.todoCard} key={todo.id}>
           <div className={styles.checkboxContainer}>
             <input
@@ -95,13 +95,13 @@ export const TodoList = ({
           <div className={styles.actionIcons}>
             <button
               className={styles.editButton}
-              onClick={() => openEditModalHandler(todo)}
+              onClick={() => handleEditModal(todo)}
             >
               <EditIcon fontSize="small" />
             </button>
             <button
               className={styles.deleteButton}
-              onClick={() => handleDeleteTodo(todo.id)}
+              onClick={() => handleOpenDeleteDialog(todo.id)}
             >
               <DeleteIcon fontSize="small" />
             </button>

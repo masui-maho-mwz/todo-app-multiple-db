@@ -1,9 +1,9 @@
 "use client";
 import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
 import { EditTodoModal } from "@/app/components/forms/edit";
-import { StatusTabs } from "@/app/components/main/status-tabs";
-import { TodoList } from "@/app/components/main/todo-list";
 import { Sidebar } from "@/app/components/sidebar";
+import { StatusTabs } from "@/app/components/status-tabs";
+import { TodoList } from "@/app/components/todo-list";
 import { useTodos } from "@/app/hooks/use-todos";
 import type { Todo } from "@/app/types";
 import { useState } from "react";
@@ -16,11 +16,11 @@ const Home = () => {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
 
-  const openEditModal = (todo: Todo) => {
+  const handleOpenEditModal = (todo: Todo) => {
     setEditingTodo(todo);
   };
 
-  const openDeleteDialog = (todoId: string) => {
+  const handleOpenDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);
   };
 
@@ -31,14 +31,14 @@ const Home = () => {
         <div className={styles.todoListContainer}>
           <div>
             <StatusTabs
-              setStatusFilter={handleFilterChange}
+              handleFilterChange={handleFilterChange}
               activeFilter={statusFilter}
             />
             <TodoList
-              todos={filteredTodos}
-              openEditModal={openEditModal}
-              handleDeleteTodo={openDeleteDialog}
-              onUpdateTodo={handleUpdateTodo}
+              filteredTodos={filteredTodos}
+              handleUpdateTodo={handleUpdateTodo}
+              handleOpenEditModal={handleOpenEditModal}
+              handleOpenDeleteDialog={handleOpenDeleteDialog}
             />
           </div>
         </div>
