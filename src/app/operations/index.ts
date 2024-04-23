@@ -1,3 +1,4 @@
+import { BASE_URL, fetcher } from "@/app/lib/fetcher";
 import {
   StatusFilter,
   StatusKeyEnum,
@@ -11,45 +12,37 @@ export const fetchTodos = async (
 ): Promise<FetchTodosResponse> => {
   const queryParam =
     statusFilter === StatusKeyEnum.Enum.all ? "" : `status=${statusFilter}`;
-  const response = await fetch(
-    `/api/todos/${queryParam ? "?" + queryParam : ""}`
-  );
-  if (!response.ok) {
-    throw new Error("ToDoの取得に失敗しました");
-  }
-  const data = await response.json();
-  return data;
+  const url = `${BASE_URL}/${queryParam ? "?" + queryParam : ""}`;
+  return fetcher(url);
 };
 
-export const addTodo = async (todo: FormTodoData): Promise<Todo> => {
-  const response = await fetch("/api/todos", {
+export const addTodo = async (todo: FormTodoData) => {
+  const url = `${BASE_URL}`;
+  const options = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ...todo, statusKey: StatusKeyEnum.Enum.incomplete }),
-  });
-  if (!response.ok) {
-    throw new Error("ToDoの追加に失敗しました");
-  }
-  return response.json();
+  };
+  const response = await fetcher(url, options);
+  return response;
 };
 
-export const updateTodo = async (updatedTodo: Todo): Promise<Todo> => {
-  const response = await fetch(`/api/todos?id=${updatedTodo.id}`, {
+export const updateTodo = async (updatedTodo: Todo) => {
+  const url = `${BASE_URL}?id=${updatedTodo.id}`;
+  const options = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedTodo),
-  });
-  if (!response.ok) {
-    throw new Error("ToDoの更新に失敗しました");
-  }
-  return response.json();
+  };
+  const response = await fetcher(url, options);
+  return response;
 };
 
-export const deleteTodo = async (id: string): Promise<void> => {
-  const response = await fetch(`/api/todos?id=${id}`, {
+export const deleteTodo = async (id: string) => {
+  const url = `${BASE_URL}?id=${id}`;
+  const options = {
     method: "DELETE",
-  });
-  if (!response.ok) {
-    throw new Error("ToDoの削除に失敗しました");
-  }
+  };
+  const response = await fetcher(url, options);
+  return response;
 };

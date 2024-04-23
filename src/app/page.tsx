@@ -10,8 +10,17 @@ import { useState } from "react";
 import styles from "./styles.module.css";
 
 const Home = () => {
-  const { statusFilter, filteredTodos, handleUpdateTodo, handleFilterChange } =
-    useTodos();
+  const {
+    todos,
+    statusFilter,
+    handleUpdateTodo,
+    handleFilterChange,
+    isLoading,
+    isError,
+    getFilteredTodos,
+  } = useTodos();
+
+  const filteredTodos = getFilteredTodos(todos, statusFilter);
 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
@@ -23,6 +32,14 @@ const Home = () => {
   const handleOpenDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>fetch Error</div>;
+  }
 
   return (
     <div className={styles.container}>
