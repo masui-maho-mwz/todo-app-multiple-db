@@ -27,9 +27,8 @@ export const TodoList = ({
   const handleEditModal = (filteredTodos: Todo) => {
     handleOpenEditModal(filteredTodos);
   };
-  const todos = filteredTodos || [];
 
-  if (!todos.length) {
+  if (!filteredTodos.length) {
     return <NoTodos />;
   }
 
