@@ -1,88 +1,71 @@
-import { deleteTodo, fetchTodos, updateTodo } from "@/app/operations";
-import {
-  Category,
-  Importance,
-  Priority,
-  StatusFilter,
-  StatusKeyEnum,
-  Todo,
-} from "@/app/types";
-import { useEffect, useState } from "react";
+import { TodosContext } from "@/app/contexts";
+import { deleteTodo, updateTodo } from "@/app/operations";
+import { StatusFilter, StatusKeyEnum, Todo } from "@/app/types";
+import { useContext, useEffect, useState } from "react";
 
 export const useTodos = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(
     StatusKeyEnum.Enum.incomplete
   );
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [priorities, setPriorities] = useState<Priority[]>([]);
-  const [importances, setImportances] = useState<Importance[]>([]);
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const loadData = () => {
-    fetchTodos(statusFilter)
+  const { todos, categories, priorities, importances, loadData } =
+    useContext(TodosContext);
+
+  useEffect(() => {
+    setIsLoading(true);
+    loadData(statusFilter)
       .then((fetchedData) => {
-        setTodos(fetchedData.todos);
-        setCategories(fetchedData.categories);
-        setPriorities(fetchedData.priorities);
-        setImportances(fetchedData.importances);
-        setFilteredTodos(
-          fetchedData.todos.filter(
-            (todo) =>
-              todo.status?.key === statusFilter ||
-              statusFilter === StatusKeyEnum.Enum.all
-          )
-        );
+        setIsLoading(false);
       })
       .catch((error) => {
         alert(`データのフェッチ中にエラーが発生しました: ${error}`);
+        setIsLoading(false);
       });
-  };
+  }, [statusFilter]);
 
-  useEffect(() => {
-    loadData();
-  }, [statusFilter, todos]);
-
-  const handleUpdateTodo = (updatedTodo: Todo) => {
-    updateTodo(updatedTodo)
-      .then((response) => {
-        setTodos((prevTodos) =>
-          prevTodos.map((todo) =>
-            todo.id === updatedTodo.id ? response : todo
-          )
-        );
-      })
-      .catch((error) => {
-        alert(
-          `ToDoの更新に失敗しました。もう一度お試しください。エラー: ${error}`
-        );
-      });
-  };
-
-  const handleDeleteTodo = async (todoId: string) => {
+  const handleUpdateTodo = async (updatedTodo: Todo) => {
+    setIsLoading(true);
     try {
-      await deleteTodo(todoId);
+      await updateTodo(updatedTodo);
+      await loadData();
+      setIsLoading(false);
     } catch (error) {
-      alert(`ToDoの削除中にエラーが発生しました: ${error}`);
+      alert(
+        `ToDoの更新に失敗しました。もう一度お試しください。エラー: ${error}`
+      );
+      setIsLoading(false);
     }
   };
 
-  const handleFilterChange = (newFilter: StatusFilter): Promise<void> => {
-    setStatusFilter(newFilter);
-    return fetchTodos(newFilter)
-      .then((fetchedData) => {
-        setTodos(fetchedData.todos);
-        setFilteredTodos(
-          fetchedData.todos.filter(
-            (todo) =>
-              todo.status?.key === newFilter ||
-              newFilter === StatusKeyEnum.Enum.all
-          )
-        );
-      })
-      .catch((error) => {
-        alert(`データのフェッチ中にエラーが発生しました: ${error}`);
-      });
+  const handleDeleteTodo = async (todoId: string) => {
+    setIsLoading(true);
+    try {
+      await deleteTodo(todoId);
+      await loadData();
+      setIsLoading(false);
+    } catch (error) {
+      alert(`ToDoの削除中にエラーが発生しました: ${error}`);
+      setIsLoading(false);
+    }
+  };
+
+  const handleFilterChange = async (newFilter: StatusFilter) => {
+    setIsLoading(true);
+    try {
+      await loadData(newFilter);
+      const newFiltered = todos.filter(
+        (todo) =>
+          todo.status?.key === newFilter || newFilter === StatusKeyEnum.Enum.all
+      );
+      setFilteredTodos(newFiltered);
+      setStatusFilter(newFilter);
+      setIsLoading(false);
+    } catch (error) {
+      alert(`データのフェッチ中にエラーが発生しました: ${error}`);
+      setIsLoading(false);
+    }
   };
 
   return {
@@ -95,5 +78,7 @@ export const useTodos = () => {
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
+    isLoading,
+    setStatusFilter
   };
 };

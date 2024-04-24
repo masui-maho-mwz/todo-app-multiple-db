@@ -1,10 +1,9 @@
 import { NoTodos } from "@/app/components/todo-list/no-todo";
-import { updateTodo } from "@/app/operations";
 import {
   StatusKeyEnum,
   StatusLabels,
   Todo,
-  type StatusKeys,
+  type StatusKeys
 } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,6 +11,7 @@ import { format, parseISO } from "date-fns";
 import styles from "./styles.module.css";
 
 type Props = {
+  todos: Todo[];
   filteredTodos: Todo[];
   handleUpdateTodo: (updatedTodo: Todo) => void;
   handleOpenEditModal: (todo: Todo) => void;
@@ -19,16 +19,17 @@ type Props = {
 };
 
 export const TodoList = ({
+  todos,
   filteredTodos,
   handleUpdateTodo,
   handleOpenEditModal,
-  handleOpenDeleteDialog,
+  handleOpenDeleteDialog
 }: Props) => {
   const handleEditModal = (filteredTodos: Todo) => {
     handleOpenEditModal(filteredTodos);
   };
-
-  if (!filteredTodos.length) {
+  // 初回todo取得できていない
+  if (!todos.length) {
     return <NoTodos />;
   }
 
@@ -47,24 +48,16 @@ export const TodoList = ({
         name:
           newStatusKey === StatusKeyEnum.Enum.complete
             ? StatusLabels.complete
-            : StatusLabels.incomplete,
-      },
+            : StatusLabels.incomplete
+      }
     };
 
-    updateTodo(updatedTodo)
-      .then((updatedResponse) => {
-        handleUpdateTodo(updatedResponse);
-      })
-      .catch((error) => {
-        alert(
-          `ステータスの更新に失敗しました。もう一度試してください。: ${error}`
-        );
-      });
+    handleUpdateTodo(updatedTodo);
   };
 
   return (
     <>
-      {filteredTodos.map((todo) => (
+      {todos.map((todo) => (
         <div className={styles.todoCard} key={todo.id}>
           <div className={styles.checkboxContainer}>
             <input

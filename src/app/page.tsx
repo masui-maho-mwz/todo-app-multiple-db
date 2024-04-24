@@ -1,6 +1,7 @@
 "use client";
 import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
 import { EditTodoModal } from "@/app/components/forms/edit";
+import { LoadingOverlay } from "@/app/components/loading";
 import { Sidebar } from "@/app/components/sidebar";
 import { StatusTabs } from "@/app/components/status-tabs";
 import { TodoList } from "@/app/components/todo-list";
@@ -10,8 +11,14 @@ import { useState } from "react";
 import styles from "./styles.module.css";
 
 const Home = () => {
-  const { statusFilter, filteredTodos, handleUpdateTodo, handleFilterChange } =
-    useTodos();
+  const {
+    todos,
+    statusFilter,
+    filteredTodos,
+    handleUpdateTodo,
+    handleFilterChange,
+    isLoading
+  } = useTodos();
 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
@@ -26,6 +33,7 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
+      {isLoading && <LoadingOverlay />}
       <div className={styles.formAndList}>
         <Sidebar />
         <div className={styles.todoListContainer}>
@@ -35,6 +43,7 @@ const Home = () => {
               activeFilter={statusFilter}
             />
             <TodoList
+              todos={todos}
               filteredTodos={filteredTodos}
               handleUpdateTodo={handleUpdateTodo}
               handleOpenEditModal={handleOpenEditModal}
