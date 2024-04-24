@@ -1,37 +1,48 @@
-import { Select } from "@/app/components/forms/select";
-import { CustomTooltip } from "@/app/components/forms/tooltip";
-import { Modal } from "@/app/components/surfaces/modal";
-import { useTodos } from "@/app/hooks/use-todos";
-import {
+import { Select } from '@/app/components/forms/select';
+import { CustomTooltip } from '@/app/components/forms/tooltip';
+import { Modal } from '@/app/components/surfaces/modal';
+import type {
   Todo,
-  type CategoryKey,
-  type ImportanceKey,
-  type PriorityKey,
-} from "@/app/types";
-import { format, formatISO, parseISO } from "date-fns";
-import React, { useEffect, useState } from "react";
-import styles from "./styles.module.css";
+  CategoryKey,
+  ImportanceKey,
+  PriorityKey,
+  Category,
+  Importance,
+  Priority,
+} from '@/app/types';
+import { format, formatISO, parseISO } from 'date-fns';
+import React, { useEffect, useState } from 'react';
+import styles from './styles.module.css';
 
 type Props = {
+  categories: Category[];
+  priorities: Priority[];
+  importances: Importance[];
   todo: Todo | null;
+  onClickUpdate: (updatedTodo: Todo) => void;
 };
 
-export const EditTodoModal = ({ todo }: Props) => {
+export const EditTodoModal = ({
+  categories,
+  priorities,
+  importances,
+  todo,
+  onClickUpdate,
+}: Props) => {
   const [show, setShow] = useState(false);
-  const { categories, priorities, importances, handleUpdateTodo } = useTodos();
 
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState('');
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<
-    CategoryKey | ""
-  >(todo ? todo.categoryKey : "");
+    CategoryKey | ''
+  >(todo ? todo.categoryKey : '');
   const [selectedPriorityKey, setSelectedPriorityKey] = useState<
-    PriorityKey | ""
-  >(todo ? todo.priorityKey : "");
+    PriorityKey | ''
+  >(todo ? todo.priorityKey : '');
   const [selectedImportanceKey, setSelectedImportanceKey] = useState<
-    ImportanceKey | ""
-  >(todo ? todo.importanceKey : "");
+    ImportanceKey | ''
+  >(todo ? todo.importanceKey : '');
   const [deadline, setDeadline] = useState<string | null>(
-    todo && todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : null
+    todo && todo.deadline ? format(parseISO(todo.deadline), 'yyyy-MM-dd') : null
   );
 
   useEffect(() => {
@@ -42,7 +53,7 @@ export const EditTodoModal = ({ todo }: Props) => {
       setSelectedPriorityKey(todo.priorityKey);
       setSelectedImportanceKey(todo.importanceKey);
       setDeadline(
-        todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : ""
+        todo.deadline ? format(parseISO(todo.deadline), 'yyyy-MM-dd') : ''
       );
     } else {
       setShow(false);
@@ -62,7 +73,7 @@ export const EditTodoModal = ({ todo }: Props) => {
       !selectedImportanceKey ||
       !deadline
     ) {
-      alert("必要な情報をすべて入力してください。");
+      alert('必要な情報をすべて入力してください。');
       return;
     }
 
@@ -74,7 +85,7 @@ export const EditTodoModal = ({ todo }: Props) => {
       importanceKey: selectedImportanceKey,
       deadline: deadline ? formatISO(parseISO(deadline)) : null,
     };
-    await handleUpdateTodo(updatedTodo);
+    await onClickUpdate(updatedTodo);
     setShow(false);
   };
 
@@ -130,7 +141,7 @@ export const EditTodoModal = ({ todo }: Props) => {
               <CustomTooltip text="期限を選択してください">
                 <input
                   type="date"
-                  value={deadline ? deadline : ""}
+                  value={deadline ? deadline : ''}
                   onChange={(e) => setDeadline(e.target.value)}
                   className={styles.input}
                 />

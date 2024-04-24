@@ -1,23 +1,27 @@
-"use client";
-import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
-import { EditTodoModal } from "@/app/components/forms/edit";
-import { LoadingOverlay } from "@/app/components/loading";
-import { Sidebar } from "@/app/components/sidebar";
-import { StatusTabs } from "@/app/components/status-tabs";
-import { TodoList } from "@/app/components/todo-list";
-import { useTodos } from "@/app/hooks/use-todos";
-import type { Todo } from "@/app/types";
-import { useState } from "react";
-import styles from "./styles.module.css";
+'use client';
+import { DeleteTodoDialog } from '@/app/components/dialogs/delete';
+import { EditTodoModal } from '@/app/components/forms/edit';
+import { LoadingOverlay } from '@/app/components/loading';
+import { Sidebar } from '@/app/components/sidebar';
+import { StatusTabs } from '@/app/components/status-tabs';
+import { TodoList } from '@/app/components/todo-list';
+import { useTodos } from '@/app/hooks/use-todos';
+import type { Todo } from '@/app/types';
+import { useState } from 'react';
+import styles from './styles.module.css';
 
 const Home = () => {
   const {
     todos,
+    categories,
+    priorities,
+    importances,
     statusFilter,
     filteredTodos,
     handleUpdateTodo,
     handleFilterChange,
-    isLoading
+    handleDeleteTodo,
+    isLoading,
   } = useTodos();
 
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
@@ -35,7 +39,7 @@ const Home = () => {
     <div className={styles.container}>
       {isLoading && <LoadingOverlay />}
       <div className={styles.formAndList}>
-        <Sidebar />
+        <Sidebar addTodoProps={{ categories, priorities, importances }} />
         <div className={styles.todoListContainer}>
           <div>
             <StatusTabs
@@ -52,8 +56,21 @@ const Home = () => {
           </div>
         </div>
       </div>
-      {editingTodo && <EditTodoModal todo={editingTodo} />}
-      {deletingTodoId && <DeleteTodoDialog todoId={deletingTodoId} />}
+      {editingTodo && (
+        <EditTodoModal
+          categories={categories}
+          priorities={priorities}
+          importances={importances}
+          todo={editingTodo}
+          onClickUpdate={handleUpdateTodo}
+        />
+      )}
+      {deletingTodoId && (
+        <DeleteTodoDialog
+          onClickDelete={handleDeleteTodo}
+          todoId={deletingTodoId}
+        />
+      )}
     </div>
   );
 };

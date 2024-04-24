@@ -1,51 +1,62 @@
-"use client";
-import { Select } from "@/app/components/forms/select";
-import { CustomTooltip } from "@/app/components/forms/tooltip";
-import { Modal } from "@/app/components/surfaces/modal";
-import { useTodos } from "@/app/hooks/use-todos";
-import { addTodo } from "@/app/operations";
+'use client';
+import { Select } from '@/app/components/forms/select';
+import { CustomTooltip } from '@/app/components/forms/tooltip';
+import { Modal } from '@/app/components/surfaces/modal';
+import { addTodo } from '@/app/operations';
 import {
   StatusKeyEnum,
   type CategoryKey,
   type FormTodoData,
   type ImportanceKey,
   type PriorityKey,
-} from "@/app/types";
-import AddIcon from "@mui/icons-material/Add";
-import { formatISO, parseISO } from "date-fns";
-import React, { useState } from "react";
-import styles from "./styles.module.css";
+  type Category,
+  type Importance,
+  type Priority,
+} from '@/app/types';
+import AddIcon from '@mui/icons-material/Add';
+import { formatISO, parseISO } from 'date-fns';
+import React, { useState } from 'react';
+import styles from './styles.module.css';
 
-export const AddTodoModal = () => {
+type Props = {
+  categories: Category[];
+  priorities: Priority[];
+  importances: Importance[];
+};
+
+export const AddTodoModal = ({
+  categories,
+  priorities,
+  importances,
+}: Props) => {
   const [show, setShow] = useState(false);
-  const { categories, priorities, importances } = useTodos();
 
   const openModal = () => {
-    setDescription("");
-    setSelectedCategory("");
-    setSelectedPriority("");
-    setSelectedImportance("");
-    setDeadline("");
+    setDescription('');
+    setSelectedCategory('');
+    setSelectedPriority('');
+    setSelectedImportance('');
+    setDeadline('');
     setShow(true);
   };
   const closeModal = () => setShow(false);
 
-  const [description, setDescription] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
-    ""
+  const [description, setDescription] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | ''>(
+    ''
   );
-  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | "">(
-    ""
+  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | ''>(
+    ''
   );
   const [selectedImportance, setSelectedImportance] = useState<
-    ImportanceKey | ""
-  >("");
-  const [deadline, setDeadline] = useState("");
+    ImportanceKey | ''
+  >('');
+  const [deadline, setDeadline] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCategory || !selectedPriority || !selectedImportance) {
-      alert("カテゴリ、優先度、重要度を選択してください。");
+      alert('カテゴリ、優先度、重要度を選択してください。');
       return;
     }
     const todoData: FormTodoData = {
@@ -53,7 +64,7 @@ export const AddTodoModal = () => {
       categoryKey: selectedCategory,
       priorityKey: selectedPriority,
       importanceKey: selectedImportance,
-      deadline: deadline ? formatISO(parseISO(deadline)) : "",
+      deadline: deadline ? formatISO(parseISO(deadline)) : '',
       statusKey: StatusKeyEnum.Enum.incomplete,
     };
 

@@ -1,15 +1,20 @@
-"use client";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import SearchIcon from "@mui/icons-material/Search";
-import TuneIcon from "@mui/icons-material/Tune";
-import { AddTodoModal } from "../forms/add";
-import styles from "./styles.module.css";
+'use client';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import SearchIcon from '@mui/icons-material/Search';
+import TuneIcon from '@mui/icons-material/Tune';
+import { AddTodoModal } from '../forms/add';
+import styles from './styles.module.css';
+import { ComponentProps } from 'react';
 
-export const Sidebar = () => {
+type Props = {
+  addTodoProps: ComponentProps<typeof AddTodoModal>;
+};
+
+export const Sidebar = ({ addTodoProps }: Props) => {
   return (
     <div className={styles.container}>
-      <AddTodoModal />
+      <AddTodoModal {...addTodoProps} />
       <div>
         <div className={styles.sidebarItem}>
           <SearchIcon className={styles.icon} />

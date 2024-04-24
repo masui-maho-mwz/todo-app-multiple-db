@@ -1,7 +1,14 @@
-import { TodosContext } from "@/app/contexts";
-import { deleteTodo, updateTodo } from "@/app/operations";
-import { StatusFilter, StatusKeyEnum, Todo } from "@/app/types";
-import { useContext, useEffect, useState } from "react";
+import { deleteTodo, updateTodo, fetchTodos } from '@/app/operations';
+import {
+  type StatusFilter,
+  StatusKeyEnum,
+  type Todo,
+  type Category,
+  type Importance,
+  type Priority,
+  FetchTodosResponse,
+} from '@/app/types';
+import { useEffect, useState } from 'react';
 
 export const useTodos = () => {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(
@@ -10,8 +17,28 @@ export const useTodos = () => {
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { todos, categories, priorities, importances, loadData } =
-    useContext(TodosContext);
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [priorities, setPriorities] = useState<Priority[]>([]);
+  const [importances, setImportances] = useState<Importance[]>([]);
+
+  const loadData = async (
+    statusFilter: StatusFilter = StatusKeyEnum.Enum.incomplete
+  ): Promise<FetchTodosResponse> => {
+    const fetchedData = await fetchTodos(statusFilter);
+    setTodos(fetchedData.todos);
+    setCategories(fetchedData.categories);
+    setPriorities(fetchedData.priorities);
+    setImportances(fetchedData.importances);
+    setFilteredTodos(
+      fetchedData.todos.filter(
+        (todo) =>
+          todo.status?.key === statusFilter ||
+          statusFilter === StatusKeyEnum.Enum.all
+      )
+    );
+    return fetchedData;
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -79,6 +106,6 @@ export const useTodos = () => {
     handleDeleteTodo,
     handleFilterChange,
     isLoading,
-    setStatusFilter
+    setStatusFilter,
   };
 };

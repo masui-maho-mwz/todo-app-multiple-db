@@ -1,15 +1,14 @@
-import { Modal } from "@/app/components/surfaces/modal";
-import { useTodos } from "@/app/hooks/use-todos";
-import { useEffect, useState } from "react";
-import styles from "./styles.module.css";
+import { Modal } from '@/app/components/surfaces/modal';
+import { useEffect, useState } from 'react';
+import styles from './styles.module.css';
 
 type Props = {
+  onClickDelete: (todoId: string) => void;
   todoId: string | null;
 };
 
-export const DeleteTodoDialog = ({ todoId }: Props) => {
+export const DeleteTodoDialog = ({ onClickDelete, todoId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { handleDeleteTodo } = useTodos();
 
   useEffect(() => {
     if (todoId) setIsOpen(true);
@@ -22,7 +21,7 @@ export const DeleteTodoDialog = ({ todoId }: Props) => {
 
   const handleConfirm = async () => {
     if (todoId) {
-      await handleDeleteTodo(todoId);
+      await onClickDelete(todoId);
       setIsOpen(false);
     }
   };
