@@ -8,9 +8,9 @@ type Props = {
 
 export const StatusTabs = ({ handleFilterChange, activeFilter }: Props) => {
   const tabs: { key: StatusFilter; label: string }[] = [
-    { key: StatusKeyEnum.Enum.all, label: StatusLabels.all },
-    { key: StatusKeyEnum.Enum.complete, label: StatusLabels.complete },
     { key: StatusKeyEnum.Enum.incomplete, label: StatusLabels.incomplete },
+    { key: StatusKeyEnum.Enum.complete, label: StatusLabels.complete },
+    { key: StatusKeyEnum.Enum.all, label: StatusLabels.all }
   ];
   const handleTabClick = (key: StatusFilter) => {
     handleFilterChange(key);
