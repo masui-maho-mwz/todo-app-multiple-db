@@ -1,11 +1,11 @@
-'use client';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import SearchIcon from '@mui/icons-material/Search';
-import TuneIcon from '@mui/icons-material/Tune';
-import { AddTodoModal } from '../forms/add';
-import styles from './styles.module.css';
-import { ComponentProps } from 'react';
+"use client";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import SearchIcon from "@mui/icons-material/Search";
+import TuneIcon from "@mui/icons-material/Tune";
+import { ComponentProps } from "react";
+import { AddTodoModal } from "../forms/add";
+import styles from "./styles.module.css";
 
 type Props = {
   addTodoProps: ComponentProps<typeof AddTodoModal>;

@@ -1,62 +1,63 @@
-'use client';
-import { Select } from '@/app/components/forms/select';
-import { CustomTooltip } from '@/app/components/forms/tooltip';
-import { Modal } from '@/app/components/surfaces/modal';
-import { addTodo } from '@/app/operations';
+"use client";
+import { Select } from "@/app/components/forms/select";
+import { CustomTooltip } from "@/app/components/forms/tooltip";
+import { Modal } from "@/app/components/surfaces/modal";
 import {
   StatusKeyEnum,
+  type Category,
   type CategoryKey,
   type FormTodoData,
-  type ImportanceKey,
-  type PriorityKey,
-  type Category,
   type Importance,
+  type ImportanceKey,
   type Priority,
-} from '@/app/types';
-import AddIcon from '@mui/icons-material/Add';
-import { formatISO, parseISO } from 'date-fns';
-import React, { useState } from 'react';
-import styles from './styles.module.css';
+  type PriorityKey
+} from "@/app/types";
+import AddIcon from "@mui/icons-material/Add";
+import { formatISO, parseISO } from "date-fns";
+import React, { useState } from "react";
+import styles from "./styles.module.css";
 
 type Props = {
   categories: Category[];
   priorities: Priority[];
   importances: Importance[];
+  onClickAdd: (newTodoData: FormTodoData) => void;
 };
 
 export const AddTodoModal = ({
   categories,
   priorities,
   importances,
+  onClickAdd
 }: Props) => {
   const [show, setShow] = useState(false);
 
   const openModal = () => {
-    setDescription('');
-    setSelectedCategory('');
-    setSelectedPriority('');
-    setSelectedImportance('');
-    setDeadline('');
+    setDescription("");
+    setSelectedCategory("");
+    setSelectedPriority("");
+    setSelectedImportance("");
+    setDeadline("");
     setShow(true);
   };
   const closeModal = () => setShow(false);
 
-  const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | ''>(
-    ''
+  const [description, setDescription] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
+    ""
   );
-  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | ''>(
-    ''
+  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | "">(
+    ""
   );
   const [selectedImportance, setSelectedImportance] = useState<
-    ImportanceKey | ''
-  >('');
-  const [deadline, setDeadline] = useState('');
+    ImportanceKey | ""
+  >("");
+  const [deadline, setDeadline] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCategory || !selectedPriority || !selectedImportance) {
-      alert('カテゴリ、優先度、重要度を選択してください。');
+      alert("カテゴリ、優先度、重要度を選択してください。");
       return;
     }
     const todoData: FormTodoData = {
@@ -64,18 +65,12 @@ export const AddTodoModal = ({
       categoryKey: selectedCategory,
       priorityKey: selectedPriority,
       importanceKey: selectedImportance,
-      deadline: deadline ? formatISO(parseISO(deadline)) : '',
-      statusKey: StatusKeyEnum.Enum.incomplete,
+      deadline: deadline ? formatISO(parseISO(deadline)) : "",
+      statusKey: StatusKeyEnum.Enum.incomplete
     };
 
-    addTodo(todoData)
-      .then(() => {
-        setShow(false);
-      })
-      .catch((error) => {
-        alert(`ToDoの追加中にエラーが発生しました: ${error}`);
-        setShow(false);
-      });
+    await onClickAdd(todoData);
+    setShow(false);
   };
 
   return (
@@ -98,7 +93,7 @@ export const AddTodoModal = ({
               <Select
                 options={categories.map((category) => ({
                   key: category.key,
-                  name: category.name,
+                  name: category.name
                 }))}
                 value={selectedCategory}
                 onChange={setSelectedCategory}
@@ -107,7 +102,7 @@ export const AddTodoModal = ({
               <Select
                 options={priorities.map((priority) => ({
                   key: priority.key,
-                  name: priority.name,
+                  name: priority.name
                 }))}
                 value={selectedPriority}
                 onChange={setSelectedPriority}
@@ -116,7 +111,7 @@ export const AddTodoModal = ({
               <Select
                 options={importances.map((importance) => ({
                   key: importance.key,
-                  name: importance.name,
+                  name: importance.name
                 }))}
                 value={selectedImportance}
                 onChange={setSelectedImportance}

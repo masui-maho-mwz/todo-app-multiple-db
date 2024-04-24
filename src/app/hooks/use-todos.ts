@@ -1,17 +1,18 @@
-import { deleteTodo, updateTodo, fetchTodos } from '@/app/operations';
+import { addTodo, deleteTodo, fetchTodos, updateTodo } from "@/app/operations";
 import {
-  type StatusFilter,
+  FetchTodosResponse,
   StatusKeyEnum,
-  type Todo,
   type Category,
+  type FormTodoData,
   type Importance,
   type Priority,
-  FetchTodosResponse,
-} from '@/app/types';
-import { useEffect, useState } from 'react';
+  type StatusFilter,
+  type Todo
+} from "@/app/types";
+import { useEffect, useState } from "react";
 
 export const useTodos = () => {
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>(
+  const [activeFilter, setActiveFilter] = useState<StatusFilter>(
     StatusKeyEnum.Enum.incomplete
   );
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
@@ -23,9 +24,9 @@ export const useTodos = () => {
   const [importances, setImportances] = useState<Importance[]>([]);
 
   const loadData = async (
-    statusFilter: StatusFilter = StatusKeyEnum.Enum.incomplete
+    activeFilter: StatusFilter = StatusKeyEnum.Enum.incomplete
   ): Promise<FetchTodosResponse> => {
-    const fetchedData = await fetchTodos(statusFilter);
+    const fetchedData = await fetchTodos(activeFilter);
     setTodos(fetchedData.todos);
     setCategories(fetchedData.categories);
     setPriorities(fetchedData.priorities);
@@ -33,8 +34,8 @@ export const useTodos = () => {
     setFilteredTodos(
       fetchedData.todos.filter(
         (todo) =>
-          todo.status?.key === statusFilter ||
-          statusFilter === StatusKeyEnum.Enum.all
+          todo.status?.key === activeFilter ||
+          activeFilter === StatusKeyEnum.Enum.all
       )
     );
     return fetchedData;
@@ -42,7 +43,7 @@ export const useTodos = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    loadData(statusFilter)
+    loadData(activeFilter)
       .then((fetchedData) => {
         setIsLoading(false);
       })
@@ -50,7 +51,21 @@ export const useTodos = () => {
         alert(`データのフェッチ中にエラーが発生しました: ${error}`);
         setIsLoading(false);
       });
-  }, [statusFilter]);
+  }, [activeFilter]);
+
+  const handleAddTodo = async (newTodoData: FormTodoData) => {
+    setIsLoading(true);
+    try {
+      await addTodo(newTodoData);
+      await loadData();
+      setIsLoading(false);
+    } catch (error) {
+      alert(
+        `ToDoの追加に失敗しました。もう一度お試しください。エラー: ${error}`
+      );
+      setIsLoading(false);
+    }
+  };
 
   const handleUpdateTodo = async (updatedTodo: Todo) => {
     setIsLoading(true);
@@ -82,12 +97,7 @@ export const useTodos = () => {
     setIsLoading(true);
     try {
       await loadData(newFilter);
-      const newFiltered = todos.filter(
-        (todo) =>
-          todo.status?.key === newFilter || newFilter === StatusKeyEnum.Enum.all
-      );
-      setFilteredTodos(newFiltered);
-      setStatusFilter(newFilter);
+      setActiveFilter(newFilter);
       setIsLoading(false);
     } catch (error) {
       alert(`データのフェッチ中にエラーが発生しました: ${error}`);
@@ -97,15 +107,15 @@ export const useTodos = () => {
 
   return {
     todos,
-    statusFilter,
+    activeFilter,
     categories,
     priorities,
     importances,
     filteredTodos,
+    handleAddTodo,
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
-    isLoading,
-    setStatusFilter,
+    isLoading
   };
 };
