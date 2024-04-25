@@ -81,7 +81,7 @@ export const AddTodoModal = ({
       </div>
       {show && (
         <Modal>
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form onSubmit={handleSubmit} className={styles.form} noValidate>
             <input
               type="text"
               value={description}
