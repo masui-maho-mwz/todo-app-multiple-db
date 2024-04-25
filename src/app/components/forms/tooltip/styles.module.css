@@ -1,9 +1,9 @@
-.tooltipContainer {
+.root {
   position: relative;
   display: inline-block;
 }
 
-.customTooltip {
+.tooltip {
   position: absolute;
   bottom: 90%;
   left: 40%;

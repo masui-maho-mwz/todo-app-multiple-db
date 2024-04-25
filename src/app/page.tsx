@@ -36,9 +36,9 @@ const Home = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.root}>
       {isLoading && <LoadingOverlay />}
-      <div className={styles.formAndList}>
+      <div className={styles.container}>
         <Sidebar
           addTodoProps={{
             categories: categories,
@@ -47,7 +47,7 @@ const Home = () => {
             onClickAdd: handleAddTodo
           }}
         />
-        <div className={styles.todoListContainer}>
+        <div className={styles.list}>
           <div>
             <StatusTabs
               handleFilterChange={handleFilterChange}

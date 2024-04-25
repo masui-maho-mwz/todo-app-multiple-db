@@ -1,6 +1,6 @@
-import { Modal } from '@/app/components/surfaces/modal';
-import { useEffect, useState } from 'react';
-import styles from './styles.module.css';
+import { Modal } from "@/app/components/surfaces/modal";
+import { useEffect, useState } from "react";
+import styles from "./styles.module.css";
 
 type Props = {
   onClickDelete: (todoId: string) => void;
@@ -32,11 +32,11 @@ export const DeleteTodoDialog = ({ onClickDelete, todoId }: Props) => {
     <Modal>
       <div>
         <p>本当に削除してよろしいですか？</p>
-        <div className={styles.dialogButton}>
-          <button onClick={handleClose} className={styles.cancelButton}>
+        <div className={styles.actions}>
+          <button onClick={handleClose} className={styles.cancel}>
             キャンセル
           </button>
-          <button onClick={handleConfirm} className={styles.deleteButton}>
+          <button onClick={handleConfirm} className={styles.delete}>
             削除
           </button>
         </div>

@@ -1,4 +1,4 @@
-.select {
+.root {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -10,6 +10,6 @@
   -moz-appearance: none;
 }
 
-.select:last-child {
+.root:last-child {
   margin-right: 0;
 }

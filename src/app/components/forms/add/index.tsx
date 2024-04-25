@@ -75,7 +75,7 @@ export const AddTodoModal = ({
 
   return (
     <div>
-      <div className={styles.sidebarItem} onClick={openModal}>
+      <div className={styles.sidebar} onClick={openModal}>
         <AddIcon className={styles.icon} />
         <span className={styles.label}>タスクを追加</span>
       </div>
@@ -87,9 +87,9 @@ export const AddTodoModal = ({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Todoを入力してください"
-              className={styles.inputText}
+              className={styles.text}
             />
-            <div className={styles.inputContainer}>
+            <div className={styles.items}>
               <Select
                 options={categories.map((category) => ({
                   key: category.key,
@@ -123,19 +123,19 @@ export const AddTodoModal = ({
                   id="deadline"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className={styles.inputDeadline}
+                  className={styles.date}
                 />
               </CustomTooltip>
             </div>
-            <div className={styles.buttonContainer}>
+            <div className={styles.actions}>
               <button
                 type="button"
-                className={styles.cancelButton}
+                className={styles.cancel}
                 onClick={closeModal}
               >
                 キャンセル
               </button>
-              <button className={styles.submitButton} type="submit">
+              <button className={styles.add} type="submit">
                 追加
               </button>
             </div>

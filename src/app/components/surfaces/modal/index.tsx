@@ -7,8 +7,8 @@ type Props = {
 
 export const Modal = ({ children }: Props) => {
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>{children}</div>
+    <div className={styles.overlay}>
+      <div className={styles.content}>{children}</div>
     </div>
   );
 };

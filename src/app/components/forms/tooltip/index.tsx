@@ -11,12 +11,12 @@ export const CustomTooltip = ({ children, text }: Props) => {
 
   return (
     <div
-      className={styles.tooltipContainer}
+      className={styles.root}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
       {children}
-      {show && <div className={styles.customTooltip}>{text}</div>}
+      {show && <div className={styles.tooltip}>{text}</div>}
     </div>
   );
 };

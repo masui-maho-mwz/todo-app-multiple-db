@@ -13,22 +13,22 @@ type Props = {
 
 export const Sidebar = ({ addTodoProps }: Props) => {
   return (
-    <div className={styles.container}>
+    <div className={styles.root}>
       <AddTodoModal {...addTodoProps} />
       <div>
-        <div className={styles.sidebarItem}>
+        <div className={styles.item}>
           <SearchIcon className={styles.icon} />
           <span className={styles.label}>検索</span>
         </div>
-        <div className={styles.sidebarItem}>
+        <div className={styles.item}>
           <CalendarTodayIcon className={styles.icon} />
           <span className={styles.label}>今日</span>
         </div>
-        <div className={styles.sidebarItem}>
+        <div className={styles.item}>
           <CalendarMonthIcon className={styles.icon} />
           <span className={styles.label}>全て</span>
         </div>
-        <div className={styles.sidebarItem}>
+        <div className={styles.item}>
           <TuneIcon className={styles.icon} />
           <span className={styles.label}>フィルター</span>
         </div>

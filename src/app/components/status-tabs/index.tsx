@@ -20,11 +20,11 @@ export const StatusTabs = ({ handleFilterChange, activeFilter }: Props) => {
   };
 
   return (
-    <div className={styles.tabContainer}>
+    <div className={styles.root}>
       {tabs.map((tab) => (
         <button
           key={tab.key}
-          className={`${styles.tab} ${
+          className={`${styles.action} ${
             tab.key === activeFilter ? styles.activeTab : ""
           }`}
           onClick={() => handleTabClick(tab.key)}

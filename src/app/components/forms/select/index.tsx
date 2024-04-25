@@ -16,13 +16,13 @@ export const Select = <T extends string>({
   options,
   value,
   onChange,
-  placeholder,
+  placeholder
 }: Props<T>) => {
   return (
     <select
       value={value}
       onChange={(e) => onChange(e.target.value as T | "")}
-      className={styles.select}
+      className={styles.root}
     >
       <option value="">{placeholder}</option>
       {options.map((option) => (

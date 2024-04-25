@@ -1,18 +1,18 @@
-import { Select } from '@/app/components/forms/select';
-import { CustomTooltip } from '@/app/components/forms/tooltip';
-import { Modal } from '@/app/components/surfaces/modal';
+import { Select } from "@/app/components/forms/select";
+import { CustomTooltip } from "@/app/components/forms/tooltip";
+import { Modal } from "@/app/components/surfaces/modal";
 import type {
-  Todo,
-  CategoryKey,
-  ImportanceKey,
-  PriorityKey,
   Category,
+  CategoryKey,
   Importance,
+  ImportanceKey,
   Priority,
-} from '@/app/types';
-import { format, formatISO, parseISO } from 'date-fns';
-import React, { useEffect, useState } from 'react';
-import styles from './styles.module.css';
+  PriorityKey,
+  Todo
+} from "@/app/types";
+import { format, formatISO, parseISO } from "date-fns";
+import React, { useEffect, useState } from "react";
+import styles from "./styles.module.css";
 
 type Props = {
   categories: Category[];
@@ -27,22 +27,22 @@ export const EditTodoModal = ({
   priorities,
   importances,
   todo,
-  onClickUpdate,
+  onClickUpdate
 }: Props) => {
   const [show, setShow] = useState(false);
 
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<
-    CategoryKey | ''
-  >(todo ? todo.categoryKey : '');
+    CategoryKey | ""
+  >(todo ? todo.categoryKey : "");
   const [selectedPriorityKey, setSelectedPriorityKey] = useState<
-    PriorityKey | ''
-  >(todo ? todo.priorityKey : '');
+    PriorityKey | ""
+  >(todo ? todo.priorityKey : "");
   const [selectedImportanceKey, setSelectedImportanceKey] = useState<
-    ImportanceKey | ''
-  >(todo ? todo.importanceKey : '');
+    ImportanceKey | ""
+  >(todo ? todo.importanceKey : "");
   const [deadline, setDeadline] = useState<string | null>(
-    todo && todo.deadline ? format(parseISO(todo.deadline), 'yyyy-MM-dd') : null
+    todo && todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : null
   );
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export const EditTodoModal = ({
       setSelectedPriorityKey(todo.priorityKey);
       setSelectedImportanceKey(todo.importanceKey);
       setDeadline(
-        todo.deadline ? format(parseISO(todo.deadline), 'yyyy-MM-dd') : ''
+        todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : ""
       );
     } else {
       setShow(false);
@@ -73,7 +73,7 @@ export const EditTodoModal = ({
       !selectedImportanceKey ||
       !deadline
     ) {
-      alert('必要な情報をすべて入力してください。');
+      alert("必要な情報をすべて入力してください。");
       return;
     }
 
@@ -83,7 +83,7 @@ export const EditTodoModal = ({
       categoryKey: selectedCategoryKey,
       priorityKey: selectedPriorityKey,
       importanceKey: selectedImportanceKey,
-      deadline: deadline ? formatISO(parseISO(deadline)) : null,
+      deadline: deadline ? formatISO(parseISO(deadline)) : null
     };
     await onClickUpdate(updatedTodo);
     setShow(false);
@@ -95,25 +95,21 @@ export const EditTodoModal = ({
     <>
       {show && (
         <Modal>
-          <form
-            onSubmit={handleEditSubmit}
-            className={styles.formContainer}
-            noValidate
-          >
-            <div className={styles.inputRow}>
+          <form onSubmit={handleEditSubmit} className={styles.root} noValidate>
+            <div className={styles.input}>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Todoを入力してください"
-                className={styles.input}
+                className={styles.text}
               />
             </div>
-            <div className={styles.inputRow}>
+            <div className={styles.input}>
               <Select
                 options={categories.map((category) => ({
                   key: category.key,
-                  name: category.name,
+                  name: category.name
                 }))}
                 value={selectedCategoryKey}
                 onChange={setSelectedCategoryKey}
@@ -122,7 +118,7 @@ export const EditTodoModal = ({
               <Select
                 options={priorities.map((priority) => ({
                   key: priority.key,
-                  name: priority.name,
+                  name: priority.name
                 }))}
                 value={selectedPriorityKey}
                 onChange={setSelectedPriorityKey}
@@ -131,7 +127,7 @@ export const EditTodoModal = ({
               <Select
                 options={importances.map((importance) => ({
                   key: importance.key,
-                  name: importance.name,
+                  name: importance.name
                 }))}
                 value={selectedImportanceKey}
                 onChange={setSelectedImportanceKey}
@@ -141,21 +137,21 @@ export const EditTodoModal = ({
               <CustomTooltip text="期限を選択してください">
                 <input
                   type="date"
-                  value={deadline ? deadline : ''}
+                  value={deadline ? deadline : ""}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className={styles.input}
+                  className={styles.text}
                 />
               </CustomTooltip>
             </div>
-            <div className={styles.buttonContainer}>
+            <div className={styles.actions}>
               <button
                 type="button"
                 onClick={handleClose}
-                className={styles.cancelButton}
+                className={styles.cancel}
               >
                 キャンセル
               </button>
-              <button type="submit" className={styles.editButton}>
+              <button type="submit" className={styles.edit}>
                 保存
               </button>
             </div>

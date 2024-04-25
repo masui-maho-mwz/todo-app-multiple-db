@@ -57,8 +57,8 @@ export const TodoList = ({
   return (
     <>
       {filteredTodos.map((filteredTodos) => (
-        <div className={styles.todoCard} key={filteredTodos.id}>
-          <div className={styles.checkboxContainer}>
+        <div className={styles.root} key={filteredTodos.id}>
+          <div className={styles.input}>
             <input
               type="checkbox"
               checked={filteredTodos.statusKey === StatusKeyEnum.Enum.complete}
@@ -66,13 +66,11 @@ export const TodoList = ({
               className={styles.checkbox}
             />
           </div>
-          <div className={styles.todoDetails}>
-            <div className={styles.descriptionWrapper}>
-              <div className={styles.description}>
-                {filteredTodos.description}
-              </div>
+          <div className={styles.main}>
+            <div className={styles.description}>
+              <div className={styles.text}>{filteredTodos.description}</div>
             </div>
-            <div className={styles.todoInfo}>
+            <div className={styles.info}>
               <span className={styles.chip}>
                 カテゴリー: {filteredTodos.category?.name}
               </span>
@@ -90,15 +88,15 @@ export const TodoList = ({
               </span>
             </div>
           </div>
-          <div className={styles.actionIcons}>
+          <div className={styles.actions}>
             <button
-              className={styles.editButton}
+              className={styles.edit}
               onClick={() => handleEditModal(filteredTodos)}
             >
               <EditIcon fontSize="small" />
             </button>
             <button
-              className={styles.deleteButton}
+              className={styles.delete}
               onClick={() => handleOpenDeleteDialog(filteredTodos.id)}
             >
               <DeleteIcon fontSize="small" />

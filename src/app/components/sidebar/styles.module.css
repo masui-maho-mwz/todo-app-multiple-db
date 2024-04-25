@@ -1,4 +1,4 @@
-.container {
+.root {
   background-color: rgb(240, 240, 240);
   max-width: 240px;
   min-width: 160px;
@@ -7,7 +7,7 @@
   min-height: 100vh;
 }
 
-.sidebarItem {
+.item {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -16,7 +16,7 @@
   transition: background-color 0.3s, font-weight 0.3s;
 }
 
-.sidebarItem:hover {
+.item:hover {
   background-color: #e0e0e0;
   font-weight: bold;
 }
