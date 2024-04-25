@@ -7,7 +7,10 @@ type Props = {
 };
 
 export const StatusTabs = ({ handleFilterChange, activeFilter }: Props) => {
-  const tabs: { key: StatusFilter; label: string }[] = [
+  const tabs: {
+    key: StatusFilter;
+    label: (typeof StatusLabels)[keyof typeof StatusLabels];
+  }[] = [
     { key: StatusKeyEnum.Enum.incomplete, label: StatusLabels.incomplete },
     { key: StatusKeyEnum.Enum.complete, label: StatusLabels.complete },
     { key: StatusKeyEnum.Enum.all, label: StatusLabels.all }

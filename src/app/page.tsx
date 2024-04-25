@@ -12,7 +12,6 @@ import styles from "./styles.module.css";
 
 const Home = () => {
   const {
-    todos,
     categories,
     priorities,
     importances,
@@ -55,7 +54,6 @@ const Home = () => {
               activeFilter={activeFilter}
             />
             <TodoList
-              todos={todos}
               filteredTodos={filteredTodos}
               handleUpdateTodo={handleUpdateTodo}
               handleOpenEditModal={handleOpenEditModal}

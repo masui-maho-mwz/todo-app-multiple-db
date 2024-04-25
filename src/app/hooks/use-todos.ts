@@ -17,8 +17,6 @@ export const useTodos = () => {
   );
   const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [importances, setImportances] = useState<Importance[]>([]);
@@ -27,17 +25,16 @@ export const useTodos = () => {
     activeFilter: StatusFilter = StatusKeyEnum.Enum.incomplete
   ): Promise<FetchTodosResponse> => {
     const fetchedData = await fetchTodos(activeFilter);
-    setTodos(fetchedData.todos);
     setCategories(fetchedData.categories);
     setPriorities(fetchedData.priorities);
     setImportances(fetchedData.importances);
-    setFilteredTodos(
-      fetchedData.todos.filter(
-        (todo) =>
-          todo.status?.key === activeFilter ||
-          activeFilter === StatusKeyEnum.Enum.all
-      )
+    const filteredTodos = fetchedData.todos.filter(
+      (todo) =>
+        todo.statusKey === activeFilter ||
+        activeFilter === StatusKeyEnum.Enum.all
     );
+
+    setFilteredTodos(filteredTodos);
     return fetchedData;
   };
 
@@ -71,7 +68,7 @@ export const useTodos = () => {
     setIsLoading(true);
     try {
       await updateTodo(updatedTodo);
-      await loadData();
+      await loadData(activeFilter);
       setIsLoading(false);
     } catch (error) {
       alert(
@@ -97,6 +94,12 @@ export const useTodos = () => {
     setIsLoading(true);
     try {
       await loadData(newFilter);
+      setFilteredTodos((prevTodos) =>
+        prevTodos.filter(
+          (todo) =>
+            todo.statusKey === newFilter || newFilter === StatusKeyEnum.Enum.all
+        )
+      );
       setActiveFilter(newFilter);
       setIsLoading(false);
     } catch (error) {
@@ -106,7 +109,6 @@ export const useTodos = () => {
   };
 
   return {
-    todos,
     activeFilter,
     categories,
     priorities,

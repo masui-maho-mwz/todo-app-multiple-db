@@ -11,7 +11,6 @@ import { format, parseISO } from "date-fns";
 import styles from "./styles.module.css";
 
 type Props = {
-  todos: Todo[];
   filteredTodos: Todo[];
   handleUpdateTodo: (updatedTodo: Todo) => void;
   handleOpenEditModal: (todo: Todo) => void;
@@ -19,7 +18,6 @@ type Props = {
 };
 
 export const TodoList = ({
-  todos,
   filteredTodos,
   handleUpdateTodo,
   handleOpenEditModal,
@@ -28,15 +26,14 @@ export const TodoList = ({
   const handleEditModal = (filteredTodos: Todo) => {
     handleOpenEditModal(filteredTodos);
   };
-  // 初回todo取得できていない
-  if (!todos.length) {
+
+  if (!filteredTodos.length) {
     return <NoTodos />;
   }
 
   const handleStatusChange = async (todo: Todo) => {
-    const currentStatusKey = todo.statusKey || StatusKeyEnum.Enum.incomplete;
     const newStatusKey: StatusKeys =
-      currentStatusKey === StatusKeyEnum.Enum.complete
+      todo.statusKey === StatusKeyEnum.Enum.complete
         ? StatusKeyEnum.Enum.incomplete
         : StatusKeyEnum.Enum.complete;
 
@@ -48,39 +45,47 @@ export const TodoList = ({
         name:
           newStatusKey === StatusKeyEnum.Enum.complete
             ? StatusLabels.complete
-            : StatusLabels.incomplete
+            : newStatusKey === StatusKeyEnum.Enum.incomplete
+            ? StatusLabels.incomplete
+            : StatusLabels.all
       }
     };
 
-    handleUpdateTodo(updatedTodo);
+    await handleUpdateTodo(updatedTodo);
   };
 
   return (
     <>
-      {todos.map((todo) => (
-        <div className={styles.todoCard} key={todo.id}>
+      {filteredTodos.map((filteredTodos) => (
+        <div className={styles.todoCard} key={filteredTodos.id}>
           <div className={styles.checkboxContainer}>
             <input
               type="checkbox"
-              checked={todo.statusKey === StatusKeyEnum.Enum.complete}
-              onChange={() => handleStatusChange(todo)}
+              checked={filteredTodos.statusKey === StatusKeyEnum.Enum.complete}
+              onChange={() => handleStatusChange(filteredTodos)}
               className={styles.checkbox}
             />
           </div>
           <div className={styles.todoDetails}>
             <div className={styles.descriptionWrapper}>
-              <div className={styles.description}>{todo.description}</div>
+              <div className={styles.description}>
+                {filteredTodos.description}
+              </div>
             </div>
             <div className={styles.todoInfo}>
               <span className={styles.chip}>
-                カテゴリー: {todo.category?.name}
+                カテゴリー: {filteredTodos.category?.name}
               </span>
-              <span className={styles.chip}>優先: {todo.priority?.name}</span>
-              <span className={styles.chip}>重要: {todo.importance?.name}</span>
+              <span className={styles.chip}>
+                優先: {filteredTodos.priority?.name}
+              </span>
+              <span className={styles.chip}>
+                重要: {filteredTodos.importance?.name}
+              </span>
               <span className={styles.chip}>
                 期限:
-                {todo.deadline
-                  ? format(parseISO(todo.deadline), "yyyy/MM/dd")
+                {filteredTodos.deadline
+                  ? format(parseISO(filteredTodos.deadline), "yyyy/MM/dd")
                   : "未設定"}
               </span>
             </div>
@@ -88,13 +93,13 @@ export const TodoList = ({
           <div className={styles.actionIcons}>
             <button
               className={styles.editButton}
-              onClick={() => handleEditModal(todo)}
+              onClick={() => handleEditModal(filteredTodos)}
             >
               <EditIcon fontSize="small" />
             </button>
             <button
               className={styles.deleteButton}
-              onClick={() => handleOpenDeleteDialog(todo.id)}
+              onClick={() => handleOpenDeleteDialog(filteredTodos.id)}
             >
               <DeleteIcon fontSize="small" />
             </button>
