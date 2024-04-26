@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/prisma";
+import { prisma } from "@/app/api/prisma";
 import { createId } from "@paralleldrive/cuid2";
 
 export const createTodos = async () => {

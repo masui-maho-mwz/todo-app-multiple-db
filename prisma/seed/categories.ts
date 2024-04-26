@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/prisma";
+import { prisma } from "@/app/api/prisma";
 
 export const createCategories = async () => {
   const data = [
@@ -7,7 +7,7 @@ export const createCategories = async () => {
     { key: "housework", name: "家事" },
     { key: "work", name: "仕事" },
     { key: "study", name: "勉強" },
-    { key: "other", name: "他" },
+    { key: "other", name: "他" }
   ];
   await prisma.category.createMany({ data });
 };

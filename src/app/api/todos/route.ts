@@ -1,4 +1,4 @@
-import { prisma } from "@/app/lib/prisma";
+import { prisma } from "@/app/api/prisma";
 import { StatusKeyEnum, type FormTodoData } from "@/app/types";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -18,10 +18,10 @@ export async function POST(req: NextRequest) {
       categoryKey,
       priorityKey,
       importanceKey,
-      deadline,
+      deadline
     }: FormTodoData = await req.json();
     const validStatusKey = await prisma.status.findUnique({
-      where: { key: StatusKeyEnum.Enum.incomplete },
+      where: { key: StatusKeyEnum.Enum.incomplete }
     });
 
     if (!validStatusKey) {
@@ -39,14 +39,14 @@ export async function POST(req: NextRequest) {
         priorityKey,
         importanceKey,
         statusKey: validStatusKey.key,
-        deadline: validDeadline,
+        deadline: validDeadline
       },
       include: {
         status: true,
         category: true,
         priority: true,
-        importance: true,
-      },
+        importance: true
+      }
     });
     return NextResponse.json(todo, { status: 200 });
   } catch (error) {
@@ -54,14 +54,14 @@ export async function POST(req: NextRequest) {
       const status = error.message.startsWith("Invalid deadline") ? 400 : 500;
       return NextResponse.json(
         {
-          message: `ToDoの作成に失敗しました: ${error.message}`,
+          message: `ToDoの作成に失敗しました: ${error.message}`
         },
         { status }
       );
     } else {
       return NextResponse.json(
         {
-          message: `ToDoの作成に失敗しました: unknown error`,
+          message: `ToDoの作成に失敗しました: unknown error`
         },
         { status: 500 }
       );
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
   const statusCondition: { statusKey?: string } = {};
   if (statusKey && statusKey !== StatusKeyEnum.Enum.all) {
     const status = await prisma.status.findUnique({
-      where: { key: statusKey },
+      where: { key: statusKey }
     });
     if (status) {
       statusCondition.statusKey = status.key;
@@ -86,14 +86,14 @@ export async function GET(req: NextRequest) {
   try {
     const todos = await prisma.todo.findMany({
       where: {
-        ...statusCondition,
+        ...statusCondition
       },
       include: {
         category: true,
         priority: true,
         importance: true,
-        status: true,
-      },
+        status: true
+      }
     });
 
     const categories = await prisma.category.findMany();
@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        message: `ToDoの取得に失敗しました, ${error}`,
+        message: `ToDoの取得に失敗しました, ${error}`
       },
       { status: 500 }
     );
@@ -121,7 +121,7 @@ export async function PUT(req: NextRequest) {
   const statusKey = body.status.key;
   try {
     const status = await prisma.status.findUnique({
-      where: { key: statusKey },
+      where: { key: statusKey }
     });
 
     if (!status) {
@@ -139,21 +139,21 @@ export async function PUT(req: NextRequest) {
         priorityKey,
         importanceKey,
         deadline: deadline ? new Date(deadline) : null,
-        statusKey: status.key,
+        statusKey: status.key
       },
       include: {
         status: true,
         category: true,
         priority: true,
-        importance: true,
-      },
+        importance: true
+      }
     });
 
     return NextResponse.json(updatedTodo, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       {
-        message: `ToDoの更新に失敗しました。, ${error}`,
+        message: `ToDoの更新に失敗しました。, ${error}`
       },
       { status: 500 }
     );
@@ -173,7 +173,7 @@ export async function DELETE(req: NextRequest) {
 
   try {
     await prisma.todo.delete({
-      where: { id: String(id) },
+      where: { id: String(id) }
     });
 
     return NextResponse.json(
