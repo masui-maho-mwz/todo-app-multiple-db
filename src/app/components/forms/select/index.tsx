@@ -8,7 +8,7 @@ type Option<T extends string> = {
 type Props<T extends string> = {
   options: Option<T>[];
   value: T | "";
-  onChange: (value: T | "") => void;
+  onChange: (value: string) => void;
   placeholder: string;
 };
 
@@ -21,7 +21,7 @@ export const Select = <T extends string>({
   return (
     <select
       value={value}
-      onChange={(e) => onChange(e.target.value as T | "")}
+      onChange={(e) => onChange(e.target.value)}
       className={styles.root}
     >
       <option value="">{placeholder}</option>
