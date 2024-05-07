@@ -48,7 +48,7 @@ const Home = () => {
           }}
         />
         <div className={styles.list}>
-          <div>
+          <div className={styles.item}>
             <StatusTabs
               handleFilterChange={handleFilterChange}
               activeFilter={activeFilter}
