@@ -70,8 +70,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const url = new URL(req.url, `https://${req.headers.get("host")}`);
-  const statusKey = url.searchParams.get("status");
+  const statusKey = req.nextUrl.searchParams.get("status");
 
   const statusCondition: { statusKey?: string } = {};
   if (statusKey && statusKey !== StatusKeyEnum.Enum.all) {
@@ -161,8 +160,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const url = new URL(req.url, `https://${req.headers.get("host")}`);
-  const id = url.searchParams.get("id");
+  const id = req.nextUrl.searchParams.get("id");
 
   if (!id) {
     return NextResponse.json(
