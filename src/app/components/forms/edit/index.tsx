@@ -96,7 +96,7 @@ export const EditTodoModal = ({
       {show && (
         <Modal>
           <form onSubmit={handleEditSubmit} className={styles.root} noValidate>
-            <div className={styles.input}>
+            <div className={styles.inputs}>
               <input
                 type="text"
                 value={description}
@@ -105,7 +105,7 @@ export const EditTodoModal = ({
                 className={styles.text}
               />
             </div>
-            <div className={styles.input}>
+            <div className={styles.inputs}>
               <Select
                 options={categories.map((category) => ({
                   key: category.key,
