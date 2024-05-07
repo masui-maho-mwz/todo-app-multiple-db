@@ -26,10 +26,8 @@ export const DeleteTodoDialog = ({ onClickDelete, todoId }: Props) => {
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <Modal>
+    <Modal isOpen={isOpen}>
       <div>
         <p>本当に削除してよろしいですか？</p>
         <div className={styles.actions}>

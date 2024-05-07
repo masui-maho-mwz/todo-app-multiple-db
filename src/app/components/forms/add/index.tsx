@@ -30,7 +30,7 @@ export const AddTodoModal = ({
   importances,
   onClickAdd
 }: Props) => {
-  const [show, setShow] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const openModal = () => {
     setDescription("");
@@ -38,9 +38,9 @@ export const AddTodoModal = ({
     setSelectedPriority("");
     setSelectedImportance("");
     setDeadline("");
-    setShow(true);
+    setIsOpen(true);
   };
-  const closeModal = () => setShow(false);
+  const handleClose = () => setIsOpen(false);
 
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
@@ -70,7 +70,7 @@ export const AddTodoModal = ({
     };
 
     await onClickAdd(todoData);
-    setShow(false);
+    setIsOpen(false);
   };
 
   return (
@@ -79,69 +79,67 @@ export const AddTodoModal = ({
         <AddIcon className={styles.icon} />
         <span className={styles.label}>タスクを追加</span>
       </div>
-      {show && (
-        <Modal>
-          <form onSubmit={handleSubmit} className={styles.form} noValidate>
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Todoを入力してください"
-              className={styles.text}
+      <Modal isOpen={isOpen}>
+        <form onSubmit={handleSubmit} className={styles.form} noValidate>
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Todoを入力してください"
+            className={styles.text}
+          />
+          <div className={styles.items}>
+            <Select
+              options={categories.map((category) => ({
+                key: category.key,
+                name: category.name
+              }))}
+              value={selectedCategory}
+              onChange={setSelectedCategory}
+              placeholder="カテゴリー"
             />
-            <div className={styles.items}>
-              <Select
-                options={categories.map((category) => ({
-                  key: category.key,
-                  name: category.name
-                }))}
-                value={selectedCategory}
-                onChange={setSelectedCategory}
-                placeholder="カテゴリー"
+            <Select
+              options={priorities.map((priority) => ({
+                key: priority.key,
+                name: priority.name
+              }))}
+              value={selectedPriority}
+              onChange={setSelectedPriority}
+              placeholder="優先度"
+            />
+            <Select
+              options={importances.map((importance) => ({
+                key: importance.key,
+                name: importance.name
+              }))}
+              value={selectedImportance}
+              onChange={setSelectedImportance}
+              placeholder="重要度"
+            />
+            <CustomTooltip text="期限を選択してください">
+              <input
+                type="date"
+                id="deadline"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                className={styles.date}
               />
-              <Select
-                options={priorities.map((priority) => ({
-                  key: priority.key,
-                  name: priority.name
-                }))}
-                value={selectedPriority}
-                onChange={setSelectedPriority}
-                placeholder="優先度"
-              />
-              <Select
-                options={importances.map((importance) => ({
-                  key: importance.key,
-                  name: importance.name
-                }))}
-                value={selectedImportance}
-                onChange={setSelectedImportance}
-                placeholder="重要度"
-              />
-              <CustomTooltip text="期限を選択してください">
-                <input
-                  type="date"
-                  id="deadline"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  className={styles.date}
-                />
-              </CustomTooltip>
-            </div>
-            <div className={styles.actions}>
-              <button
-                type="button"
-                className={styles.cancel}
-                onClick={closeModal}
-              >
-                キャンセル
-              </button>
-              <button className={styles.add} type="submit">
-                追加
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
+            </CustomTooltip>
+          </div>
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.cancel}
+              onClick={handleClose}
+            >
+              キャンセル
+            </button>
+            <button className={styles.add} type="submit">
+              追加
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
