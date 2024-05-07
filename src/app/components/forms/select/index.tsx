@@ -20,16 +20,16 @@ export const Select = <T extends string>({
   placeholder
 }: Props<T>) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue =
-      options.find((option) => option.name === e.target.value)?.key || "";
-    onChange(newValue);
+    const newKey =
+      options.find((option) => option.key === e.target.value)?.key || "";
+    onChange(newKey);
   };
 
   return (
     <select value={value} onChange={handleChange} className={styles.root}>
       <option value="">{placeholder}</option>
       {options.map((option) => (
-        <option key={option.key} value={option.name}>
+        <option key={option.key} value={option.key}>
           {option.name}
         </option>
       ))}
