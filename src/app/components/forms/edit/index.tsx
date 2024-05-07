@@ -1,7 +1,6 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import { useModal } from "@/app/hooks/use-modal-hooks";
 import type {
   Category,
   CategoryKey,
@@ -16,22 +15,24 @@ import React, { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
+  isOpen: boolean;
   categories: Category[];
   priorities: Priority[];
   importances: Importance[];
   todo: Todo | null;
   onClickUpdate: (updatedTodo: Todo) => void;
+  onClose: () => void;
 };
 
 export const EditTodoModal = ({
+  isOpen,
   categories,
   priorities,
   importances,
   todo,
-  onClickUpdate
+  onClickUpdate,
+  onClose
 }: Props) => {
-  const { isOpen, openModal, closeModal } = useModal();
-
   const [description, setDescription] = useState("");
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<
     CategoryKey | ""
@@ -48,7 +49,6 @@ export const EditTodoModal = ({
 
   useEffect(() => {
     if (todo) {
-      openModal();
       setDescription(todo.description);
       setSelectedCategoryKey(todo.categoryKey);
       setSelectedPriorityKey(todo.priorityKey);
@@ -56,14 +56,8 @@ export const EditTodoModal = ({
       setDeadline(
         todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : ""
       );
-    } else {
-      closeModal();
     }
   }, [todo]);
-
-  const handleClose = () => {
-    closeModal();
-  };
 
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,7 +81,6 @@ export const EditTodoModal = ({
       deadline: deadline ? formatISO(parseISO(deadline)) : null
     };
     await onClickUpdate(updatedTodo);
-    closeModal();
   };
 
   return (
@@ -141,7 +134,7 @@ export const EditTodoModal = ({
           </CustomTooltip>
         </div>
         <div className={styles.actions}>
-          <button type="button" onClick={handleClose} className={styles.cancel}>
+          <button type="button" onClick={onClose} className={styles.cancel}>
             キャンセル
           </button>
           <button type="submit" className={styles.edit}>

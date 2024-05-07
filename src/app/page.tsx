@@ -27,12 +27,20 @@ const Home = () => {
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
 
-  const handleOpenEditModal = (todo: Todo) => {
+  const openEditModal = (todo: Todo) => {
     setEditingTodo(todo);
   };
 
-  const handleOpenDeleteDialog = (todoId: string) => {
+  const closeEditModal = () => {
+    setEditingTodo(null);
+  };
+
+  const openDeleteDialog = (todoId: string) => {
     setDeletingTodoId(todoId);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeletingTodoId(null);
   };
 
   return (
@@ -41,9 +49,9 @@ const Home = () => {
       <div className={styles.container}>
         <Sidebar
           addTodoProps={{
-            categories: categories,
-            priorities: priorities,
-            importances: importances,
+            categories,
+            priorities,
+            importances,
             onClickAdd: handleAddTodo
           }}
         />
@@ -56,27 +64,33 @@ const Home = () => {
             <TodoList
               filteredTodos={filteredTodos}
               handleUpdateTodo={handleUpdateTodo}
-              handleOpenEditModal={handleOpenEditModal}
-              handleOpenDeleteDialog={handleOpenDeleteDialog}
+              handleOpenEditModal={openEditModal}
+              handleOpenDeleteDialog={openDeleteDialog}
             />
           </div>
         </div>
       </div>
-      {editingTodo && (
-        <EditTodoModal
-          categories={categories}
-          priorities={priorities}
-          importances={importances}
-          todo={editingTodo}
-          onClickUpdate={handleUpdateTodo}
-        />
-      )}
-      {deletingTodoId && (
-        <DeleteTodoDialog
-          onClickDelete={handleDeleteTodo}
-          todoId={deletingTodoId}
-        />
-      )}
+      <EditTodoModal
+        isOpen={editingTodo !== null}
+        categories={categories}
+        priorities={priorities}
+        importances={importances}
+        todo={editingTodo}
+        onClickUpdate={(updatedTodo: Todo) => {
+          handleUpdateTodo(updatedTodo);
+          closeEditModal();
+        }}
+        onClose={closeEditModal}
+      />
+      <DeleteTodoDialog
+        isOpen={deletingTodoId !== null}
+        onClickDelete={(todoId: string) => {
+          handleDeleteTodo(todoId);
+          closeDeleteDialog();
+        }}
+        onClose={closeDeleteDialog}
+        todoId={deletingTodoId}
+      />
     </div>
   );
 };
