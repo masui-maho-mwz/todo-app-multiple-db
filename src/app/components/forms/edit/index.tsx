@@ -1,6 +1,7 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
+import { useModal } from "@/app/hooks/use-modal-hooks";
 import type {
   Category,
   CategoryKey,
@@ -29,7 +30,7 @@ export const EditTodoModal = ({
   todo,
   onClickUpdate
 }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, openModal, closeModal } = useModal();
 
   const [description, setDescription] = useState("");
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<
@@ -47,7 +48,7 @@ export const EditTodoModal = ({
 
   useEffect(() => {
     if (todo) {
-      setIsOpen(true);
+      openModal();
       setDescription(todo.description);
       setSelectedCategoryKey(todo.categoryKey);
       setSelectedPriorityKey(todo.priorityKey);
@@ -56,12 +57,12 @@ export const EditTodoModal = ({
         todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : ""
       );
     } else {
-      setIsOpen(false);
+      closeModal();
     }
   }, [todo]);
 
   const handleClose = () => {
-    setIsOpen(false);
+    closeModal();
   };
 
   const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -86,7 +87,7 @@ export const EditTodoModal = ({
       deadline: deadline ? formatISO(parseISO(deadline)) : null
     };
     await onClickUpdate(updatedTodo);
-    setIsOpen(false);
+    closeModal();
   };
 
   return (

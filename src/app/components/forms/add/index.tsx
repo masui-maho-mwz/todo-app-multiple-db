@@ -2,6 +2,7 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
+import { useModal } from "@/app/hooks/use-modal-hooks";
 import {
   StatusKeyEnum,
   type Category,
@@ -30,7 +31,7 @@ export const AddTodoModal = ({
   importances,
   onClickAdd
 }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, openModal: originalOpenModal, closeModal } = useModal();
 
   const openModal = () => {
     setDescription("");
@@ -38,9 +39,8 @@ export const AddTodoModal = ({
     setSelectedPriority("");
     setSelectedImportance("");
     setDeadline("");
-    setIsOpen(true);
+    originalOpenModal();
   };
-  const handleClose = () => setIsOpen(false);
 
   const [description, setDescription] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
@@ -70,7 +70,7 @@ export const AddTodoModal = ({
     };
 
     await onClickAdd(todoData);
-    setIsOpen(false);
+    closeModal();
   };
 
   return (
@@ -130,7 +130,7 @@ export const AddTodoModal = ({
             <button
               type="button"
               className={styles.cancel}
-              onClick={handleClose}
+              onClick={closeModal}
             >
               キャンセル
             </button>

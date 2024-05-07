@@ -1,5 +1,6 @@
 import { Modal } from "@/app/components/surfaces/modal";
-import { useEffect, useState } from "react";
+import { useModal } from "@/app/hooks/use-modal-hooks";
+import { useEffect } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -8,21 +9,20 @@ type Props = {
 };
 
 export const DeleteTodoDialog = ({ onClickDelete, todoId }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, openModal, closeModal } = useModal();
 
   useEffect(() => {
-    if (todoId) setIsOpen(true);
-    else setIsOpen(false);
+    if (todoId) {
+      openModal();
+    } else {
+      closeModal();
+    }
   }, [todoId]);
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
 
   const handleConfirm = async () => {
     if (todoId) {
       await onClickDelete(todoId);
-      setIsOpen(false);
+      closeModal();
     }
   };
 
@@ -31,7 +31,7 @@ export const DeleteTodoDialog = ({ onClickDelete, todoId }: Props) => {
       <div>
         <p>本当に削除してよろしいですか？</p>
         <div className={styles.actions}>
-          <button onClick={handleClose} className={styles.cancel}>
+          <button onClick={closeModal} className={styles.cancel}>
             キャンセル
           </button>
           <button onClick={handleConfirm} className={styles.delete}>
