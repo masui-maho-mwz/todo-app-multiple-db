@@ -1,17 +1,10 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import type {
-  Category,
-  CategoryKey,
-  Importance,
-  ImportanceKey,
-  Priority,
-  PriorityKey,
-  Todo
-} from "@/app/types";
-import { format, formatISO, parseISO } from "date-fns";
-import React, { useEffect, useState } from "react";
+import { useEditModal } from "@/app/hooks/use-edit-modal";
+import type { Category, Importance, Priority, Todo } from "@/app/types";
+import { format, parseISO } from "date-fns";
+import { useEffect } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -33,19 +26,21 @@ export const EditTodoModal = ({
   onClickUpdate,
   onClose
 }: Props) => {
-  const [description, setDescription] = useState("");
-  const [selectedCategoryKey, setSelectedCategoryKey] = useState<
-    CategoryKey | ""
-  >(todo ? todo.categoryKey : "");
-  const [selectedPriorityKey, setSelectedPriorityKey] = useState<
-    PriorityKey | ""
-  >(todo ? todo.priorityKey : "");
-  const [selectedImportanceKey, setSelectedImportanceKey] = useState<
-    ImportanceKey | ""
-  >(todo ? todo.importanceKey : "");
-  const [deadline, setDeadline] = useState<string | null>(
-    todo && todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : null
-  );
+  const {
+    openModal,
+    closeModal,
+    description,
+    setDescription,
+    selectedCategoryKey,
+    setSelectedCategoryKey,
+    selectedPriorityKey,
+    setSelectedPriorityKey,
+    selectedImportanceKey,
+    setSelectedImportanceKey,
+    deadline,
+    setDeadline,
+    handleSubmit
+  } = useEditModal(onClose);
 
   useEffect(() => {
     if (todo) {
@@ -59,33 +54,19 @@ export const EditTodoModal = ({
     }
   }, [todo]);
 
-  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (
-      !todo ||
-      !selectedCategoryKey ||
-      !selectedPriorityKey ||
-      !selectedImportanceKey ||
-      !deadline
-    ) {
-      alert("必要な情報をすべて入力してください。");
-      return;
+  useEffect(() => {
+    if (isOpen) {
+      openModal(todo);
     }
-
-    const updatedTodo = {
-      ...todo,
-      description,
-      categoryKey: selectedCategoryKey,
-      priorityKey: selectedPriorityKey,
-      importanceKey: selectedImportanceKey,
-      deadline: deadline ? formatISO(parseISO(deadline)) : null
-    };
-    await onClickUpdate(updatedTodo);
-  };
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen}>
-      <form onSubmit={handleEditSubmit} className={styles.root} noValidate>
+      <form
+        onSubmit={(e) => handleSubmit(e, onClickUpdate)}
+        className={styles.root}
+        noValidate
+      >
         <div className={styles.inputs}>
           <input
             type="text"
@@ -134,7 +115,7 @@ export const EditTodoModal = ({
           </CustomTooltip>
         </div>
         <div className={styles.actions}>
-          <button type="button" onClick={onClose} className={styles.cancel}>
+          <button type="button" onClick={closeModal} className={styles.cancel}>
             キャンセル
           </button>
           <button type="submit" className={styles.edit}>

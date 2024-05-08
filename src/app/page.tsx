@@ -24,15 +24,18 @@ const Home = () => {
     activeFilter
   } = useTodos();
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
   const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
 
   const openEditModal = (todo: Todo) => {
     setEditingTodo(todo);
+    setIsEditModalOpen(true);
   };
 
   const closeEditModal = () => {
     setEditingTodo(null);
+    setIsEditModalOpen(false);
   };
 
   const openDeleteDialog = (todoId: string) => {
@@ -71,7 +74,7 @@ const Home = () => {
         </div>
       </div>
       <EditTodoModal
-        isOpen={editingTodo !== null}
+        isOpen={isEditModalOpen}
         categories={categories}
         priorities={priorities}
         importances={importances}
