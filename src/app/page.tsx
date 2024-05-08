@@ -1,109 +1,99 @@
 "use client";
-import { AddTodo } from "@/app/components/add";
-// import { DeleteTodoDialog } from "@/app/components/delete";
-import { DeleteTodoDialog } from "@/app/components/delete";
-import { EditTodoModal } from "@/app/components/edit";
+import { DeleteTodoDialog } from "@/app/components/dialogs/delete";
+import { EditTodoModal } from "@/app/components/forms/edit";
+import { LoadingOverlay } from "@/app/components/loading";
+import { Sidebar } from "@/app/components/sidebar";
+import { StatusTabs } from "@/app/components/status-tabs";
 import { TodoList } from "@/app/components/todo-list";
-import { FC, useEffect, useState } from "react";
+import { useTodos } from "@/app/hooks/use-todos";
+import type { Todo } from "@/app/types";
+import { useState } from "react";
 import styles from "./styles.module.css";
-import {
-  StatusFilter,
-  Todo,
-  type Category,
-  type Importance,
-  type Priority,
-} from "./types";
 
-const Home: FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [priorities, setPriorities] = useState<Priority[]>([]);
-  const [importances, setImportances] = useState<Importance[]>([]);
-  // const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  // const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  // const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
-  // const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("incomplete");
+const Home = () => {
+  const {
+    categories,
+    priorities,
+    importances,
+    filteredTodos,
+    handleAddTodo,
+    handleUpdateTodo,
+    handleFilterChange,
+    handleDeleteTodo,
+    isLoading,
+    activeFilter
+  } = useTodos();
 
-  useEffect(() => {
-    const fetchData = async (statusFilter: StatusFilter) => {
-      try {
-        const queryParam =
-          statusFilter === "all" ? "" : `?status=${statusFilter}`;
-        const response = await fetch(`/api/todos/?status=${queryParam}`);
-        if (!response.ok) {
-          throw new Error("データの取得に失敗しました。");
-        }
-        const { todos, categories, priorities, importances } =
-          await response.json();
-        setTodos(todos);
-        setCategories(categories);
-        setPriorities(priorities);
-        setImportances(importances);
-      } catch (error) {
-        console.error("データのフェッチ中にエラーが発生しました:", error);
-      }
-    };
-    fetchData(statusFilter);
-  }, [statusFilter]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
+  const [deletingTodoId, setDeletingTodoId] = useState<string | null>(null);
 
-  const handleAddTodo = async (todo: Omit<Todo, "id">) => {
-    const response = await fetch("/api/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(todo),
-    });
-
-    if (response.ok) {
-      //TODO: リファクタ予定
-      console.log("ToDoの追加に成功しました");
-    } else {
-      console.error("ToDoの追加に失敗しました");
-    }
+  const openEditModal = (todo: Todo) => {
+    setEditingTodo(todo);
+    setIsEditModalOpen(true);
   };
 
-  // 編集機能も後ほど
-  // const handleUpdateTodo = async (id: string, updates: Partial<Todo>) => {
-  //   await fetch(`/api/todos/${id}`, {
-  //     method: "PUT",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(updates),
-  //   });
-  //   fetchTodos(statusFilter);
-  // };
+  const closeEditModal = () => {
+    setEditingTodo(null);
+    setIsEditModalOpen(false);
+  };
 
-  // TODO: 削除機能は後ほど
-  // const handleDeleteTodo = async (id: string) => {
-  //   await fetch(`/api/todos/${id}`, {
-  //     method: "DELETE",
-  //   });
-  //   fetchTodos(statusFilter);
-  // };
+  const openDeleteDialog = (todoId: string) => {
+    setDeletingTodoId(todoId);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeletingTodoId(null);
+  };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Todoアプリ</h1>
-      <AddTodo
-        handleAddTodo={handleAddTodo}
+    <div className={styles.root}>
+      {isLoading && <LoadingOverlay />}
+      <div className={styles.container}>
+        <Sidebar
+          addTodoProps={{
+            categories,
+            priorities,
+            importances,
+            onClickAdd: handleAddTodo
+          }}
+        />
+        <div className={styles.list}>
+          <div className={styles.item}>
+            <StatusTabs
+              handleFilterChange={handleFilterChange}
+              activeFilter={activeFilter}
+            />
+            <TodoList
+              filteredTodos={filteredTodos}
+              handleUpdateTodo={handleUpdateTodo}
+              handleOpenEditModal={openEditModal}
+              handleOpenDeleteDialog={openDeleteDialog}
+            />
+          </div>
+        </div>
+      </div>
+      <EditTodoModal
+        isOpen={isEditModalOpen}
         categories={categories}
         priorities={priorities}
         importances={importances}
+        todo={editingTodo}
+        onClickUpdate={(updatedTodo: Todo) => {
+          handleUpdateTodo(updatedTodo);
+          closeEditModal();
+        }}
+        onClose={closeEditModal}
       />
-      <TodoList
-        todos={todos}
-        // handleUpdateTodo={openEditModal}
-        // handleDeleteTodo={openDeleteDialog}
+      <DeleteTodoDialog
+        isOpen={deletingTodoId !== null}
+        onClickDelete={(todoId: string) => {
+          handleDeleteTodo(todoId);
+          closeDeleteDialog();
+        }}
+        onClose={closeDeleteDialog}
+        todoId={deletingTodoId}
       />
-      {/* TODO: 編集モーダルは後ほど作成する */}
-      <EditTodoModal />
-      {/* {showEditModal && editingTodo && (
-        <EditTodoModal todo={editingTodo} onClose={closeEditModal} />
-      )} */}
-      {/* // TODO: 削除確認ダイアログは後ほど作成する */}
-      <DeleteTodoDialog />
-      {/* {showDeleteDialog && deletingTodoId && (
-        <DeleteTodoDialog todoId={deletingTodoId} onClose={closeDeleteDialog} />
-      )} */}
     </div>
   );
 };

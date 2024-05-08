@@ -1,0 +1,12 @@
+.root {
+  padding: 0.5rem;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+  flex: 1;
+  margin-right: 0.25rem;
+}
+
+.root:last-child {
+  margin-right: 0;
+}

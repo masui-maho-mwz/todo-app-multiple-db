@@ -1,0 +1,74 @@
+.sidebar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  transition: background-color 0.3s, font-weight 0.3s;
+  cursor: pointer;
+}
+
+.sidebar:hover {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+.label {
+  font-size: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.text {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.items {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.date {
+  padding: 0.5rem;
+  border: 0.0625rem solid #ccc;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.cancel {
+  background-color: rgb(240, 240, 240);
+  color: #333;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.add {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

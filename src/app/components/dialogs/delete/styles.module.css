@@ -1,0 +1,24 @@
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancel,
+.delete {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cancel {
+  background-color: rgb(240, 240, 240);
+  color: #333;
+}
+
+.delete {
+  background-color: #e57373;
+  color: white;
+}
