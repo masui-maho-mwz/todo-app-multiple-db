@@ -3,7 +3,6 @@ import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
 import { useEditModal } from "@/app/hooks/use-edit-modal";
 import type { Category, Importance, Priority, Todo } from "@/app/types";
-import { format, parseISO } from "date-fns";
 import { useEffect } from "react";
 import styles from "./styles.module.css";
 
@@ -43,22 +42,10 @@ export const EditTodoModal = ({
   } = useEditModal(onClose);
 
   useEffect(() => {
-    if (todo) {
-      setDescription(todo.description);
-      setSelectedCategoryKey(todo.categoryKey);
-      setSelectedPriorityKey(todo.priorityKey);
-      setSelectedImportanceKey(todo.importanceKey);
-      setDeadline(
-        todo.deadline ? format(parseISO(todo.deadline), "yyyy-MM-dd") : ""
-      );
-    }
-  }, [todo]);
-
-  useEffect(() => {
     if (isOpen) {
       openModal(todo);
     }
-  }, [isOpen]);
+  }, [isOpen, todo]);
 
   return (
     <Modal isOpen={isOpen}>

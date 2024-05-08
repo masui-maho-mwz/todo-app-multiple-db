@@ -22,18 +22,22 @@ export const useEditModal = (onClose: () => void) => {
   >("");
   const [deadline, setDeadline] = useState<string | null>(null);
 
+  const initializeFields = (todoToEdit: Todo) => {
+    setTodo(todoToEdit);
+    setDescription(todoToEdit.description);
+    setSelectedCategoryKey(todoToEdit.categoryKey);
+    setSelectedPriorityKey(todoToEdit.priorityKey);
+    setSelectedImportanceKey(todoToEdit.importanceKey);
+    setDeadline(
+      todoToEdit.deadline
+        ? format(parseISO(todoToEdit.deadline), "yyyy-MM-dd")
+        : ""
+    );
+  };
+
   const openModal = (todoToEdit: Todo | null) => {
     if (todoToEdit) {
-      setTodo(todoToEdit);
-      setDescription(todoToEdit.description);
-      setSelectedCategoryKey(todoToEdit.categoryKey);
-      setSelectedPriorityKey(todoToEdit.priorityKey);
-      setSelectedImportanceKey(todoToEdit.importanceKey);
-      setDeadline(
-        todoToEdit.deadline
-          ? format(parseISO(todoToEdit.deadline), "yyyy-MM-dd")
-          : null
-      );
+      initializeFields(todoToEdit);
     }
     setIsOpen(true);
   };
