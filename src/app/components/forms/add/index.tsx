@@ -2,20 +2,14 @@
 import { Select } from "@/app/components/forms/select";
 import { CustomTooltip } from "@/app/components/forms/tooltip";
 import { Modal } from "@/app/components/surfaces/modal";
-import { useModal } from "@/app/hooks/use-modal-hooks";
+import { useAddModal } from "@/app/hooks/use-add-modal";
 import {
-  StatusKeyEnum,
   type Category,
-  type CategoryKey,
   type FormTodoData,
   type Importance,
-  type ImportanceKey,
-  type Priority,
-  type PriorityKey
+  type Priority
 } from "@/app/types";
 import AddIcon from "@mui/icons-material/Add";
-import { formatISO, parseISO } from "date-fns";
-import React, { useState } from "react";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -31,47 +25,22 @@ export const AddTodoModal = ({
   importances,
   onClickAdd
 }: Props) => {
-  const { isOpen, openModal: originalOpenModal, closeModal } = useModal();
-
-  const openModal = () => {
-    setDescription("");
-    setSelectedCategory("");
-    setSelectedPriority("");
-    setSelectedImportance("");
-    setDeadline("");
-    originalOpenModal();
-  };
-
-  const [description, setDescription] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
-    ""
-  );
-  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | "">(
-    ""
-  );
-  const [selectedImportance, setSelectedImportance] = useState<
-    ImportanceKey | ""
-  >("");
-  const [deadline, setDeadline] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedCategory || !selectedPriority || !selectedImportance) {
-      alert("カテゴリ、優先度、重要度を選択してください。");
-      return;
-    }
-    const todoData: FormTodoData = {
-      description,
-      categoryKey: selectedCategory,
-      priorityKey: selectedPriority,
-      importanceKey: selectedImportance,
-      deadline: deadline ? formatISO(parseISO(deadline)) : "",
-      statusKey: StatusKeyEnum.Enum.incomplete
-    };
-
-    await onClickAdd(todoData);
-    closeModal();
-  };
+  const {
+    isOpen,
+    openModal,
+    closeModal,
+    description,
+    setDescription,
+    selectedCategory,
+    setSelectedCategory,
+    selectedPriority,
+    setSelectedPriority,
+    selectedImportance,
+    setSelectedImportance,
+    deadline,
+    setDeadline,
+    handleSubmit
+  } = useAddModal();
 
   return (
     <div>
@@ -80,7 +49,11 @@ export const AddTodoModal = ({
         <span className={styles.label}>タスクを追加</span>
       </div>
       <Modal isOpen={isOpen}>
-        <form onSubmit={handleSubmit} className={styles.form} noValidate>
+        <form
+          onSubmit={(e) => handleSubmit(e, onClickAdd)}
+          className={styles.form}
+          noValidate
+        >
           <input
             type="text"
             value={description}
