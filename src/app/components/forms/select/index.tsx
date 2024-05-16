@@ -1,28 +1,21 @@
-import React from "react";
-import styles from "./styles.module.css";
+import React from 'react';
+import styles from './styles.module.css';
 
-type Option<T extends string> = {
-  key: T;
+type Option = {
+  key: string;
   name: string;
 };
 
-type Props<T extends string> = {
-  options: Option<T>[];
-  value: T | "";
-  onChange: (value: T | "") => void;
+type Props = {
+  options: Option[];
+  value: string;
+  onChange: (value: string) => void;
   placeholder: string;
 };
 
-export const Select = <T extends string>({
-  options,
-  value,
-  onChange,
-  placeholder
-}: Props<T>) => {
+export const Select = ({ options, value, onChange, placeholder }: Props) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newKey =
-      options.find((option) => option.key === e.target.value)?.key || "";
-    onChange(newKey);
+    onChange(e.target.value);
   };
 
   return (
