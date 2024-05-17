@@ -3,31 +3,31 @@ import {
   type CategoryKey,
   type FormTodoData,
   type ImportanceKey,
-  type PriorityKey
-} from "@/app/types";
-import { formatISO, parseISO } from "date-fns";
-import { useState } from "react";
+  type PriorityKey,
+} from '@/app/ui-models';
+import { formatISO, parseISO } from 'date-fns';
+import { useState } from 'react';
 
 export const useAddModal = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [description, setDescription] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | "">(
-    ""
+  const [description, setDescription] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey | ''>(
+    ''
   );
-  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | "">(
-    ""
+  const [selectedPriority, setSelectedPriority] = useState<PriorityKey | ''>(
+    ''
   );
   const [selectedImportance, setSelectedImportance] = useState<
-    ImportanceKey | ""
-  >("");
-  const [deadline, setDeadline] = useState("");
+    ImportanceKey | ''
+  >('');
+  const [deadline, setDeadline] = useState('');
 
   const openModal = () => {
-    setDescription("");
-    setSelectedCategory("");
-    setSelectedPriority("");
-    setSelectedImportance("");
-    setDeadline("");
+    setDescription('');
+    setSelectedCategory('');
+    setSelectedPriority('');
+    setSelectedImportance('');
+    setDeadline('');
     setIsOpen(true);
   };
 
@@ -39,7 +39,7 @@ export const useAddModal = () => {
   ) => {
     e.preventDefault();
     if (!selectedCategory || !selectedPriority || !selectedImportance) {
-      alert("カテゴリ、優先度、重要度を選択してください。");
+      alert('カテゴリ、優先度、重要度を選択してください。');
       return;
     }
     const todoData: FormTodoData = {
@@ -47,8 +47,8 @@ export const useAddModal = () => {
       categoryKey: selectedCategory,
       priorityKey: selectedPriority,
       importanceKey: selectedImportance,
-      deadline: deadline ? formatISO(parseISO(deadline)) : "",
-      statusKey: StatusKeyEnum.Enum.incomplete
+      deadline: deadline ? formatISO(parseISO(deadline)) : '',
+      statusKey: StatusKeyEnum.Enum.incomplete,
     };
 
     await onClickAdd(todoData);
@@ -69,6 +69,6 @@ export const useAddModal = () => {
     setSelectedImportance,
     deadline,
     setDeadline,
-    handleSubmit
+    handleSubmit,
   };
 };

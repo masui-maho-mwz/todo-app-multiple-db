@@ -1,4 +1,4 @@
-import { addTodo, deleteTodo, fetchTodos, updateTodo } from "@/app/operations";
+import { addTodo, deleteTodo, fetchTodos, updateTodo } from '@/app/operations';
 import {
   FetchTodosResponse,
   StatusKeyEnum,
@@ -7,9 +7,9 @@ import {
   type Importance,
   type Priority,
   type StatusFilter,
-  type Todo
-} from "@/app/types";
-import { useEffect, useState } from "react";
+  type Todo,
+} from '@/app/ui-models';
+import { useEffect, useState } from 'react';
 
 export const useTodos = () => {
   const [activeFilter, setActiveFilter] = useState<StatusFilter>(
@@ -118,6 +118,6 @@ export const useTodos = () => {
     handleUpdateTodo,
     handleDeleteTodo,
     handleFilterChange,
-    isLoading
+    isLoading,
   };
 };

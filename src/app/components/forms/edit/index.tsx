@@ -1,10 +1,10 @@
-import { Select } from "@/app/components/forms/select";
-import { CustomTooltip } from "@/app/components/forms/tooltip";
-import { Modal } from "@/app/components/surfaces/modal";
-import { useEditModal } from "@/app/hooks/use-edit-modal";
-import type { Category, Importance, Priority, Todo } from "@/app/types";
-import { useEffect } from "react";
-import styles from "./styles.module.css";
+import { Select } from '@/app/components/forms/select';
+import { CustomTooltip } from '@/app/components/forms/tooltip';
+import { Modal } from '@/app/components/surfaces/modal';
+import { useEditModal } from '@/app/hooks/use-edit-modal';
+import type { Category, Importance, Priority, Todo } from '@/app/ui-models';
+import { useEffect } from 'react';
+import styles from './styles.module.css';
 
 type Props = {
   isOpen: boolean;
@@ -23,7 +23,7 @@ export const EditTodoModal = ({
   importances,
   todo,
   onClickUpdate,
-  onClose
+  onClose,
 }: Props) => {
   const {
     openModal,
@@ -38,7 +38,7 @@ export const EditTodoModal = ({
     setSelectedImportanceKey,
     deadline,
     setDeadline,
-    handleSubmit
+    handleSubmit,
   } = useEditModal(onClose);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export const EditTodoModal = ({
           <Select
             options={categories.map((category) => ({
               key: category.key,
-              name: category.name
+              name: category.name,
             }))}
             value={selectedCategoryKey}
             onChange={setSelectedCategoryKey}
@@ -76,7 +76,7 @@ export const EditTodoModal = ({
           <Select
             options={priorities.map((priority) => ({
               key: priority.key,
-              name: priority.name
+              name: priority.name,
             }))}
             value={selectedPriorityKey}
             onChange={setSelectedPriorityKey}
@@ -85,7 +85,7 @@ export const EditTodoModal = ({
           <Select
             options={importances.map((importance) => ({
               key: importance.key,
-              name: importance.name
+              name: importance.name,
             }))}
             value={selectedImportanceKey}
             onChange={setSelectedImportanceKey}
@@ -95,7 +95,7 @@ export const EditTodoModal = ({
           <CustomTooltip text="期限を選択してください">
             <input
               type="date"
-              value={deadline ? deadline : ""}
+              value={deadline ? deadline : ''}
               onChange={(e) => setDeadline(e.target.value)}
               className={styles.text}
             />

@@ -3,6 +3,7 @@ import { Sidebar } from '@/app/components/sidebar';
 import { useState } from 'react';
 import styles from './styles.module.css';
 import { AddTodoModal } from './components/forms/add-todo-modal';
+import { TodoList } from './components/todo-list';
 
 // TODO: 一旦ダミーの値を使用。後でAPIから取得するように変更する
 const dummy_categories = [
@@ -16,6 +17,26 @@ const dummy_priorities = [
 const dummy_importances = [
   { key: 'hoge_importances', name: 'Hoge Importances' },
   { key: 'fuga_importances', name: 'Fuga Importances' },
+];
+const dummy_todos = [
+  {
+    id: '1',
+    description: 'Dummy Todo 1',
+    deadline: '2021-12-31',
+    category: { key: 'hoge', name: 'Hoge' },
+    priority: { key: 'hoge_priorities', name: 'Hoge Priorities' },
+    importance: { key: 'hoge_importances', name: 'Hoge Importances' },
+    status: { key: 'incomplete', name: '未完了' },
+  },
+  {
+    id: '2',
+    description: 'Dummy Todo 2',
+    deadline: undefined,
+    category: { key: 'hoge', name: 'Hoge' },
+    priority: { key: 'hoge_priorities', name: 'Hoge Priorities' },
+    importance: { key: 'hoge_importances', name: 'Hoge Importances' },
+    status: { key: 'incomplete', name: '未完了' },
+  },
 ];
 
 const Home = () => {
@@ -40,6 +61,10 @@ const Home = () => {
       {/* {isLoading && <LoadingOverlay />} */}
       <div className={styles.container}>
         <Sidebar onClickOpenAdd={handleClickOpenAddModal} />
+        <div className={styles.contents}>
+          <TodoList todos={dummy_todos} />
+          <h2 className={styles.title}>おすすめアプリのバナー </h2>
+        </div>
         {/* <div className={styles.list}>
           <div className={styles.item}>
             <StatusTabs

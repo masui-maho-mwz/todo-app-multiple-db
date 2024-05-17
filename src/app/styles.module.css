@@ -11,17 +11,17 @@
   margin-bottom: 1rem;
 }
 
-.list {
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  border: none;
-  margin-top: 1rem;
-}
-
-.item {
+.contents {
   min-width: 720px;
   max-width: 960px;
-  padding: 1rem 2rem;
-  margin: 1rem;
+  margin: 0 auto;
+  padding: 2rem 0;
 }
+.contents > *:first-child {
+  margin-top: 0;
+}
+.contents > *:last-child {
+  margin-bottom: 0;
+}
+
+

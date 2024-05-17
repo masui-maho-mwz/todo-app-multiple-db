@@ -2,24 +2,24 @@ import type {
   CategoryKey,
   ImportanceKey,
   PriorityKey,
-  Todo
-} from "@/app/types";
-import { format, formatISO, parseISO } from "date-fns";
-import { useState } from "react";
+  Todo,
+} from '@/app/ui-models';
+import { format, formatISO, parseISO } from 'date-fns';
+import { useState } from 'react';
 
 export const useEditModal = (onClose: () => void) => {
   const [isOpen, setIsOpen] = useState(false);
   const [todo, setTodo] = useState<Todo | null>(null);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState('');
   const [selectedCategoryKey, setSelectedCategoryKey] = useState<
-    CategoryKey | ""
-  >("");
+    CategoryKey | ''
+  >('');
   const [selectedPriorityKey, setSelectedPriorityKey] = useState<
-    PriorityKey | ""
-  >("");
+    PriorityKey | ''
+  >('');
   const [selectedImportanceKey, setSelectedImportanceKey] = useState<
-    ImportanceKey | ""
-  >("");
+    ImportanceKey | ''
+  >('');
   const [deadline, setDeadline] = useState<string | null>(null);
 
   const initializeFields = (todoToEdit: Todo) => {
@@ -30,8 +30,8 @@ export const useEditModal = (onClose: () => void) => {
     setSelectedImportanceKey(todoToEdit.importanceKey);
     setDeadline(
       todoToEdit.deadline
-        ? format(parseISO(todoToEdit.deadline), "yyyy-MM-dd")
-        : ""
+        ? format(parseISO(todoToEdit.deadline), 'yyyy-MM-dd')
+        : ''
     );
   };
 
@@ -44,10 +44,10 @@ export const useEditModal = (onClose: () => void) => {
 
   const closeModal = () => {
     setTodo(null);
-    setDescription("");
-    setSelectedCategoryKey("");
-    setSelectedPriorityKey("");
-    setSelectedImportanceKey("");
+    setDescription('');
+    setSelectedCategoryKey('');
+    setSelectedPriorityKey('');
+    setSelectedImportanceKey('');
     setDeadline(null);
     setIsOpen(false);
     onClose();
@@ -65,7 +65,7 @@ export const useEditModal = (onClose: () => void) => {
       !selectedImportanceKey ||
       !deadline
     ) {
-      alert("必要な情報をすべて入力してください。");
+      alert('必要な情報をすべて入力してください。');
       return;
     }
 
@@ -75,7 +75,7 @@ export const useEditModal = (onClose: () => void) => {
       categoryKey: selectedCategoryKey,
       priorityKey: selectedPriorityKey,
       importanceKey: selectedImportanceKey,
-      deadline: deadline ? formatISO(parseISO(deadline)) : null
+      deadline: deadline ? formatISO(parseISO(deadline)) : null,
     };
     await onClickUpdate(updatedTodo);
     closeModal();
@@ -95,6 +95,6 @@ export const useEditModal = (onClose: () => void) => {
     setSelectedImportanceKey,
     deadline,
     setDeadline,
-    handleSubmit
+    handleSubmit,
   };
 };
