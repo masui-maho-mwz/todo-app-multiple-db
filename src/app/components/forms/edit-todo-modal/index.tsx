@@ -1,59 +1,53 @@
 import { Select } from '@/app/components/forms/select';
 import { CustomTooltip } from '@/app/components/forms/tooltip';
 import { Modal } from '@/app/components/surfaces/modal';
-import { useEditModal } from '@/app/hooks/use-edit-modal';
-import type { Category, Importance, Priority, Todo } from '@/app/ui-models';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
+import { TodoViewModel } from '@/core/types';
+import {
+  CategoryUiModel,
+  ImportanceUiModel,
+  PriorityUiModel,
+} from '@/app/ui-models';
 
 type Props = {
+  todo: TodoViewModel | null;
+  categories: CategoryUiModel[];
+  priorities: PriorityUiModel[];
+  importances: ImportanceUiModel[];
   isOpen: boolean;
-  categories: Category[];
-  priorities: Priority[];
-  importances: Importance[];
-  todo: Todo | null;
-  onClickUpdate: (updatedTodo: Todo) => void;
-  onClose: () => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClickCloseModal: () => void;
 };
 
 export const EditTodoModal = ({
-  isOpen,
+  todo,
   categories,
   priorities,
   importances,
-  todo,
-  onClickUpdate,
-  onClose,
+  isOpen,
+  onSubmit,
+  onClickCloseModal,
 }: Props) => {
-  const {
-    openModal,
-    closeModal,
-    description,
-    setDescription,
-    selectedCategoryKey,
-    setSelectedCategoryKey,
-    selectedPriorityKey,
-    setSelectedPriorityKey,
-    selectedImportanceKey,
-    setSelectedImportanceKey,
-    deadline,
-    setDeadline,
-    handleSubmit,
-  } = useEditModal(onClose);
+  const [description, setDescription] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedPriority, setSelectedPriority] = useState('');
+  const [selectedImportance, setSelectedImportance] = useState('');
+  const [deadline, setDeadline] = useState('');
 
   useEffect(() => {
-    if (isOpen) {
-      openModal(todo);
-    }
-  }, [isOpen, todo]);
+    if (!todo) return;
+
+    setDescription(todo.description);
+    setSelectedCategory(todo.category.key);
+    setSelectedPriority(todo.priority.key);
+    setSelectedImportance(todo.importance.key);
+    setDeadline(todo.deadline || '');
+  }, [todo]);
 
   return (
     <Modal isOpen={isOpen}>
-      <form
-        onSubmit={(e) => handleSubmit(e, onClickUpdate)}
-        className={styles.root}
-        noValidate
-      >
+      <form onSubmit={onSubmit} className={styles.root} noValidate>
         <div className={styles.inputs}>
           <input
             type="text"
@@ -69,8 +63,8 @@ export const EditTodoModal = ({
               key: category.key,
               name: category.name,
             }))}
-            value={selectedCategoryKey}
-            onChange={setSelectedCategoryKey}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
             placeholder="カテゴリー"
           />
           <Select
@@ -78,8 +72,8 @@ export const EditTodoModal = ({
               key: priority.key,
               name: priority.name,
             }))}
-            value={selectedPriorityKey}
-            onChange={setSelectedPriorityKey}
+            value={selectedPriority}
+            onChange={setSelectedPriority}
             placeholder="優先度"
           />
           <Select
@@ -87,22 +81,27 @@ export const EditTodoModal = ({
               key: importance.key,
               name: importance.name,
             }))}
-            value={selectedImportanceKey}
-            onChange={setSelectedImportanceKey}
+            value={selectedImportance}
+            onChange={setSelectedImportance}
             placeholder="重要度"
           />
-
           <CustomTooltip text="期限を選択してください">
+            {/* TODO: コンポーネント化する！ */}
             <input
               type="date"
-              value={deadline ? deadline : ''}
+              value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
               className={styles.text}
             />
           </CustomTooltip>
         </div>
         <div className={styles.actions}>
-          <button type="button" onClick={closeModal} className={styles.cancel}>
+          {/* TODO: button コンポーネント化する！ */}
+          <button
+            type="button"
+            onClick={onClickCloseModal}
+            className={styles.cancel}
+          >
             キャンセル
           </button>
           <button type="submit" className={styles.edit}>

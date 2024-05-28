@@ -5,6 +5,11 @@ import { Modal } from '@/app/components/surfaces/modal';
 import styles from './styles.module.css';
 import { z } from 'zod';
 import { useState } from 'react';
+import {
+  CategoryUiModel,
+  ImportanceUiModel,
+  PriorityUiModel,
+} from '@/app/ui-models';
 
 const todoSchema = z.object({
   id: z.string(),
@@ -21,14 +26,10 @@ const todoSchema = z.object({
 
 type FormData = z.infer<typeof todoSchema>;
 
-type Category = { key: string; name: string };
-type Priority = { key: string; name: string };
-type Importance = { key: string; name: string };
-
 type Props = {
-  categories: Category[];
-  priorities: Priority[];
-  importances: Importance[];
+  categories: CategoryUiModel[];
+  priorities: PriorityUiModel[];
+  importances: ImportanceUiModel[];
   isOpen: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onClickCloseModal: () => void;

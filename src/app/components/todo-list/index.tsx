@@ -7,9 +7,10 @@ import { TodoUiModel } from '@/app/ui-models';
 
 type Props = {
   todos: TodoUiModel[];
+  onClickEdit: (todo: TodoUiModel) => void;
 };
 
-export const TodoList = ({ todos }: Props) => {
+export const TodoList = ({ todos, onClickEdit }: Props) => {
   if (!todos.length) {
     return <NoTodos />;
   }
@@ -44,7 +45,7 @@ export const TodoList = ({ todos }: Props) => {
             </div>
           </div>
           <div className={styles.actions}>
-            <button className={styles.edit}>
+            <button className={styles.edit} onClick={() => onClickEdit(todo)}>
               <EditIcon fontSize="small" />
             </button>
             <button className={styles.delete}>

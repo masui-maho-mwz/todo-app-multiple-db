@@ -7,3 +7,7 @@ export type TodoUiModel = {
   importance: { key: string; name: string };
   status: { key: string; name: string };
 };
+
+export type CategoryUiModel = { key: string; name: string };
+export type PriorityUiModel = { key: string; name: string };
+export type ImportanceUiModel = { key: string; name: string };
