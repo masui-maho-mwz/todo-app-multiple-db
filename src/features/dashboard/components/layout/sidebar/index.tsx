@@ -4,7 +4,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import SearchIcon from '@mui/icons-material/Search';
 import TuneIcon from '@mui/icons-material/Tune';
 import { ComponentProps } from 'react';
-import { AddTodoModal } from '../forms/add-todo-modal';
+import { AddTodoModal } from '../../add-todo-modal';
 import styles from './styles.module.css';
 import AddIcon from '@mui/icons-material/Add';
 

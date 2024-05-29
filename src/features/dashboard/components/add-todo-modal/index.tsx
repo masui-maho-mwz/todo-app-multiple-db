@@ -1,33 +1,47 @@
-import { Select } from '@/app/components/forms/select';
-import { CustomTooltip } from '@/app/components/forms/tooltip';
-import { Modal } from '@/app/components/surfaces/modal';
-import { useEffect, useState } from 'react';
+'use client';
+import { Select } from '@/components/forms/select';
+import { CustomTooltip } from '@/components/elements/tooltip';
+import { Modal } from '@/components/surfaces/modal';
 import styles from './styles.module.css';
-import { TodoViewModel } from '@/core/types';
+import { z } from 'zod';
+import { useState } from 'react';
 import {
   CategoryUiModel,
   ImportanceUiModel,
   PriorityUiModel,
-} from '@/app/ui-models';
+} from '@/features/dashboard/ui-models';
+
+const todoSchema = z.object({
+  id: z.string(),
+  description: z
+    .string()
+    .min(1, 'Todoは入力必須です。')
+    .max(140, '説明は140字以内である必要があります'),
+  categoryKey: z.string(),
+  priorityKey: z.string(),
+  importanceKey: z.string(),
+  statusKey: z.string(),
+  deadline: z.string().nullable(),
+});
+
+type FormData = z.infer<typeof todoSchema>;
 
 type Props = {
-  todo: TodoViewModel | null;
   categories: CategoryUiModel[];
   priorities: PriorityUiModel[];
   importances: ImportanceUiModel[];
   isOpen: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  onClickCloseModal: () => void;
+  onClose: () => void;
 };
 
-export const EditTodoModal = ({
-  todo,
+export const AddTodoModal = ({
   categories,
   priorities,
   importances,
   isOpen,
   onSubmit,
-  onClickCloseModal,
+  onClose,
 }: Props) => {
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -35,29 +49,17 @@ export const EditTodoModal = ({
   const [selectedImportance, setSelectedImportance] = useState('');
   const [deadline, setDeadline] = useState('');
 
-  useEffect(() => {
-    if (!todo) return;
-
-    setDescription(todo.description);
-    setSelectedCategory(todo.category.key);
-    setSelectedPriority(todo.priority.key);
-    setSelectedImportance(todo.importance.key);
-    setDeadline(todo.deadline || '');
-  }, [todo]);
-
   return (
     <Modal isOpen={isOpen}>
-      <form onSubmit={onSubmit} className={styles.root} noValidate>
-        <div className={styles.inputs}>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Todoを入力してください"
-            className={styles.text}
-          />
-        </div>
-        <div className={styles.inputs}>
+      <form onSubmit={onSubmit} className={styles.form} noValidate>
+        <input
+          type="text"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Todoを入力してください"
+          className={styles.text}
+        />
+        <div className={styles.items}>
           <Select
             options={categories.map((category) => ({
               key: category.key,
@@ -86,26 +88,21 @@ export const EditTodoModal = ({
             placeholder="重要度"
           />
           <CustomTooltip text="期限を選択してください">
-            {/* TODO: コンポーネント化する！ */}
             <input
               type="date"
+              id="deadline"
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className={styles.text}
+              className={styles.date}
             />
           </CustomTooltip>
         </div>
         <div className={styles.actions}>
-          {/* TODO: button コンポーネント化する！ */}
-          <button
-            type="button"
-            onClick={onClickCloseModal}
-            className={styles.cancel}
-          >
+          <button type="button" className={styles.cancel} onClick={onClose}>
             キャンセル
           </button>
-          <button type="submit" className={styles.edit}>
-            保存
+          <button className={styles.add} type="submit">
+            追加
           </button>
         </div>
       </form>

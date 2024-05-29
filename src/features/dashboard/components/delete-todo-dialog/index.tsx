@@ -1,22 +1,23 @@
-import { Modal } from "@/app/components/surfaces/modal";
-import styles from "./styles.module.css";
+import { Modal } from '@/components/surfaces/modal';
+import styles from './styles.module.css';
+import { TodoViewModel } from '@/core/types';
 
 type Props = {
+  todo: TodoViewModel | null;
   isOpen: boolean;
-  onClickDelete: (todoId: string) => void;
+  onDelete: (todoId: string) => void;
   onClose: () => void;
-  todoId: string | null;
 };
 
 export const DeleteTodoDialog = ({
+  todo,
   isOpen,
-  onClickDelete,
+  onDelete,
   onClose,
-  todoId
 }: Props) => {
   const handleConfirm = async () => {
-    if (todoId) {
-      await onClickDelete(todoId);
+    if (todo) {
+      await onDelete(todo.id);
       onClose();
     }
   };

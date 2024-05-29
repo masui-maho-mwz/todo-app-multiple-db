@@ -1,16 +1,17 @@
-import { NoTodos } from '@/app/components/todo-list/no-todo';
+import { NoTodos } from '@/features/dashboard/components/todo-list/no-todo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { format, parseISO } from 'date-fns';
 import styles from './styles.module.css';
-import { TodoUiModel } from '@/app/ui-models';
+import { TodoUiModel } from '@/features/dashboard/ui-models';
 
 type Props = {
   todos: TodoUiModel[];
   onClickEdit: (todo: TodoUiModel) => void;
+  onDeleteEdit: (todo: TodoUiModel) => void;
 };
 
-export const TodoList = ({ todos, onClickEdit }: Props) => {
+export const TodoList = ({ todos, onClickEdit, onDeleteEdit }: Props) => {
   if (!todos.length) {
     return <NoTodos />;
   }
@@ -48,7 +49,10 @@ export const TodoList = ({ todos, onClickEdit }: Props) => {
             <button className={styles.edit} onClick={() => onClickEdit(todo)}>
               <EditIcon fontSize="small" />
             </button>
-            <button className={styles.delete}>
+            <button
+              className={styles.delete}
+              onClick={() => onDeleteEdit(todo)}
+            >
               <DeleteIcon fontSize="small" />
             </button>
           </div>

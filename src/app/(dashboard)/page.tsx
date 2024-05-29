@@ -1,25 +1,16 @@
 'use client';
-import { Sidebar } from '@/app/components/sidebar';
 import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
-import { AddTodoModal } from './components/forms/add-todo-modal';
-import { TodoList } from './components/todo-list';
-import { RoundTabs } from '@/components/tabs/round-tabs';
 import { TodoViewModel } from '@/core/types';
-import { EditTodoModal } from './components/forms/edit-todo-modal';
+import { TodoList } from '@/features/dashboard/components/todo-list';
+import { RoundTabs } from '@/components/tabs/round-tabs';
+import { EditTodoModal } from '@/features/dashboard/components/edit-todo-modal';
+import { DeleteTodoDialog } from '@/features/dashboard/components/delete-todo-dialog';
 
 const Home = () => {
   const [status, setStatus] = useState('');
   const [selectedTodos, setSelectedTodos] =
     useState<TodoViewModel[]>(dummy_todos);
-
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const handleClickOpenAddModal = () => {
-    setIsAddModalOpen(true);
-  };
-  const handleClickCloseAddModal = () => {
-    setIsAddModalOpen(false);
-  };
 
   const [editingTodo, setEditingTodo] = useState<TodoViewModel | null>(null);
   const handleClickOpenEditModal = (todo: TodoViewModel) => {
@@ -27,6 +18,14 @@ const Home = () => {
   };
   const handleClickCloseEditModal = () => {
     setEditingTodo(null);
+  };
+
+  const [deletingTodo, setDeletingTodo] = useState<TodoViewModel | null>(null);
+  const handleClickOpenDeleteModal = (todo: TodoViewModel) => {
+    setDeletingTodo(todo);
+  };
+  const handleClickCloseDeleteModal = () => {
+    setDeletingTodo(null);
   };
 
   const handleClickStatusTab = (value: string) => {
@@ -44,29 +43,16 @@ const Home = () => {
   }, [status]);
 
   return (
-    <div className={styles.root}>
-      {/* {isLoading && <LoadingOverlay />} */}
-      <div className={styles.container}>
-        <Sidebar onClickOpenAdd={handleClickOpenAddModal} />
-        <div className={styles.contents}>
-          <RoundTabs
-            value={status}
-            items={dummy_statuses}
-            onChange={handleClickStatusTab}
-          />
-          <TodoList
-            todos={selectedTodos}
-            onClickEdit={handleClickOpenEditModal}
-          />
-        </div>
-      </div>
-      <AddTodoModal
-        categories={dummy_categories}
-        priorities={dummy_priorities}
-        importances={dummy_importances}
-        isOpen={isAddModalOpen}
-        onSubmit={() => alert('Add Submit !!')}
-        onClickCloseModal={handleClickCloseAddModal}
+    <div className={styles.contents}>
+      <RoundTabs
+        value={status}
+        items={dummy_statuses}
+        onChange={handleClickStatusTab}
+      />
+      <TodoList
+        todos={selectedTodos}
+        onClickEdit={handleClickOpenEditModal}
+        onDeleteEdit={handleClickOpenDeleteModal}
       />
       <EditTodoModal
         todo={editingTodo}
@@ -75,29 +61,16 @@ const Home = () => {
         importances={dummy_importances}
         isOpen={Boolean(editingTodo)}
         onSubmit={() => alert('Edit Submit !!')}
-        onClickCloseModal={handleClickCloseEditModal}
-      />
-      {/* <EditTodoModal
-        isOpen={isEditModalOpen}
-        categories={categories}
-        priorities={priorities}
-        importances={importances}
-        todo={editingTodo}
-        onClickUpdate={(updatedTodo: Todo) => {
-          handleUpdateTodo(updatedTodo);
-          closeEditModal();
-        }}
-        onClose={closeEditModal}
+        onClose={handleClickCloseEditModal}
       />
       <DeleteTodoDialog
-        isOpen={deletingTodoId !== null}
-        onClickDelete={(todoId: string) => {
-          handleDeleteTodo(todoId);
-          closeDeleteDialog();
+        todo={deletingTodo}
+        isOpen={Boolean(deletingTodo)}
+        onDelete={(todoId: string) => {
+          alert(`${todoId} を削除！`);
         }}
-        onClose={closeDeleteDialog}
-        todoId={deletingTodoId}
-      /> */}
+        onClose={handleClickCloseDeleteModal}
+      />
     </div>
   );
 };
