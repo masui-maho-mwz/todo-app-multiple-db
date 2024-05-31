@@ -1,45 +1,77 @@
 import { prisma } from '@/app/api/prisma';
 import { NextResponse, type NextRequest } from 'next/server';
+import { z } from 'zod';
 
-const parseDeadline = (deadline: string | null | undefined): Date | null => {
-  if (!deadline) return null;
-
-  const parsedDate = Date.parse(deadline);
-  if (isNaN(parsedDate)) {
-    throw new Error('Invalid deadline format. Please use a valid date.');
-  }
-  return new Date(parsedDate);
-};
-export async function POST(req: NextRequest) {
+export async function GET() {
   try {
-    const {
-      description,
-      categoryKey,
-      priorityKey,
-      importanceKey,
-      deadline,
-    }: FormTodoData = await req.json();
-    const validStatusKey = await prisma.status.findUnique({
-      where: { key: StatusKeyEnum.Enum.incomplete },
+    const todos = await prisma.todo.findMany({
+      orderBy: { deadline: 'asc' },
+      include: {
+        category: true,
+        priority: true,
+        importance: true,
+        status: true,
+      },
     });
 
-    if (!validStatusKey) {
+    return NextResponse.json({ todos }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: `ToDoの取得に失敗しました, ${error}` },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const bodySchema = z.object({
+    id: z.string().cuid2(),
+    description: z
+      .string()
+      .min(1, 'Todoは入力必須です。')
+      .max(140, '説明は140字以内である必要があります'),
+    categoryKey: z.string(),
+    priorityKey: z.string(),
+    importanceKey: z.string(),
+    statusKey: z.string(),
+    deadline: z.string().nullable(),
+  });
+
+  try {
+    const body = bodySchema.safeParse(await req.json());
+
+    if (!body.success) {
       return NextResponse.json(
-        { message: 'Incomplete status not found' },
-        { status: 404 }
+        { message: 'Invalid request body', details: body.error },
+        { status: 400 }
       );
     }
 
-    const validDeadline = parseDeadline(deadline);
+    if (!body.data.deadline) {
+      const todo = await prisma.todo.create({
+        data: { ...body.data },
+        include: {
+          status: true,
+          category: true,
+          priority: true,
+          importance: true,
+        },
+      });
+
+      return NextResponse.json(todo, { status: 200 });
+    }
+
+    const deadline = parseDeadline(body.data.deadline);
+
+    if (!deadline.ok) {
+      return NextResponse.json(
+        { message: 'Invalid request body', details: 'Invalid deadline' },
+        { status: 400 }
+      );
+    }
+
     const todo = await prisma.todo.create({
-      data: {
-        description,
-        categoryKey,
-        priorityKey,
-        importanceKey,
-        statusKey: validStatusKey.key,
-        deadline: validDeadline,
-      },
+      data: { ...body.data, deadline: deadline.datetime },
       include: {
         status: true,
         category: true,
@@ -47,140 +79,31 @@ export async function POST(req: NextRequest) {
         importance: true,
       },
     });
+
     return NextResponse.json(todo, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
       const status = error.message.startsWith('Invalid deadline') ? 400 : 500;
       return NextResponse.json(
-        {
-          message: `ToDoの作成に失敗しました: ${error.message}`,
-        },
+        { message: `ToDoの作成に失敗しました: ${error.message}` },
         { status }
       );
     } else {
       return NextResponse.json(
-        {
-          message: `ToDoの作成に失敗しました: unknown error`,
-        },
+        { message: `ToDoの作成に失敗しました: unknown error` },
         { status: 500 }
       );
     }
   }
 }
 
-export async function GET(req: NextRequest) {
-  const statusKey = req.nextUrl.searchParams.get('status');
+const parseDeadline = (
+  deadline: string
+): { ok: true; datetime: Date } | { ok: false; datetime: null } => {
+  const parsedDate = Date.parse(deadline);
 
-  const statusCondition: { statusKey?: string } = {};
-  if (statusKey && statusKey !== StatusKeyEnum.Enum.all) {
-    const status = await prisma.status.findUnique({
-      where: { key: statusKey },
-    });
-    if (status) {
-      statusCondition.statusKey = status.key;
-    }
+  if (isNaN(parsedDate)) {
+    if (!deadline) return { ok: false, datetime: null };
   }
-
-  try {
-    const todos = await prisma.todo.findMany({
-      where: {
-        ...statusCondition,
-      },
-      include: {
-        category: true,
-        priority: true,
-        importance: true,
-        status: true,
-      },
-    });
-
-    const categories = await prisma.category.findMany();
-    const priorities = await prisma.priority.findMany();
-    const importances = await prisma.importance.findMany();
-
-    return NextResponse.json(
-      { todos, categories, priorities, importances },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: `ToDoの取得に失敗しました, ${error}`,
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(req: NextRequest) {
-  const body = await req.json();
-  const { id, description, categoryKey, priorityKey, importanceKey, deadline } =
-    body;
-  const statusKey = body.status.key;
-  try {
-    const status = await prisma.status.findUnique({
-      where: { key: statusKey },
-    });
-
-    if (!status) {
-      return NextResponse.json(
-        { message: `Status with key ${statusKey} not found.` },
-        { status: 404 }
-      );
-    }
-
-    const updatedTodo = await prisma.todo.update({
-      where: { id },
-      data: {
-        description,
-        categoryKey,
-        priorityKey,
-        importanceKey,
-        deadline: deadline ? new Date(deadline) : null,
-        statusKey: status.key,
-      },
-      include: {
-        status: true,
-        category: true,
-        priority: true,
-        importance: true,
-      },
-    });
-
-    return NextResponse.json(updatedTodo, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: `ToDoの更新に失敗しました。, ${error}`,
-      },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get('id');
-
-  if (!id) {
-    return NextResponse.json(
-      { message: 'IDが指定されていません。' },
-      { status: 400 }
-    );
-  }
-
-  try {
-    await prisma.todo.delete({
-      where: { id: String(id) },
-    });
-
-    return NextResponse.json(
-      { message: 'ToDoが正常に削除されました。' },
-      { status: 200 }
-    );
-  } catch (error) {
-    return NextResponse.json(
-      { message: `ToDoの削除に失敗しました。, ${error}` },
-      { status: 500 }
-    );
-  }
-}
+  return { ok: true, datetime: new Date(parsedDate) };
+};
