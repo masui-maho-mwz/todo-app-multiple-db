@@ -25,16 +25,15 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const bodySchema = z.object({
-    id: z.string().cuid2(),
     description: z
       .string()
       .min(1, 'Todoは入力必須です。')
       .max(140, '説明は140字以内である必要があります'),
-    categoryKey: z.string(),
-    priorityKey: z.string(),
-    importanceKey: z.string(),
+    categoryKey: z.string().optional(),
+    priorityKey: z.string().optional(),
+    importanceKey: z.string().optional(),
     statusKey: z.string(),
-    deadline: z.string().nullable(),
+    deadline: z.string().optional(),
   });
 
   try {
@@ -48,15 +47,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!body.data.deadline) {
-      const todo = await prisma.todo.create({
-        data: { ...body.data },
-        include: {
-          status: true,
-          category: true,
-          priority: true,
-          importance: true,
-        },
-      });
+      const todo = await prisma.todo.create({ data: { ...body.data } });
 
       return NextResponse.json(todo, { status: 200 });
     }
@@ -72,12 +63,6 @@ export async function POST(req: NextRequest) {
 
     const todo = await prisma.todo.create({
       data: { ...body.data, deadline: deadline.datetime },
-      include: {
-        status: true,
-        category: true,
-        priority: true,
-        importance: true,
-      },
     });
 
     return NextResponse.json(todo, { status: 200 });
