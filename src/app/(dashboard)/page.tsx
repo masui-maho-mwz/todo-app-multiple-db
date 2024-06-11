@@ -1,13 +1,16 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styles from './styles.module.css';
 import { TodoViewModel } from '@/core/types';
 import { TodoList } from '@/features/dashboard/components/todo-list';
 import { RoundTabs } from '@/components/tabs/round-tabs';
 import { EditTodoModal } from '@/features/dashboard/components/edit-todo-modal';
 import { DeleteTodoDialog } from '@/features/dashboard/components/delete-todo-dialog';
+import { DashboardLayoutContext } from './layout';
 
 const Home = () => {
+  const context = useContext(DashboardLayoutContext);
+
   const [status, setStatus] = useState('');
   const [selectedTodos, setSelectedTodos] =
     useState<TodoViewModel[]>(dummy_todos);
@@ -43,22 +46,24 @@ const Home = () => {
   }, [status]);
 
   return (
-    <div className={styles.contents}>
-      <RoundTabs
-        value={status}
-        items={dummy_statuses}
-        onChange={handleClickStatusTab}
-      />
-      <TodoList
-        todos={selectedTodos}
-        onClickEdit={handleClickOpenEditModal}
-        onDeleteEdit={handleClickOpenDeleteModal}
-      />
+    <div className={styles.root}>
+      <div className={styles.contents}>
+        <RoundTabs
+          value={status}
+          items={dummy_statuses}
+          onChange={handleClickStatusTab}
+        />
+        <TodoList
+          todos={selectedTodos}
+          onClickEdit={handleClickOpenEditModal}
+          onDeleteEdit={handleClickOpenDeleteModal}
+        />
+      </div>
       <EditTodoModal
         todo={editingTodo}
-        categories={dummy_categories}
-        priorities={dummy_priorities}
-        importances={dummy_importances}
+        categories={context.categories}
+        priorities={context.priorities}
+        importances={context.importances}
         isOpen={Boolean(editingTodo)}
         onSubmit={() => alert('Edit Submit !!')}
         onClose={handleClickCloseEditModal}
@@ -76,18 +81,6 @@ const Home = () => {
 };
 
 // TODO: 一旦ダミーの値を使用。後でAPIから取得するように変更する
-const dummy_categories = [
-  { key: 'hoge', name: 'Hoge' },
-  { key: 'fuga', name: 'Fuga' },
-];
-const dummy_priorities = [
-  { key: 'hoge_priorities', name: 'Hoge Priorities' },
-  { key: 'fuga_priorities', name: 'Fuga Priorities' },
-];
-const dummy_importances = [
-  { key: 'hoge_importances', name: 'Hoge Importances' },
-  { key: 'fuga_importances', name: 'Fuga Importances' },
-];
 const dummy_statuses = [
   { value: '', label: '全て' },
   { value: 'incomplete', label: '未完了' },
