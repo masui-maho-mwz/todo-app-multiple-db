@@ -1,7 +1,10 @@
 import { prisma } from '@/app/api/prisma';
+import { TodoMetadataViewModel } from '@/view-model/todo';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(): Promise<
+  NextResponse<TodoMetadataViewModel> | NextResponse<{ message: string }>
+> {
   try {
     const categories = await prisma.category.findMany();
     const priorities = await prisma.priority.findMany();
