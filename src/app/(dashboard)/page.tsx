@@ -1,30 +1,47 @@
 'use client';
 import { useContext, useEffect, useState } from 'react';
 import styles from './styles.module.css';
-import { TodoViewModel } from '@/core/types';
 import { TodoList } from '@/features/dashboard/components/todo-list';
 import { RoundTabs } from '@/components/tabs/round-tabs';
 import { EditTodoModal } from '@/features/dashboard/components/edit-todo-modal';
 import { DeleteTodoDialog } from '@/features/dashboard/components/delete-todo-dialog';
 import { DashboardLayoutContext } from './layout';
+import { useGetFetch } from '@/hooks/use-get-fetch';
+import {
+  TodosGetViewModel,
+  TodosStatusesGetViewModel,
+} from '@/view-model/todo';
+import { TodoUiModel } from '@/features/dashboard/ui-models';
 
 const Home = () => {
   const context = useContext(DashboardLayoutContext);
 
-  const [status, setStatus] = useState('');
-  const [selectedTodos, setSelectedTodos] =
-    useState<TodoViewModel[]>(dummy_todos);
+  const { data: todosData, query: todosQuery } =
+    useGetFetch<TodosGetViewModel>('/api/todos');
 
-  const [editingTodo, setEditingTodo] = useState<TodoViewModel | null>(null);
-  const handleClickOpenEditModal = (todo: TodoViewModel) => {
+  const { data: statusesData, query: statusesQuery } =
+    useGetFetch<TodosStatusesGetViewModel>('/api/todos/statuses');
+
+  const statusItems = statusesData?.statuses.map((status) => ({
+    value: status.key,
+    label: status.name,
+  }));
+
+  const [status, setStatus] = useState('');
+  const [selectedTodos, setSelectedTodos] = useState<TodoUiModel[] | null>(
+    null
+  );
+
+  const [editingTodo, setEditingTodo] = useState<TodoUiModel | null>(null);
+  const handleClickOpenEditModal = (todo: TodoUiModel) => {
     setEditingTodo(todo);
   };
   const handleClickCloseEditModal = () => {
     setEditingTodo(null);
   };
 
-  const [deletingTodo, setDeletingTodo] = useState<TodoViewModel | null>(null);
-  const handleClickOpenDeleteModal = (todo: TodoViewModel) => {
+  const [deletingTodo, setDeletingTodo] = useState<TodoUiModel | null>(null);
+  const handleClickOpenDeleteModal = (todo: TodoUiModel) => {
     setDeletingTodo(todo);
   };
   const handleClickCloseDeleteModal = () => {
@@ -36,28 +53,41 @@ const Home = () => {
   };
 
   useEffect(() => {
+    todosQuery();
+    statusesQuery();
+    // MEMO: マウント時のみ実行させたいため、空のdepsを指定
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!todosData) return;
+
     if (status === '') {
-      setSelectedTodos(dummy_todos);
+      setSelectedTodos(todosData.todos);
     } else {
       setSelectedTodos(
-        dummy_todos.filter((todo) => todo.status.key === status)
+        todosData.todos.filter((todo) => todo.status.key === status)
       );
     }
-  }, [status]);
+  }, [status, todosData]);
 
   return (
     <div className={styles.root}>
       <div className={styles.contents}>
-        <RoundTabs
-          value={status}
-          items={dummy_statuses}
-          onChange={handleClickStatusTab}
-        />
-        <TodoList
-          todos={selectedTodos}
-          onClickEdit={handleClickOpenEditModal}
-          onDeleteEdit={handleClickOpenDeleteModal}
-        />
+        {statusItems && (
+          <RoundTabs
+            value={status}
+            items={[{ value: '', label: '全て' }, ...statusItems]}
+            onChange={handleClickStatusTab}
+          />
+        )}
+        {selectedTodos && (
+          <TodoList
+            todos={selectedTodos}
+            onClickEdit={handleClickOpenEditModal}
+            onDeleteEdit={handleClickOpenDeleteModal}
+          />
+        )}
       </div>
       <EditTodoModal
         todo={editingTodo}
@@ -79,32 +109,5 @@ const Home = () => {
     </div>
   );
 };
-
-// TODO: 一旦ダミーの値を使用。後でAPIから取得するように変更する
-const dummy_statuses = [
-  { value: '', label: '全て' },
-  { value: 'incomplete', label: '未完了' },
-  { value: 'completed', label: '完了' },
-];
-const dummy_todos: TodoViewModel[] = [
-  {
-    id: '1',
-    description: 'Dummy Todo 1',
-    deadline: '2021-12-31',
-    category: { key: 'hoge', name: 'Hoge' },
-    priority: { key: 'hoge_priorities', name: 'Hoge Priorities' },
-    importance: { key: 'hoge_importances', name: 'Hoge Importances' },
-    status: { key: 'incomplete', name: '未完了' },
-  },
-  {
-    id: '2',
-    description: 'Dummy Todo 2',
-    deadline: undefined,
-    category: { key: 'hoge', name: 'Hoge' },
-    priority: { key: 'hoge_priorities', name: 'Hoge Priorities' },
-    importance: { key: 'hoge_importances', name: 'Hoge Importances' },
-    status: { key: 'completed', name: '完了' },
-  },
-];
 
 export default Home;

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export const useGetFetch = <T>(path: string) => {
   const [data, setData] = useState<T | null>(null);
 
-  useEffect(() => {
-    fetch(path, {
+  const query = () => {
+    return fetch(path, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -16,14 +16,13 @@ export const useGetFetch = <T>(path: string) => {
           throw new Error('response error');
         }
 
-        // TODO: 次回ここから、ViewModel 作ったりする
         const data: T = await res.json();
         setData(data);
       })
       .catch((error) => {
         throw new Error('Failed to fetch');
       });
-  }, [path]);
+  };
 
-  return { data };
+  return { data, query };
 };

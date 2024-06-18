@@ -1,9 +1,9 @@
 import { prisma } from '@/app/api/prisma';
-import { TodoMetadataViewModel } from '@/view-model/todo';
+import { TodosMetadataGetViewModel } from '@/view-model/todo';
 import { NextResponse } from 'next/server';
 
 export async function GET(): Promise<
-  NextResponse<TodoMetadataViewModel> | NextResponse<{ message: string }>
+  NextResponse<TodosMetadataGetViewModel> | NextResponse<{ message: string }>
 > {
   try {
     const categories = await prisma.category.findMany();
@@ -16,7 +16,7 @@ export async function GET(): Promise<
     );
   } catch (error) {
     return NextResponse.json(
-      { message: `ToDoの取得に失敗しました, ${error}` },
+      { message: `ToDoメタデータの取得に失敗しました, ${error}` },
       { status: 500 }
     );
   }

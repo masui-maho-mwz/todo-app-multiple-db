@@ -1,7 +1,6 @@
 import { NoTodos } from '@/features/dashboard/components/todo-list/no-todo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { format, parseISO } from 'date-fns';
 import styles from './styles.module.css';
 import { TodoUiModel } from '@/features/dashboard/ui-models';
 
@@ -39,9 +38,7 @@ export const TodoList = ({ todos, onClickEdit, onDeleteEdit }: Props) => {
               <span className={styles.chip}>重要: {todo.importance?.name}</span>
               <span className={styles.chip}>
                 期限:
-                {todo.deadline
-                  ? format(parseISO(todo.deadline), 'yyyy/MM/dd')
-                  : '未設定'}
+                {todo.deadline ?? '未設定'}
               </span>
             </div>
           </div>

@@ -1,10 +1,14 @@
 import { prisma } from '@/app/api/prisma';
+import { TodosGetViewModel } from '@/view-model/todo';
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
+import { format } from 'date-fns';
 
-export async function GET() {
+export async function GET(): Promise<
+  NextResponse<TodosGetViewModel> | NextResponse<{ message: string }>
+> {
   try {
-    const todos = await prisma.todo.findMany({
+    const records = await prisma.todo.findMany({
       orderBy: { deadline: 'asc' },
       include: {
         category: true,
@@ -13,6 +17,16 @@ export async function GET() {
         status: true,
       },
     });
+
+    const todos = records.map((record) => ({
+      id: record.id,
+      description: record.description,
+      deadline: record.deadline ? format(record.deadline, 'yyyy/MM/dd') : null,
+      category: record.category,
+      priority: record.priority,
+      importance: record.importance,
+      status: record.status,
+    }));
 
     return NextResponse.json({ todos }, { status: 200 });
   } catch (error) {

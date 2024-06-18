@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react';
 import { AddTodoModal } from '@/features/dashboard/components/add-todo-modal';
 import { Sidebar } from '@/features/dashboard/components/layout/sidebar';
 import styles from './layout.module.css';
-import { TodoMetadataViewModel } from '@/view-model/todo';
+import { TodosMetadataGetViewModel } from '@/view-model/todo';
 import { useGetFetch } from '@/hooks/use-get-fetch';
 
 type Props = {
@@ -28,8 +28,12 @@ export const DashboardLayoutContext =
 export default function DashboardLayout({ children }: Props) {
   const [context, setContext] =
     useState<DashboardLayoutContextType>(initialContext);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
+  const { data, query } = useGetFetch<TodosMetadataGetViewModel>(
+    '/api/todos/metadata'
+  );
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const handleClickOpenAddModal = () => {
     setIsAddModalOpen(true);
   };
@@ -37,7 +41,9 @@ export default function DashboardLayout({ children }: Props) {
     setIsAddModalOpen(false);
   };
 
-  const { data } = useGetFetch<TodoMetadataViewModel>('/api/todos/metadata');
+  useEffect(() => {
+    query();
+  }, [query]);
 
   useEffect(() => {
     if (!data) {
