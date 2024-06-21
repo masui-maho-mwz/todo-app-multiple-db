@@ -10,6 +10,12 @@ export type TodosGetViewModel = {
   }[];
 };
 
+export type TodosPostViewModel = {
+  todo: {
+    id: string;
+  };
+};
+
 export type TodosMetadataGetViewModel = {
   categories: { key: string; name: string }[];
   priorities: { key: string; name: string }[];

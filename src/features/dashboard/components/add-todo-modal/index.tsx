@@ -4,7 +4,7 @@ import { CustomTooltip } from '@/components/elements/tooltip';
 import { Modal } from '@/components/surfaces/modal';
 import styles from './styles.module.css';
 import { z } from 'zod';
-import { useState } from 'react';
+import { ReactEventHandler, useState } from 'react';
 import {
   CategoryUiModel,
   ImportanceUiModel,
@@ -12,26 +12,24 @@ import {
 } from '@/features/dashboard/ui-models';
 
 const todoSchema = z.object({
-  id: z.string(),
   description: z
     .string()
     .min(1, 'Todoは入力必須です。')
     .max(140, '説明は140字以内である必要があります'),
-  categoryKey: z.string(),
-  priorityKey: z.string(),
-  importanceKey: z.string(),
-  statusKey: z.string(),
-  deadline: z.string().nullable(),
+  deadline: z.string().optional(),
+  categoryKey: z.string().optional(),
+  priorityKey: z.string().optional(),
+  importanceKey: z.string().optional(),
 });
 
-type FormData = z.infer<typeof todoSchema>;
+export type FormData = z.infer<typeof todoSchema>;
 
 type Props = {
   categories: CategoryUiModel[];
   priorities: PriorityUiModel[];
   importances: ImportanceUiModel[];
   isOpen: boolean;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (data: FormData) => void;
   onClose: () => void;
 };
 
@@ -44,14 +42,26 @@ export const AddTodoModal = ({
   onClose,
 }: Props) => {
   const [description, setDescription] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState('');
-  const [selectedImportance, setSelectedImportance] = useState('');
+  const [categoryKey, setCategoryKey] = useState('');
+  const [priorityKey, setPriorityKey] = useState('');
+  const [importanceKey, setImportanceKey] = useState('');
   const [deadline, setDeadline] = useState('');
+
+  const handleSubmit: ReactEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+
+    onSubmit({
+      description,
+      categoryKey,
+      priorityKey,
+      importanceKey,
+      deadline,
+    });
+  };
 
   return (
     <Modal isOpen={isOpen}>
-      <form onSubmit={onSubmit} className={styles.form} noValidate>
+      <form onSubmit={handleSubmit} className={styles.form} noValidate>
         <input
           type="text"
           value={description}
@@ -59,14 +69,15 @@ export const AddTodoModal = ({
           placeholder="Todoを入力してください"
           className={styles.text}
         />
+
         <div className={styles.items}>
           <Select
             options={categories.map((category) => ({
               key: category.key,
               name: category.name,
             }))}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
+            value={categoryKey}
+            onChange={setCategoryKey}
             placeholder="カテゴリー"
           />
           <Select
@@ -74,8 +85,8 @@ export const AddTodoModal = ({
               key: priority.key,
               name: priority.name,
             }))}
-            value={selectedPriority}
-            onChange={setSelectedPriority}
+            value={priorityKey}
+            onChange={setPriorityKey}
             placeholder="優先度"
           />
           <Select
@@ -83,8 +94,8 @@ export const AddTodoModal = ({
               key: importance.key,
               name: importance.name,
             }))}
-            value={selectedImportance}
-            onChange={setSelectedImportance}
+            value={importanceKey}
+            onChange={setImportanceKey}
             placeholder="重要度"
           />
           <CustomTooltip text="期限を選択してください">

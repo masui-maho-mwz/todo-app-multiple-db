@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const useGetFetch = <T>(path: string) => {
+export const useQueryFetch = <T>(path: string) => {
   const [data, setData] = useState<T | null>(null);
 
   const query = () => {

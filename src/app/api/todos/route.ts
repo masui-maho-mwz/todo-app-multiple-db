@@ -1,5 +1,5 @@
 import { prisma } from '@/app/api/prisma';
-import { TodosGetViewModel } from '@/view-model/todo';
+import { TodosGetViewModel, TodosPostViewModel } from '@/view-model/todo';
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 import { format } from 'date-fns';
@@ -37,17 +37,20 @@ export async function GET(): Promise<
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest
+): Promise<
+  NextResponse<TodosPostViewModel> | NextResponse<{ message: string }>
+> {
   const bodySchema = z.object({
     description: z
       .string()
       .min(1, 'Todoは入力必須です。')
       .max(140, '説明は140字以内である必要があります'),
+    deadline: z.string().optional(),
     categoryKey: z.string().optional(),
     priorityKey: z.string().optional(),
     importanceKey: z.string().optional(),
-    statusKey: z.string(),
-    deadline: z.string().optional(),
   });
 
   try {
@@ -60,10 +63,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!body.data.deadline) {
-      const todo = await prisma.todo.create({ data: { ...body.data } });
+    const insertRecord = {
+      description: body.data.description,
+      deadline: body.data.deadline || undefined,
+      categoryKey: body.data.categoryKey || undefined,
+      priorityKey: body.data.priorityKey || undefined,
+      importanceKey: body.data.importanceKey || undefined,
+      statusKey: 'incomplete',
+    };
 
-      return NextResponse.json(todo, { status: 200 });
+    if (!body.data.deadline) {
+      const todo = await prisma.todo.create({
+        data: { ...insertRecord },
+      });
+
+      return NextResponse.json({ todo: { id: todo.id } }, { status: 200 });
     }
 
     const deadline = parseDeadline(body.data.deadline);
@@ -76,11 +90,15 @@ export async function POST(req: NextRequest) {
     }
 
     const todo = await prisma.todo.create({
-      data: { ...body.data, deadline: deadline.datetime },
+      data: {
+        ...insertRecord,
+        deadline: deadline.datetime,
+      },
     });
 
-    return NextResponse.json(todo, { status: 200 });
+    return NextResponse.json({ todo: { id: todo.id } }, { status: 200 });
   } catch (error) {
+    console.error(error);
     if (error instanceof Error) {
       const status = error.message.startsWith('Invalid deadline') ? 400 : 500;
       return NextResponse.json(

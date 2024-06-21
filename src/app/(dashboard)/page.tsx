@@ -6,7 +6,7 @@ import { RoundTabs } from '@/components/tabs/round-tabs';
 import { EditTodoModal } from '@/features/dashboard/components/edit-todo-modal';
 import { DeleteTodoDialog } from '@/features/dashboard/components/delete-todo-dialog';
 import { DashboardLayoutContext } from './layout';
-import { useGetFetch } from '@/hooks/use-get-fetch';
+import { useQueryFetch } from '@/hooks/use-query-fetch';
 import {
   TodosGetViewModel,
   TodosStatusesGetViewModel,
@@ -17,10 +17,10 @@ const Home = () => {
   const context = useContext(DashboardLayoutContext);
 
   const { data: todosData, query: todosQuery } =
-    useGetFetch<TodosGetViewModel>('/api/todos');
+    useQueryFetch<TodosGetViewModel>('/api/todos');
 
   const { data: statusesData, query: statusesQuery } =
-    useGetFetch<TodosStatusesGetViewModel>('/api/todos/statuses');
+    useQueryFetch<TodosStatusesGetViewModel>('/api/todos/statuses');
 
   const statusItems = statusesData?.statuses.map((status) => ({
     value: status.key,

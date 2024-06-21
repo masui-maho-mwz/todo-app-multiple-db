@@ -1,10 +1,14 @@
 'use client';
 import { createContext, useEffect, useState } from 'react';
-import { AddTodoModal } from '@/features/dashboard/components/add-todo-modal';
+import {
+  AddTodoModal,
+  FormData,
+} from '@/features/dashboard/components/add-todo-modal';
 import { Sidebar } from '@/features/dashboard/components/layout/sidebar';
 import styles from './layout.module.css';
 import { TodosMetadataGetViewModel } from '@/view-model/todo';
-import { useGetFetch } from '@/hooks/use-get-fetch';
+import { useQueryFetch } from '@/hooks/use-query-fetch';
+import { useMutationFetch } from '@/hooks/use-mutation-fetch';
 
 type Props = {
   children: React.ReactNode;
@@ -29,9 +33,14 @@ export default function DashboardLayout({ children }: Props) {
   const [context, setContext] =
     useState<DashboardLayoutContextType>(initialContext);
 
-  const { data, query } = useGetFetch<TodosMetadataGetViewModel>(
+  const { data: queryData, query } = useQueryFetch<TodosMetadataGetViewModel>(
     '/api/todos/metadata'
   );
+
+  const { data: mutateData, mutate } = useMutationFetch<
+    TodosMetadataGetViewModel,
+    FormData
+  >('/api/todos', 'POST');
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const handleClickOpenAddModal = () => {
@@ -41,21 +50,27 @@ export default function DashboardLayout({ children }: Props) {
     setIsAddModalOpen(false);
   };
 
-  useEffect(() => {
-    query();
-  }, [query]);
+  const handleSubmit = (data: FormData) => {
+    mutate(data);
+  };
 
   useEffect(() => {
-    if (!data) {
+    query();
+    // MEMO: マウント時のみ実行させたいため、空のdepsを指定
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!queryData) {
       setContext(initialContext);
       return;
     }
     setContext({
-      categories: data.categories,
-      priorities: data.priorities,
-      importances: data.importances,
+      categories: queryData.categories,
+      priorities: queryData.priorities,
+      importances: queryData.importances,
     });
-  }, [data]);
+  }, [queryData]);
 
   return (
     <div className={styles.root}>
@@ -73,7 +88,7 @@ export default function DashboardLayout({ children }: Props) {
         priorities={context.priorities}
         importances={context.importances}
         isOpen={isAddModalOpen}
-        onSubmit={() => alert('Add Submit !!')}
+        onSubmit={handleSubmit}
         onClose={handleClickCloseAddModal}
       />
     </div>
