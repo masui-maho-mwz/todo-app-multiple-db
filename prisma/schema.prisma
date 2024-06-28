@@ -8,18 +8,20 @@ datasource db {
 }
 
 model Todo {
-  id            String     @id @default(cuid())
+  id            String    @id @default(cuid())
   description   String
-  categoryKey   String
-  category      Category   @relation(fields: [categoryKey], references: [key])
-  priorityKey   String
-  priority      Priority   @relation(fields: [priorityKey], references: [key])
-  importanceKey String
-  importance    Importance @relation(fields: [importanceKey], references: [key])
   statusKey     String
-  status        Status     @relation(fields: [statusKey], references: [key])
-  createdAt     DateTime   @default(now())
-  deadline      DateTime?  @map("deadline")
+  categoryKey   String?
+  priorityKey   String?
+  importanceKey String?
+  deadline      DateTime? @map("deadline")
+
+  createdAt DateTime @default(now())
+
+  status     Status      @relation(fields: [statusKey], references: [key])
+  category   Category?   @relation(fields: [categoryKey], references: [key])
+  priority   Priority?   @relation(fields: [priorityKey], references: [key])
+  importance Importance? @relation(fields: [importanceKey], references: [key])
 
   @@map("todos")
 }
