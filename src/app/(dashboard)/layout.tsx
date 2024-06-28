@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AddTodoModal,
   FormData,
@@ -9,29 +9,23 @@ import styles from './layout.module.css';
 import { TodosMetadataGetViewModel } from '@/view-model/todo';
 import { useQueryFetch } from '@/hooks/use-query-fetch';
 import { useMutationFetch } from '@/hooks/use-mutation-fetch';
+import {
+  DashboardLayoutContext,
+  DashboardLayoutContextType,
+  TodoContextData,
+} from '@/features/dashboard/context/dashboard-layout';
+import { useFlashContext } from '@/features/app/context/flash';
 
 type Props = {
   children: React.ReactNode;
 };
 
-type DashboardLayoutContextType = {
-  categories: { key: string; name: string }[];
-  priorities: { key: string; name: string }[];
-  importances: { key: string; name: string }[];
-};
-
-const initialContext: DashboardLayoutContextType = {
-  categories: [],
-  priorities: [],
-  importances: [],
-};
-
-export const DashboardLayoutContext =
-  createContext<DashboardLayoutContextType>(initialContext);
-
 export default function DashboardLayout({ children }: Props) {
-  const [context, setContext] =
-    useState<DashboardLayoutContextType>(initialContext);
+  const { data, setFlash } = useFlashContext();
+
+  const [context, setContext] = useState<DashboardLayoutContextType>({
+    todo: initialTodoData,
+  });
 
   const { data: queryData, query } = useQueryFetch<TodosMetadataGetViewModel>(
     '/api/todos/metadata'
@@ -43,10 +37,10 @@ export default function DashboardLayout({ children }: Props) {
   >('/api/todos', 'POST');
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const handleClickOpenAddModal = () => {
+  const handleOpenAddModal = () => {
     setIsAddModalOpen(true);
   };
-  const handleClickCloseAddModal = () => {
+  const handleCloseAddModal = () => {
     setIsAddModalOpen(false);
   };
 
@@ -62,21 +56,39 @@ export default function DashboardLayout({ children }: Props) {
 
   useEffect(() => {
     if (!queryData) {
-      setContext(initialContext);
+      setContext({ ...context, todo: initialTodoData });
       return;
     }
     setContext({
-      categories: queryData.categories,
-      priorities: queryData.priorities,
-      importances: queryData.importances,
+      ...context,
+      todo: {
+        categories: queryData.categories,
+        priorities: queryData.priorities,
+        importances: queryData.importances,
+      },
     });
+    // MEMO: todo関連のデータを取得した時のみ実行させたいため、 queryData のみを指定
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryData]);
+
+  useEffect(() => {
+    if (mutateData) {
+      handleCloseAddModal();
+      setFlash({
+        stasus: 'success',
+        message: '新規 ToDo を追加しました',
+        type: 'todo',
+      });
+    }
+    // MEMO: todo関連の mutation 処理が発生した場合のみ実行させたいため、 mutateData のみを指定
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mutateData]);
 
   return (
     <div className={styles.root}>
       {/* {isLoading && <LoadingOverlay />} */}
       <div className={styles.container}>
-        <Sidebar onClickOpenAdd={handleClickOpenAddModal} />
+        <Sidebar onClickOpenAdd={handleOpenAddModal} />
         <div className={styles.main}>
           <DashboardLayoutContext.Provider value={context}>
             {children}
@@ -84,13 +96,19 @@ export default function DashboardLayout({ children }: Props) {
         </div>
       </div>
       <AddTodoModal
-        categories={context.categories}
-        priorities={context.priorities}
-        importances={context.importances}
+        categories={context.todo.categories}
+        priorities={context.todo.priorities}
+        importances={context.todo.importances}
         isOpen={isAddModalOpen}
         onSubmit={handleSubmit}
-        onClose={handleClickCloseAddModal}
+        onClose={handleCloseAddModal}
       />
     </div>
   );
 }
+
+const initialTodoData: TodoContextData = {
+  categories: [],
+  priorities: [],
+  importances: [],
+};

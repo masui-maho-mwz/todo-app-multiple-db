@@ -1,20 +1,23 @@
 'use client';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 import { TodoList } from '@/features/dashboard/components/todo-list';
 import { RoundTabs } from '@/components/tabs/round-tabs';
 import { EditTodoModal } from '@/features/dashboard/components/edit-todo-modal';
 import { DeleteTodoDialog } from '@/features/dashboard/components/delete-todo-dialog';
-import { DashboardLayoutContext } from './layout';
 import { useQueryFetch } from '@/hooks/use-query-fetch';
 import {
   TodosGetViewModel,
   TodosStatusesGetViewModel,
 } from '@/view-model/todo';
 import { TodoUiModel } from '@/features/dashboard/ui-models';
+import { useDashboardLayoutContext } from '@/features/dashboard/context/dashboard-layout';
+import { useFlashContext } from '@/features/app/context/flash';
 
 const Home = () => {
-  const context = useContext(DashboardLayoutContext);
+  const { data: flashData } = useFlashContext();
+
+  const context = useDashboardLayoutContext();
 
   const { data: todosData, query: todosQuery } =
     useQueryFetch<TodosGetViewModel>('/api/todos');
@@ -71,6 +74,18 @@ const Home = () => {
     }
   }, [status, todosData]);
 
+  useEffect(() => {
+    if (
+      flashData &&
+      flashData.stasus === 'success' &&
+      flashData.type === 'todo'
+    ) {
+      todosQuery();
+    }
+    // MEMO: TODO の追加処理が成功した場合のみ実行させたいため、 flashData のみを指定
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flashData]);
+
   return (
     <div className={styles.root}>
       <div className={styles.contents}>
@@ -91,9 +106,9 @@ const Home = () => {
       </div>
       <EditTodoModal
         todo={editingTodo}
-        categories={context.categories}
-        priorities={context.priorities}
-        importances={context.importances}
+        categories={context.todo.categories}
+        priorities={context.todo.priorities}
+        importances={context.todo.importances}
         isOpen={Boolean(editingTodo)}
         onSubmit={() => alert('Edit Submit !!')}
         onClose={handleClickCloseEditModal}

@@ -8,6 +8,7 @@ export async function GET(): Promise<
   NextResponse<TodosGetViewModel> | NextResponse<{ message: string }>
 > {
   try {
+    // TODO: 取得の順番を考える
     const records = await prisma.todo.findMany({
       orderBy: { deadline: 'asc' },
       include: {
