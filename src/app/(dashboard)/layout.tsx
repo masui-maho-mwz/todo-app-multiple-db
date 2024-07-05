@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { ComponentProps, useEffect, useState } from 'react';
 import {
   AddTodoModal,
   FormData,
@@ -15,13 +15,17 @@ import {
   TodoContextData,
 } from '@/features/dashboard/context/dashboard-layout';
 import { useFlashContext } from '@/features/app/context/flash';
+import { MessageToast } from '@/features/dashboard/components/message-toast';
 
 type Props = {
   children: React.ReactNode;
 };
 
 export default function DashboardLayout({ children }: Props) {
-  const { data, setFlash } = useFlashContext();
+  const { data: flashData, setFlash } = useFlashContext();
+
+  const [toastData, setToastData] =
+    useState<ComponentProps<typeof MessageToast>['data']>(null);
 
   const [context, setContext] = useState<DashboardLayoutContextType>({
     todo: initialTodoData,
@@ -84,6 +88,17 @@ export default function DashboardLayout({ children }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mutateData]);
 
+  useEffect(() => {
+    if (flashData) {
+      setToastData({ color: flashData.stasus, message: flashData.message });
+
+      // TODO: setTimeout のクリーナーを用意する
+      setTimeout(() => {
+        setToastData(null);
+      }, 5000);
+    }
+  }, [flashData]);
+
   return (
     <div className={styles.root}>
       {/* {isLoading && <LoadingOverlay />} */}
@@ -103,6 +118,7 @@ export default function DashboardLayout({ children }: Props) {
         onSubmit={handleSubmit}
         onClose={handleCloseAddModal}
       />
+      <MessageToast data={toastData} />
     </div>
   );
 }

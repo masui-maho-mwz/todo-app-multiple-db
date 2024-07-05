@@ -12,6 +12,7 @@ export const FlashContextProvider = ({ children }: Props) => {
   const setFlash = (data: FlashData) => {
     setFlashData(data);
 
+    // TODO: setTimeout のクリーナーを用意する
     setTimeout(() => {
       setFlashData(null);
     }, 1000);
