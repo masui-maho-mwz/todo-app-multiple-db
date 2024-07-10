@@ -1,0 +1,21 @@
+.root {
+  min-width: 720px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+.root > *:first-child {
+  margin-top: 0;
+}
+.root > *:last-child {
+  margin-bottom: 0;
+}
+
+.contents > *:first-child {
+  margin-top: 0;
+}
+.contents > *:last-child {
+  margin-bottom: 0;
+}
+
+
